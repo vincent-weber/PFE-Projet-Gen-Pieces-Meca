@@ -7,7 +7,6 @@
 
 #include "glarea.h"
 
-
 GLArea::GLArea(QWidget *parent) :
     QOpenGLWidget(parent)
 {
@@ -29,6 +28,13 @@ GLArea::GLArea(QWidget *parent) :
     shapes.push_back(new Cylinder(5,10,20, V3(0,10,0), V3(PI/4, PI/4, 0)));
     shapes.push_back(new Sphere(3,10,10, V3(10,10,10)));
     shapes.push_back(new Cuboid(2,8,5, V3(-10, -10, -10)));
+
+    Grammar gramtest("X");
+    gramtest.createScrewRules();
+    for(int i = 0; i < 2; i++){
+        gramtest.computeGrammar();
+    }
+    qDebug() << gramtest.rules;
 }
 
 

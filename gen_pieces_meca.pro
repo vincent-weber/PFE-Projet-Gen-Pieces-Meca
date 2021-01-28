@@ -19,6 +19,7 @@ INCLUDEPATH += $(HOME)/lib/CGAL-5.2/include
 SOURCES += main.cpp\
         cuboid.cpp \
         cylinder.cpp \
+        grammar.cpp \
         princ.cpp \
         glarea.cpp \
         shape3d.cpp \
@@ -30,6 +31,7 @@ HEADERS  += princ.h \
         cuboid.h \
         cylinder.h \
         glarea.h \
+        grammar.h \
         shape3d.h \
         sphere.h \
         util.h
