@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>textures/ground.jpg</file>
+        <file>shaders/simple_color.fsh</file>
+        <file>shaders/simple_color.vsh</file>
+        <file>shaders/simple_tex.fsh</file>
+        <file>shaders/simple_tex.vsh</file>
+    </qresource>
+</RCC>
