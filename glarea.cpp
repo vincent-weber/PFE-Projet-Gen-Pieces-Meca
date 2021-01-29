@@ -26,9 +26,18 @@ GLArea::GLArea(QWidget *parent) :
     timer->start();
     elapsedTimer.start();
 
-    shapes.push_back(new Cylinder(5,10,20, V3(0,10,0), V3(PI/4, PI/4, 0)));
     shapes.push_back(new Sphere(3,10,10, V3(10,10,10)));
     shapes.push_back(new Cuboid(2,8,5, V3(-10, -10, -10)));
+    shapes.push_back(new Cylinder(5,10,20, V3(0,5,0), V3(PI/2, PI/2, 0)));
+    shapes.push_back(new Cylinder(15,2,6, V3(0,10.5,0), V3(PI/2, PI/2, 0)));
+
+    std::vector<Shape3D*> cyls_screw;
+    cyls_screw.push_back(new Cylinder(5,10,20, V3(0,5,0), V3(PI/2, PI/2, 0)));
+    cyls_screw.push_back(new Cylinder(15,2,6, V3(0,10.5,0), V3(PI/2, PI/2, 0)));
+    std::vector<Bool_op> ops;
+    ops.push_back(UNION);
+
+    screw = Screw(cyls_screw, ops);
 }
 
 
@@ -122,6 +131,15 @@ void GLArea::makeGLObjects()
         vbos.push_back(vbo);
     }
 
+    screw.render();
+    qDebug() << screw.nb_vertices_gl_faces;
+    qDebug() << screw.nb_vertices_gl_lines;
+    vbo_screw.create();
+    vbo_screw.bind();
+    qDebug() << "DATA SIZE : " << screw.gl_data.size();
+    vbo_screw.allocate(screw.gl_data.constData(), screw.gl_data.count() * int(sizeof(GLfloat)));
+
+
     // Création de textures
     QImage image_sol(":/textures/ground.jpg");
     if (image_sol.isNull())
@@ -183,6 +201,7 @@ void GLArea::paintGL()
     program_texture->disableAttributeArray("in_uv");
     program_texture->release();
 
+    //Shapes de test
     for (unsigned i = 0 ; i < shapes.size() ; ++i) {
         vbos[i].bind();
         program_simple_color->bind();
@@ -204,6 +223,28 @@ void GLArea::paintGL()
         program_simple_color->disableAttributeArray("in_color");
         program_simple_color->release();
     }
+
+    //Screw
+    /*vbo_screw.bind();
+    program_simple_color->bind();
+    QMatrix4x4 modelMatrix;
+    modelMatrix.setToIdentity();
+    program_simple_color->setUniformValue("projectionMatrix", projectionMatrix);
+    program_simple_color->setUniformValue("viewMatrix", viewMatrix);
+    program_simple_color->setUniformValue("modelMatrix", modelMatrix);
+
+    program_simple_color->setAttributeBuffer("in_position", GL_FLOAT, 0, 3, 6 * sizeof(GLfloat));
+    program_simple_color->setAttributeBuffer("in_color", GL_FLOAT, 3 * sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
+    program_simple_color->enableAttributeArray("in_position");
+    program_simple_color->enableAttributeArray("in_color");
+
+    glDrawArrays(GL_TRIANGLES, 0, screw.nb_vertices_gl_faces);
+    glDrawArrays(GL_LINES, screw.nb_vertices_gl_faces, screw.nb_vertices_gl_faces + screw.nb_vertices_gl_lines);
+
+    program_simple_color->disableAttributeArray("in_position");
+    program_simple_color->disableAttributeArray("in_color");
+    program_simple_color->release();*/
+
 }
 
 

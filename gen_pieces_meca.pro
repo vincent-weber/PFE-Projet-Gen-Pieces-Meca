@@ -15,21 +15,26 @@ TEMPLATE = app
 
 #Chemin CGAL
 INCLUDEPATH += $(HOME)/lib/CGAL-5.2/include
+LIBS += -L$(HOME)/lib/CGAL-5.2/lib -lgmp -lmpfr
 
 SOURCES += main.cpp\
+        boolean_op.cpp \
         cuboid.cpp \
         cylinder.cpp \
         princ.cpp \
         glarea.cpp \
+        screw.cpp \
         shape3d.cpp \
         sphere.cpp \
         util.cpp
 
 HEADERS  += princ.h \
         Cgal.h \
+        boolean_op.h \
         cuboid.h \
         cylinder.h \
         glarea.h \
+        screw.h \
         shape3d.h \
         sphere.h \
         util.h

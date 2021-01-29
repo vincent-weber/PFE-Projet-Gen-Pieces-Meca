@@ -4,7 +4,7 @@ Cylinder::Cylinder()
 {
 }
 
-Cylinder::Cylinder(float rad, float diam, float prec, V3 c, V3 rot) : radius(rad), diameter(diam), precision(prec) {
+Cylinder::Cylinder(float rad, float diam, float prec, V3 c, V3 rot) : radius(rad), length(diam), precision(prec) {
     center = c;
     rotation = rot;
     create_vertices();
@@ -18,10 +18,10 @@ void Cylinder::create_vertices() {
     for (int i = 0 ; i < precision ; ++i, angle += angle_offset) {
         float x = cos(angle) * radius;
         float y = sin(angle) * radius;
-        P3 p1(x,y, -diameter/2);
+        P3 p1(x,y, -length/2);
         v_handles.push_back(mesh.add_vertex(p1));
 
-        P3 p2(x,y, diameter/2);
+        P3 p2(x,y, length/2);
         v_handles.push_back(mesh.add_vertex(p2));
     }
 }
