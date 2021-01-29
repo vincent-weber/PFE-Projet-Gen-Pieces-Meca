@@ -17,6 +17,7 @@
 #include "sphere.h"
 #include "cuboid.h"
 #include "grammar.h"
+#include "parser.h"
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions

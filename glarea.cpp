@@ -37,6 +37,8 @@ GLArea::GLArea(QWidget *parent) :
         gramtest.computeGrammar();
     }
 
+    Parser parser(gramtest.sentence);
+    parser.reader();
 }
 
 

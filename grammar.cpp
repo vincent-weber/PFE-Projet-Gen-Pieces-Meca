@@ -50,9 +50,8 @@ void Grammar::createCyl(QString in, QVector3D c, QVector3D rot){
 }
 
 //Cuboid : float l, float w, float h, V3 c, V3 rot
-void Grammar::createCube(QString in, QVector3D c){
+void Grammar::createCube(QString in, QVector3D c, QVector3D rot){
     float l(.0), w(.0), h(.0);
-    QVector3D rot(0,0,0);
 
     QString out = "cub(" + QString::number(l) + "," + QString::number(w) + "," + QString::number(h) + ")";
     out += "[cen(";
@@ -73,9 +72,8 @@ void Grammar::createCube(QString in, QVector3D c){
 }
 
 //Sphere : float rad, float stack_c, float sector_c, V3 c, V3 rot
-void Grammar::createSphere(QString in, QVector3D c){
+void Grammar::createSphere(QString in, QVector3D c, QVector3D rot){
     float rad(.0), stack(.0), sector(.0);
-    QVector3D rot(0,0,0);
 
     QString out = "sph(" + QString::number(rad) + QString::number(stack) + QString::number(sector) + ")";
     out += "[cen(";
