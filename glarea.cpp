@@ -31,10 +31,12 @@ GLArea::GLArea(QWidget *parent) :
 
     Grammar gramtest("X");
     gramtest.createScrewRules();
-    for(int i = 0; i < 2; i++){
+    qDebug() << gramtest.rules;
+    qDebug() << gramtest.prev_l;
+    for(int i = 0; i < 3; i++){
         gramtest.computeGrammar();
     }
-    qDebug() << gramtest.rules;
+
 }
 
 
