@@ -28,8 +28,8 @@ GLArea::GLArea(QWidget *parent) :
 
     shapes.push_back(new Sphere(3,10,10, V3(10,10,10)));
     shapes.push_back(new Cuboid(2,8,5, V3(-10, -10, -10)));
-    shapes.push_back(new Cylinder(5,10,20, V3(0,5,0), V3(PI/2, PI/2, 0)));
-    shapes.push_back(new Cylinder(15,2,6, V3(0,10.5,0), V3(PI/2, PI/2, 0)));
+    /*shapes.push_back(new Cylinder(5,10,20, V3(0,5,0), V3(PI/2, PI/2, 0)));
+    shapes.push_back(new Cylinder(15,2,6, V3(0,10.5,0), V3(PI/2, PI/2, 0)));*/
 
     std::vector<Shape3D*> cyls_screw;
     cyls_screw.push_back(new Cylinder(5,10,20, V3(0,5,0), V3(PI/2, PI/2, 0)));
@@ -123,11 +123,12 @@ void GLArea::makeGLObjects()
 
 
     for (unsigned i = 0 ; i < shapes.size() ; ++i) {
+
         shapes[i]->render();
         QOpenGLBuffer vbo;
         vbo.create();
         vbo.bind();
-        vbo.allocate(shapes[i]->gl_data.constData(), shapes[i]->gl_data.count() * int(sizeof(GLfloat)));
+        vbo.allocate(shapes[i]->gl_data.constData(), shapes[i]->gl_data.count() * int(sizeof(GLdouble)));
         vbos.push_back(vbo);
     }
 
@@ -136,8 +137,7 @@ void GLArea::makeGLObjects()
     qDebug() << screw.nb_vertices_gl_lines;
     vbo_screw.create();
     vbo_screw.bind();
-    qDebug() << "DATA SIZE : " << screw.gl_data.size();
-    vbo_screw.allocate(screw.gl_data.constData(), screw.gl_data.count() * int(sizeof(GLfloat)));
+    vbo_screw.allocate(screw.gl_data.constData(), screw.gl_data.count() * int(sizeof(GLdouble)));
 
 
     // Création de textures
@@ -211,8 +211,8 @@ void GLArea::paintGL()
         program_simple_color->setUniformValue("viewMatrix", viewMatrix);
         program_simple_color->setUniformValue("modelMatrix", modelMatrix);
 
-        program_simple_color->setAttributeBuffer("in_position", GL_FLOAT, 0, 3, 6 * sizeof(GLfloat));
-        program_simple_color->setAttributeBuffer("in_color", GL_FLOAT, 3 * sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
+        program_simple_color->setAttributeBuffer("in_position", GL_DOUBLE, 0, 3, 6 * sizeof(GLdouble));
+        program_simple_color->setAttributeBuffer("in_color", GL_DOUBLE, 3 * sizeof(GLdouble), 3, 6 * sizeof(GLdouble));
         program_simple_color->enableAttributeArray("in_position");
         program_simple_color->enableAttributeArray("in_color");
 
@@ -225,7 +225,7 @@ void GLArea::paintGL()
     }
 
     //Screw
-    /*vbo_screw.bind();
+    vbo_screw.bind();
     program_simple_color->bind();
     QMatrix4x4 modelMatrix;
     modelMatrix.setToIdentity();
@@ -233,8 +233,8 @@ void GLArea::paintGL()
     program_simple_color->setUniformValue("viewMatrix", viewMatrix);
     program_simple_color->setUniformValue("modelMatrix", modelMatrix);
 
-    program_simple_color->setAttributeBuffer("in_position", GL_FLOAT, 0, 3, 6 * sizeof(GLfloat));
-    program_simple_color->setAttributeBuffer("in_color", GL_FLOAT, 3 * sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
+    program_simple_color->setAttributeBuffer("in_position", GL_DOUBLE, 0, 3, 6 * sizeof(GLdouble));
+    program_simple_color->setAttributeBuffer("in_color", GL_DOUBLE, 3 * sizeof(GLdouble), 3, 6 * sizeof(GLdouble));
     program_simple_color->enableAttributeArray("in_position");
     program_simple_color->enableAttributeArray("in_color");
 
@@ -243,7 +243,7 @@ void GLArea::paintGL()
 
     program_simple_color->disableAttributeArray("in_position");
     program_simple_color->disableAttributeArray("in_color");
-    program_simple_color->release();*/
+    program_simple_color->release();
 
 }
 

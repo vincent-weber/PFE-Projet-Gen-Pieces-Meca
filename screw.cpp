@@ -26,7 +26,7 @@ void Screw::render() {
             }*/
             P3 p = mesh.point(*vbegin);
             //qDebug() << "Coords : " << p[0] << " ; " << p[1] << " ; " << p[2];
-            gl_data.push_back(p[0]);gl_data.push_back(p[1]);gl_data.push_back(p[2]);
+            gl_data.push_back(CGAL::to_double(p[0]));gl_data.push_back(CGAL::to_double(p[1]));gl_data.push_back(CGAL::to_double(p[2]));
             gl_data.push_back(147); gl_data.push_back(47); gl_data.push_back(247);
             ++nb_vertices_gl_faces;
         }
@@ -34,9 +34,9 @@ void Screw::render() {
 
     for (edge_descriptor ed : mesh.edges()) {
         P3 p1 = mesh.point(mesh.vertex(ed, 0));
-        gl_data.push_back(p1[0]);gl_data.push_back(p1[1]);gl_data.push_back(p1[2]); gl_data.push_back(0); gl_data.push_back(0); gl_data.push_back(0);
+        gl_data.push_back(CGAL::to_double(p1[0]));gl_data.push_back(CGAL::to_double(p1[1]));gl_data.push_back(CGAL::to_double(p1[2])); gl_data.push_back(0); gl_data.push_back(0); gl_data.push_back(0);
         P3 p2 = mesh.point(mesh.vertex(ed, 1));
-        gl_data.push_back(p2[0]);gl_data.push_back(p2[1]);gl_data.push_back(p2[2]); gl_data.push_back(0); gl_data.push_back(0); gl_data.push_back(0);
+        gl_data.push_back(CGAL::to_double(p2[0]));gl_data.push_back(CGAL::to_double(p2[1]));gl_data.push_back(CGAL::to_double(p2[2])); gl_data.push_back(0); gl_data.push_back(0); gl_data.push_back(0);
         nb_vertices_gl_lines += 2;
     }
 }

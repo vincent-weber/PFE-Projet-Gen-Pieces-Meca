@@ -17,7 +17,6 @@
 #include "sphere.h"
 #include "cuboid.h"
 #include "screw.h"
-#include "boolean_op.h"
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions

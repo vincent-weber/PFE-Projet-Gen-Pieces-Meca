@@ -65,21 +65,21 @@ void Sphere::render() {
         auto p2 = mesh.point(v_handles[indices[(i+1)%nb_vertices_gl_faces]]);
         auto p3 = mesh.point(v_handles[indices[(i+2)%nb_vertices_gl_faces]]);
 
-        gl_data.append(p2.x()); gl_data.append(p2.y()); gl_data.append(p2.z());
+        gl_data.append(CGAL::to_double(p2[0])); gl_data.append(CGAL::to_double(p2[1])); gl_data.append(CGAL::to_double(p2[2]));
         gl_data.append(128); gl_data.append(128); gl_data.append(0);
 
-        gl_data.append(p1.x()); gl_data.append(p1.y()); gl_data.append(p1.z());
+        gl_data.append(CGAL::to_double(p1[0])); gl_data.append(CGAL::to_double(p1[1])); gl_data.append(CGAL::to_double(p1[2]));
         gl_data.append(128); gl_data.append(128); gl_data.append(0);
 
-        gl_data.append(p3.x()); gl_data.append(p3.y()); gl_data.append(p3.z());
+        gl_data.append(CGAL::to_double(p3[0])); gl_data.append(CGAL::to_double(p3[1])); gl_data.append(CGAL::to_double(p3[2]));
         gl_data.append(128); gl_data.append(128); gl_data.append(0);
     }
 
     for (edge_descriptor ed : mesh.edges()) {
         P3 p1 = mesh.point(mesh.vertex(ed, 0));
-        gl_data.push_back(p1[0]);gl_data.push_back(p1[1]);gl_data.push_back(p1[2]); gl_data.push_back(0); gl_data.push_back(0); gl_data.push_back(0);
+        gl_data.push_back(CGAL::to_double(p1[0]));gl_data.push_back(CGAL::to_double(p1[1]));gl_data.push_back(CGAL::to_double(p1[2])); gl_data.push_back(0); gl_data.push_back(0); gl_data.push_back(0);
         P3 p2 = mesh.point(mesh.vertex(ed, 1));
-        gl_data.push_back(p2[0]);gl_data.push_back(p2[1]);gl_data.push_back(p2[2]); gl_data.push_back(0); gl_data.push_back(0); gl_data.push_back(0);
+        gl_data.push_back(CGAL::to_double(p2[0]));gl_data.push_back(CGAL::to_double(p2[1]));gl_data.push_back(CGAL::to_double(p2[2])); gl_data.push_back(0); gl_data.push_back(0); gl_data.push_back(0);
         nb_vertices_gl_lines += 2;
     }
 }

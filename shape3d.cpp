@@ -8,13 +8,15 @@ void Shape3D::create() {
 
 void Shape3D::transform() {
     //Rotation Y
-    PMP::transform(CGAL::Aff_transformation_3<K>(cos(rotation[0]), 0, -sin(rotation[0]),
+    double rotY = CGAL::to_double(rotation[0]);
+    double rotZ = CGAL::to_double(rotation[1]);
+    PMP::transform(CGAL::Aff_transformation_3<K>(cos(rotY), 0, -sin(rotY),
                                                 0, 1, 0,
-                                                sin(rotation[0]), 0, cos(rotation[0])), mesh);
+                                                sin(rotY), 0, cos(rotY)), mesh);
 
     //Rotation Z
-    PMP::transform(CGAL::Aff_transformation_3<K>(cos(rotation[1]), -sin(rotation[1]), 0,
-                                                sin(rotation[1]), cos(rotation[1]), 0,
+    PMP::transform(CGAL::Aff_transformation_3<K>(cos(rotZ), -sin(rotZ), 0,
+                                                sin(rotZ), cos(rotZ), 0,
                                                 0, 0, 1), mesh);
 
     PMP::transform(CGAL::Aff_transformation_3<K>(CGAL::Translation(), center), mesh);
