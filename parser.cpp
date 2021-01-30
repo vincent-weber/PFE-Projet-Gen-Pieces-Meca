@@ -8,55 +8,42 @@ Parser::Parser(QString sentence){
 void Parser::reader(){
 
     int i = 0;
-    int j = 0;
-
-    QChar c, cc;
-
-
     while(i < sentence.size()){
-        QString test = "";
-        c = sentence.at(i);
 
         //Recupere les informations du cylindre;
-        if(c == 'c' && sentence.at(i+1) == 'y'){
-            j = i + 4;
-            QVector<float> param = getParam(&j);
-            i = j;
-            qDebug() << "Cylindre :" << param;
-        }
-        if(c == 'c' && sentence.at(i+1) == 'e'){
-            j = i + 4;
-            QVector<float> param = getParam(&j);
-            i = j;
-            qDebug() << "Centre :" << param;
-        }
-        if(c == 'r'){
-            j = i + 4;
-            QVector<float> param = getParam(&j);
-            i = j;
-            qDebug() << "Rotation :" << param;
+        if(sentence.at(i) == 'c' && sentence.at(i+1) == 'y'){
+            QVector<QVector<float>> params = getCylinder(&i);
+            qDebug() << "Cylindre :" << params[0] << ", de centre" << params[1] << ", avec une rotation de" << params[2];
         }
         i++;
     }
 }
 
+QVector<QVector<float>> Parser::getCylinder(int *index){
+
+    QVector<QVector<float>> params;
+    params.push_back(getParam(index)); params.push_back(getParam(index)); params.push_back(getParam(index));
+    return params;
+}
+
 QVector<float> Parser::getParam(int *index){
+    *index += 4;
     QVector<float> param;
-    int j = *index;
-    QChar cc = sentence.at(j);
+    QChar cc = sentence.at(*index);
     QString test = "";
 
-    while(sentence.at(j) != ')'){
-        cc = sentence.at(j); j++;
+    while(sentence.at(*index) != ')'){
+        cc = sentence.at(*index); *index += 1;
         if(cc == ',') {
-            param.push_back(test.toFloat()); //rad, longueur
+            param.push_back(test.toFloat()); //1, 2
             test = "";
         }
         else {
             test += cc;
         }
     }
-    param.push_back(test.toFloat()); //prec
+    param.push_back(test.toFloat()); //3
 
+    *index += 2;
     return param;
 }

@@ -13,6 +13,7 @@ public:
     QString sentence;
 
     void reader();
+    QVector<QVector<float>> getCylinder(int *index);
     QVector<float> getParam(int *index);
 };
 
