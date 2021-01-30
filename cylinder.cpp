@@ -32,12 +32,14 @@ void Cylinder::create_mesh() {
     //Creation du mesh
     for (int i = 0 ; i < nb_vertices ; i += 2) {
         //facettes
-        mesh.add_face(v_handles[i], v_handles[(i+1)%nb_vertices], v_handles[(i+2)%nb_vertices]);
+        mesh.add_face(v_handles[i], v_handles[(i+2)%nb_vertices], v_handles[(i+1)%nb_vertices]);
         mesh.add_face(v_handles[(i+1)%nb_vertices], v_handles[(i+2)%nb_vertices], v_handles[(i+3)%nb_vertices]);
 
         //bouts du cylindre
-        mesh.add_face(v_handles[0], v_handles[(i+2)%nb_vertices], v_handles[(i+4)%nb_vertices]);
-        mesh.add_face(v_handles[1], v_handles[(i+1)%nb_vertices], v_handles[(i+3)%nb_vertices]);
+        if ((i+2)%nb_vertices != 0 && (i+4)%nb_vertices != 0)
+            mesh.add_face(v_handles[0], v_handles[(i+4)%nb_vertices], v_handles[(i+2)%nb_vertices]);
+        if ((i+1)%nb_vertices != 1 && (i+3)%nb_vertices != 1)
+            mesh.add_face(v_handles[1], v_handles[(i+1)%nb_vertices], v_handles[(i+3)%nb_vertices]);
     }
 }
 

@@ -21,11 +21,7 @@ void Screw::render() {
     for (face_descriptor& face : mesh.faces()) {
         CGAL::Vertex_around_face_iterator<Mesh_CGAL> vbegin, vend;
         for(boost::tie(vbegin, vend) = vertices_around_face(mesh.halfedge(face), mesh) ; vbegin != vend ; ++vbegin) {
-            /*if (SM::is_border(*vbegin, false)) {
-                qDebug() << "HALFEDGE IS BORDER";
-            }*/
             P3 p = mesh.point(*vbegin);
-            //qDebug() << "Coords : " << p[0] << " ; " << p[1] << " ; " << p[2];
             gl_data.push_back(CGAL::to_double(p[0]));gl_data.push_back(CGAL::to_double(p[1]));gl_data.push_back(CGAL::to_double(p[2]));
             gl_data.push_back(147); gl_data.push_back(47); gl_data.push_back(247);
             ++nb_vertices_gl_faces;
