@@ -54,6 +54,7 @@ private:
 
     QOpenGLShaderProgram *program_simple_color;
     QOpenGLShaderProgram *program_texture;
+    QOpenGLBuffer vbo_axes;
     QOpenGLBuffer vbo_sol;
     QOpenGLBuffer vbo_screw;
     QOpenGLTexture *textures[1];
@@ -65,6 +66,7 @@ private:
 
     void makeGLObjects();
     void tearGLObjects();
+    void render_shape_color(QOpenGLBuffer& vbo, QMatrix4x4& projectionMatrix, QMatrix4x4& viewMatrix, int nb_vert_faces, int nb_vert_lines);
 };
 
 #endif // GLAREA_H

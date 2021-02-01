@@ -8,8 +8,8 @@ class Sphere : public Shape3D
 public:
 
     float radius;
-    float stack_count;
-    float sector_count;
+    int stack_count;
+    int sector_count;
     QVector<int> indices;
 
     Sphere();

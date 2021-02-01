@@ -43,11 +43,18 @@ GLArea::GLArea(QWidget *parent) :
     shapes.push_back(new Sphere(3,10,10, V3(10,10,10)));
     shapes.push_back(new Cuboid(2,8,5, V3(-10, -10, -10)));
 
+    shapes.push_back(new Cylinder(5,10,20, V3(25,5,0), V3(0, 0, 0)));
+    shapes.push_back(new Cylinder(15,2,6, V3(25,10.5,0), V3(0, 0, 0)));
+
+
     std::vector<Shape3D*> cyls_screw;
     cyls_screw.push_back(new Cylinder(5,10,20, V3(0,5,0), V3(PI/2, PI/2, 0)));
     cyls_screw.push_back(new Cylinder(15,2,6, V3(0,10.5,0), V3(PI/2, PI/2, 0)));
+    cyls_screw.push_back(new Cylinder(10,3,8, V3(0,4,0), V3(PI/2, PI/2, 0)));
+
     std::vector<Bool_op> ops;
     ops.push_back(UNION);
+    ops.push_back(DIFFERENCE);
 
     screw = Screw(cyls_screw, ops);
 }
@@ -121,10 +128,8 @@ void GLArea::makeGLObjects()
 
     QVector<GLfloat> vertData_sol;
     for (int i = 0; i < 6; ++i) {
-        // coordonnées sommets
         for (int j = 0; j < 3; j++)
             vertData_sol.append(vertices_sol[i*3+j]);
-        // coordonnées texture
         for (int j = 0; j < 2; j++)
             vertData_sol.append(texCoords_sol[i*2+j]);
     }
@@ -133,9 +138,19 @@ void GLArea::makeGLObjects()
     vbo_sol.bind();
     vbo_sol.allocate(vertData_sol.constData(), vertData_sol.count() * int(sizeof(GLfloat)));
 
+    QVector<GLdouble> vertData_axes;
+    vertData_axes.append(0); vertData_axes.append(10); vertData_axes.append(0); vertData_axes.append(255); vertData_axes.append(0); vertData_axes.append(0);
+    vertData_axes.append(5); vertData_axes.append(10); vertData_axes.append(0); vertData_axes.append(255); vertData_axes.append(0); vertData_axes.append(0);
+    vertData_axes.append(0); vertData_axes.append(10); vertData_axes.append(0); vertData_axes.append(0); vertData_axes.append(255); vertData_axes.append(0);
+    vertData_axes.append(0); vertData_axes.append(15); vertData_axes.append(0); vertData_axes.append(0); vertData_axes.append(255); vertData_axes.append(0);
+    vertData_axes.append(0); vertData_axes.append(10); vertData_axes.append(0); vertData_axes.append(0); vertData_axes.append(0); vertData_axes.append(255);
+    vertData_axes.append(0); vertData_axes.append(10); vertData_axes.append(5); vertData_axes.append(0); vertData_axes.append(0); vertData_axes.append(255);
+
+    vbo_axes.create();
+    vbo_axes.bind();
+    vbo_axes.allocate(vertData_axes.constData(), vertData_axes.count() * int(sizeof(GLdouble)));
 
     for (unsigned i = 0 ; i < shapes.size() ; ++i) {
-
         shapes[i]->render();
         QOpenGLBuffer vbo;
         vbo.create();
@@ -145,8 +160,8 @@ void GLArea::makeGLObjects()
     }
 
     screw.render();
-    qDebug() << screw.nb_vertices_gl_faces;
-    qDebug() << screw.nb_vertices_gl_lines;
+    qDebug() << "NB FACES OBJET : " << screw.nb_vertices_gl_faces;
+    qDebug() << "NB LIGNES OBJET : " << screw.nb_vertices_gl_lines;
     vbo_screw.create();
     vbo_screw.bind();
     vbo_screw.allocate(screw.gl_data.constData(), screw.gl_data.count() * int(sizeof(GLdouble)));
@@ -172,6 +187,29 @@ void GLArea::resizeGL(int w, int h)
 {
     glViewport(0, 0, w, h);
     windowRatio = float(w) / h;
+}
+
+void GLArea::render_shape_color(QOpenGLBuffer& vbo, QMatrix4x4& projectionMatrix, QMatrix4x4& viewMatrix, int nb_vert_faces, int nb_vert_lines) {
+    vbo.bind();
+    program_simple_color->bind();
+    QMatrix4x4 modelMatrix;
+    modelMatrix.setToIdentity();
+    program_simple_color->setUniformValue("projectionMatrix", projectionMatrix);
+    program_simple_color->setUniformValue("viewMatrix", viewMatrix);
+    program_simple_color->setUniformValue("modelMatrix", modelMatrix);
+
+    program_simple_color->setAttributeBuffer("in_position", GL_DOUBLE, 0, 3, 6 * sizeof(GLdouble));
+    program_simple_color->setAttributeBuffer("in_color", GL_DOUBLE, 3 * sizeof(GLdouble), 3, 6 * sizeof(GLdouble));
+    program_simple_color->enableAttributeArray("in_position");
+    program_simple_color->enableAttributeArray("in_color");
+
+    glDrawArrays(GL_TRIANGLES, 0, nb_vert_faces);
+    if (nb_vert_lines != 0)
+        glDrawArrays(GL_LINES, nb_vert_faces, nb_vert_faces + nb_vert_lines);
+
+    program_simple_color->disableAttributeArray("in_position");
+    program_simple_color->disableAttributeArray("in_color");
+    program_simple_color->release();
 }
 
 
@@ -213,50 +251,16 @@ void GLArea::paintGL()
     program_texture->disableAttributeArray("in_uv");
     program_texture->release();
 
+    //Axes
+    render_shape_color(vbo_axes, projectionMatrix, viewMatrix, 0, 6);
+
     //Shapes de test
     for (unsigned i = 0 ; i < shapes.size() ; ++i) {
-        vbos[i].bind();
-        program_simple_color->bind();
-        QMatrix4x4 modelMatrix;
-        modelMatrix.setToIdentity();
-        program_simple_color->setUniformValue("projectionMatrix", projectionMatrix);
-        program_simple_color->setUniformValue("viewMatrix", viewMatrix);
-        program_simple_color->setUniformValue("modelMatrix", modelMatrix);
-
-        program_simple_color->setAttributeBuffer("in_position", GL_DOUBLE, 0, 3, 6 * sizeof(GLdouble));
-        program_simple_color->setAttributeBuffer("in_color", GL_DOUBLE, 3 * sizeof(GLdouble), 3, 6 * sizeof(GLdouble));
-        program_simple_color->enableAttributeArray("in_position");
-        program_simple_color->enableAttributeArray("in_color");
-
-        glDrawArrays(GL_TRIANGLES, 0, shapes[i]->nb_vertices_gl_faces);
-        glDrawArrays(GL_LINES, shapes[i]->nb_vertices_gl_faces, shapes[i]->nb_vertices_gl_faces + shapes[i]->nb_vertices_gl_lines);
-
-        program_simple_color->disableAttributeArray("in_position");
-        program_simple_color->disableAttributeArray("in_color");
-        program_simple_color->release();
+        render_shape_color(vbos[i], projectionMatrix, viewMatrix, shapes[i]->nb_vertices_gl_faces, shapes[i]->nb_vertices_gl_lines);
     }
 
     //Screw
-    vbo_screw.bind();
-    program_simple_color->bind();
-    QMatrix4x4 modelMatrix;
-    modelMatrix.setToIdentity();
-    program_simple_color->setUniformValue("projectionMatrix", projectionMatrix);
-    program_simple_color->setUniformValue("viewMatrix", viewMatrix);
-    program_simple_color->setUniformValue("modelMatrix", modelMatrix);
-
-    program_simple_color->setAttributeBuffer("in_position", GL_DOUBLE, 0, 3, 6 * sizeof(GLdouble));
-    program_simple_color->setAttributeBuffer("in_color", GL_DOUBLE, 3 * sizeof(GLdouble), 3, 6 * sizeof(GLdouble));
-    program_simple_color->enableAttributeArray("in_position");
-    program_simple_color->enableAttributeArray("in_color");
-
-    glDrawArrays(GL_TRIANGLES, 0, screw.nb_vertices_gl_faces);
-    glDrawArrays(GL_LINES, screw.nb_vertices_gl_faces, screw.nb_vertices_gl_faces + screw.nb_vertices_gl_lines);
-
-    program_simple_color->disableAttributeArray("in_position");
-    program_simple_color->disableAttributeArray("in_color");
-    program_simple_color->release();
-
+    render_shape_color(vbo_screw, projectionMatrix, viewMatrix, screw.nb_vertices_gl_faces, screw.nb_vertices_gl_lines);
 }
 
 
@@ -312,7 +316,7 @@ void GLArea::mousePressEvent(QMouseEvent *ev)
 
 void GLArea::mouseReleaseEvent(QMouseEvent *ev)
 {
-    qDebug() << __FUNCTION__ << ev->x() << ev->y() << ev->button();
+    ev = nullptr;
 }
 
 
