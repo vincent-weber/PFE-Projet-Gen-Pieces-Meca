@@ -4,7 +4,7 @@ Cylinder::Cylinder()
 {
 }
 
-Cylinder::Cylinder(float rad, float diam, float prec, V3 c, V3 rot) : radius(rad), diameter(diam), precision(prec) {
+Cylinder::Cylinder(float rad, float diam, float prec, V3 c, V3 rot) : radius(rad), length(diam), precision(prec) {
     center = c;
     rotation = rot;
     create_vertices();
@@ -18,10 +18,10 @@ void Cylinder::create_vertices() {
     for (int i = 0 ; i < precision ; ++i, angle += angle_offset) {
         float x = cos(angle) * radius;
         float y = sin(angle) * radius;
-        P3 p1(x,y, -diameter/2);
+        P3 p1(x,y, -length/2);
         v_handles.push_back(mesh.add_vertex(p1));
 
-        P3 p2(x,y, diameter/2);
+        P3 p2(x,y, length/2);
         v_handles.push_back(mesh.add_vertex(p2));
     }
 }
@@ -54,30 +54,31 @@ void Cylinder::render() {
         auto pi3 = mesh.point(v_handles[(i+3)%nb_vertices]);
         auto pi4 = mesh.point(v_handles[(i+4)%nb_vertices]);
 
-        gl_data.push_back(pi1[0]);   gl_data.push_back(pi1[1]);   gl_data.push_back(pi1[2]); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
-        gl_data.push_back(pi0[0]);   gl_data.push_back(pi0[1]);   gl_data.push_back(pi0[2]); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
-        gl_data.push_back(pi2[0]);   gl_data.push_back(pi2[1]);   gl_data.push_back(pi2[2]); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
+        gl_data.push_back(CGAL::to_double(pi1[0]));   gl_data.push_back(CGAL::to_double(pi1[1]));   gl_data.push_back(CGAL::to_double(pi1[2])); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
+        gl_data.push_back(CGAL::to_double(pi0[0]));   gl_data.push_back(CGAL::to_double(pi0[1]));   gl_data.push_back(CGAL::to_double(pi0[2])); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
+        gl_data.push_back(CGAL::to_double(pi2[0]));   gl_data.push_back(CGAL::to_double(pi2[1]));   gl_data.push_back(CGAL::to_double(pi2[2])); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
 
-        gl_data.push_back(pi3[0]);   gl_data.push_back(pi3[1]);   gl_data.push_back(pi3[2]); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
-        gl_data.push_back(pi1[0]);   gl_data.push_back(pi1[1]);   gl_data.push_back(pi1[2]); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
-        gl_data.push_back(pi2[0]);   gl_data.push_back(pi2[1]);   gl_data.push_back(pi2[2]); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
+        gl_data.push_back(CGAL::to_double(pi3[0]));   gl_data.push_back(CGAL::to_double(pi3[1]));   gl_data.push_back(CGAL::to_double(pi3[2])); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
+        gl_data.push_back(CGAL::to_double(pi1[0]));   gl_data.push_back(CGAL::to_double(pi1[1]));   gl_data.push_back(CGAL::to_double(pi1[2])); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
+        gl_data.push_back(CGAL::to_double(pi2[0]));   gl_data.push_back(CGAL::to_double(pi2[1]));   gl_data.push_back(CGAL::to_double(pi2[2])); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
 
-        gl_data.push_back(pi2[0]);   gl_data.push_back(pi2[1]);   gl_data.push_back(pi2[2]); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
-        gl_data.push_back(p0[0]);    gl_data.push_back(p0[1]);    gl_data.push_back(p0[2]); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
-        gl_data.push_back(pi4[0]);   gl_data.push_back(pi4[1]);   gl_data.push_back(pi4[2]); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
+        gl_data.push_back(CGAL::to_double(pi2[0]));   gl_data.push_back(CGAL::to_double(pi2[1]));   gl_data.push_back(CGAL::to_double(pi2[2])); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
+        gl_data.push_back(CGAL::to_double(p0[0]));    gl_data.push_back(CGAL::to_double(p0[1]));    gl_data.push_back(CGAL::to_double(p0[2])); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
+        gl_data.push_back(CGAL::to_double(pi4[0]));   gl_data.push_back(CGAL::to_double(pi4[1]));   gl_data.push_back(CGAL::to_double(pi4[2])); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
 
-        gl_data.push_back(p1[0]);    gl_data.push_back(p1[1]);    gl_data.push_back(p1[2]); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
-        gl_data.push_back(pi1[0]);   gl_data.push_back(pi1[1]);   gl_data.push_back(pi1[2]); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
-        gl_data.push_back(pi3[0]);   gl_data.push_back(pi3[1]);   gl_data.push_back(pi3[2]); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
+        gl_data.push_back(CGAL::to_double(p1[0]));    gl_data.push_back(CGAL::to_double(p1[1]));    gl_data.push_back(CGAL::to_double(p1[2])); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
+        gl_data.push_back(CGAL::to_double(pi1[0]));   gl_data.push_back(CGAL::to_double(pi1[1]));   gl_data.push_back(CGAL::to_double(pi1[2])); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
+        gl_data.push_back(CGAL::to_double(pi3[0]));   gl_data.push_back(CGAL::to_double(pi3[1]));   gl_data.push_back(CGAL::to_double(pi3[2])); gl_data.push_back(0); gl_data.push_back(255); gl_data.push_back(255);
     }
+
     nb_vertices_gl_faces = 12 * precision;
 
 
     for (edge_descriptor ed : mesh.edges()) {
         P3 p1 = mesh.point(mesh.vertex(ed, 0));
-        gl_data.push_back(p1[0]);gl_data.push_back(p1[1]);gl_data.push_back(p1[2]); gl_data.push_back(0); gl_data.push_back(0); gl_data.push_back(0);
+        gl_data.push_back(CGAL::to_double(p1[0]));gl_data.push_back(CGAL::to_double(p1[1]));gl_data.push_back(CGAL::to_double(p1[2])); gl_data.push_back(0); gl_data.push_back(0); gl_data.push_back(0);
         P3 p2 = mesh.point(mesh.vertex(ed, 1));
-        gl_data.push_back(p2[0]);gl_data.push_back(p2[1]);gl_data.push_back(p2[2]); gl_data.push_back(0); gl_data.push_back(0); gl_data.push_back(0);
+        gl_data.push_back(CGAL::to_double(p2[0]));gl_data.push_back(CGAL::to_double(p2[1]));gl_data.push_back(CGAL::to_double(p2[2])); gl_data.push_back(0); gl_data.push_back(0); gl_data.push_back(0);
         nb_vertices_gl_lines += 2;
     }
 }

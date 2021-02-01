@@ -18,6 +18,7 @@
 #include "cuboid.h"
 #include "grammar.h"
 #include "parser.h"
+#include "screw.h"
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions
@@ -54,10 +55,13 @@ private:
     QOpenGLShaderProgram *program_simple_color;
     QOpenGLShaderProgram *program_texture;
     QOpenGLBuffer vbo_sol;
+    QOpenGLBuffer vbo_screw;
     QOpenGLTexture *textures[1];
 
     std::vector<QOpenGLBuffer> vbos;
     std::vector<Shape3D*> shapes;
+
+    Screw screw;
 
     void makeGLObjects();
     void tearGLObjects();
