@@ -1,5 +1,6 @@
 #include "grammar.h"
 #include <QDebug>
+#include <random>
 
 Grammar::Grammar(QString axiom)
 {
@@ -18,8 +19,22 @@ void Grammar::createScrewRules(){
     addRule(QString("V"), QString("T+B"));
     QVector3D rot(PI/2,PI/2,0); QVector3D c(0, 10, 0);
 
-    createCyl("T", QVector3D(5,2,20), c, rot);
-    createCyl("B", QVector3D(2,7,20), c, rot);
+    std::random_device rd;
+    std::uniform_int_distribution<int> distForm{1, 10};
+
+
+    int form = distForm(rd);
+
+    if(form){
+        int distRad = std::uniform_int_distribution<int>{2, 7}(rd);
+        int distL = std::uniform_int_distribution<int>{2, 3}(rd);
+        int distPrec = std::uniform_int_distribution<int>{5, 15}(rd);
+        createCyl("T", QVector3D(distRad, distL, distPrec), c, rot);
+        int distRad2 = std::uniform_int_distribution<int>{1, distRad-2}(rd);
+        distL = std::uniform_int_distribution<int>{3, 6}(rd);
+        createCyl("B", QVector3D(distRad2,distL,20), c, rot);
+    }
+
 }
 
 //Cylinder : float rad, float l, float prec, V3 c, V3 rot
