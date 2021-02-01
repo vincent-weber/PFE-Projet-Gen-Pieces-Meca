@@ -1,10 +1,6 @@
 #include "grammar.h"
 #include <QDebug>
 
-//A la relecture QString::number(sentence.at(0).unicode(), 10); Pour avoir le code ASCII d'un caractere.
-// cyl --> c = 67, y = 89 , l = 76 ---> cyl = 67 + 89 + 76 = 232. Si 232 alors on créé un cylindre.
-//Chaque objet est représenté par 3 caractere dans la grammaire.
-
 Grammar::Grammar(QString axiom)
 {
     this->axiom = axiom;
@@ -20,18 +16,24 @@ void Grammar::addRule(QString in, QString out){
 void Grammar::createScrewRules(){
     addRule(QString(axiom), QString("V"));
     addRule(QString("V"), QString("T+B"));
-    QVector3D rot(0,0,0);
-    createCyl("T", QVector3D(0,0,0), rot); createCyl("B", QVector3D(0,0,prev_l), rot);
+    QVector3D rot(PI/2,PI/2,0); QVector3D c(0, 10, 0);
+
+    createCyl("T", QVector3D(5,2,20), c, rot);
+    createCyl("B", QVector3D(2,7,20), c, rot);
 }
 
 //Cylinder : float rad, float l, float prec, V3 c, V3 rot
-void Grammar::createCyl(QString in, QVector3D c, QVector3D rot){
-    float rad(1), l(5), prec(.5);
+void Grammar::createCyl(QString in, QVector3D param, QVector3D c, QVector3D rot){
 
-    if(!isFirst()) c[2] += l/2;
-    prev_l = l;
+    qDebug() << c;
+    if(!isFirst()) {
+        c[1] -= prev_l/2 + param[1]/2;
+    }
+    if(isFirst()) prev_l = param[1];
 
-    QString out = "cyl(" + QString::number(rad) + "," + QString::number(l) + "," + QString::number(prec) + ")";
+
+
+    QString out = "cyl(" + QString::number(param[0]) + "," + QString::number(param[1]) + "," + QString::number(param[2]) + ")";
     out += "[cen(";
     for(int i = 0; i < 3; i++) {
         out += QString::number(c[i]);

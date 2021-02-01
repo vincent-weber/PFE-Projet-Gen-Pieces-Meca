@@ -3,6 +3,7 @@
 
 #include <QVector>
 #include <QVector3D>
+#include "util.h"
 
 class Grammar
 {
@@ -23,7 +24,7 @@ public:
 
     //Creation d'une vis
     void createScrewRules();
-    void createCyl(QString in, QVector3D c, QVector3D rot);
+    void createCyl(QString in, QVector3D param, QVector3D c, QVector3D rot);
     void createSphere(QString in, QVector3D c, QVector3D rot);
     void createCube(QString in, QVector3D c, QVector3D rot);
 };

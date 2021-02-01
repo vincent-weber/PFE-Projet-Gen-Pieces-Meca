@@ -25,10 +25,6 @@ GLArea::GLArea(QWidget *parent) :
     timer->start();
     elapsedTimer.start();
 
-    shapes.push_back(new Cylinder(5,10,20, V3(0,10,0), V3(PI/4, PI/4, 0)));
-    shapes.push_back(new Sphere(3,10,10, V3(10,10,10)));
-    shapes.push_back(new Cuboid(2,8,5, V3(-10, -10, -10)));
-
     Grammar gramtest("X");
     gramtest.createScrewRules();
     qDebug() << gramtest.rules;
@@ -39,6 +35,10 @@ GLArea::GLArea(QWidget *parent) :
 
     Parser parser(gramtest.sentence);
     parser.reader();
+
+    for(int i = 0; i < parser.cylinders.size(); i++){
+        shapes.push_back(parser.cylinders[i]);
+    }
 }
 
 

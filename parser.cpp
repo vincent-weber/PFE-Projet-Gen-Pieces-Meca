@@ -5,6 +5,7 @@ Parser::Parser(QString sentence){
 }
 
 //Mot possible cyl, cen, rot.
+//float rad, float diam, float prec, V3 c, V3 rot
 void Parser::reader(){
 
     int i = 0;
@@ -14,6 +15,10 @@ void Parser::reader(){
         if(sentence.at(i) == 'c' && sentence.at(i+1) == 'y'){
             QVector<QVector<float>> params = getCylinder(&i);
             qDebug() << "Cylindre :" << params[0] << ", de centre" << params[1] << ", avec une rotation de" << params[2];
+            Cylinder *cyl = new Cylinder(params[0][0], params[0][1], params[0][2],
+                                V3(params[1][0], params[1][1], params[1][2]),
+                                V3(params[2][0], params[2][1], params[2][2]));
+            cylinders.push_back(cyl);
         }
         i++;
     }
@@ -22,28 +27,31 @@ void Parser::reader(){
 QVector<QVector<float>> Parser::getCylinder(int *index){
 
     QVector<QVector<float>> params;
-    params.push_back(getParam(index)); params.push_back(getParam(index)); params.push_back(getParam(index));
+    params.push_back(getParam(index));
+    *index += 2;
+    params.push_back(getParam(index));
+    *index += 1;
+    params.push_back(getParam(index));
     return params;
 }
 
 QVector<float> Parser::getParam(int *index){
     *index += 4;
     QVector<float> param;
-    QChar cc = sentence.at(*index);
-    QString test = "";
+    QChar currChar = sentence.at(*index);
+    QString currParam = "";
 
     while(sentence.at(*index) != ')'){
-        cc = sentence.at(*index); *index += 1;
-        if(cc == ',') {
-            param.push_back(test.toFloat()); //1, 2
-            test = "";
+        currChar = sentence.at(*index);
+        *index += 1;
+        if(currChar == ',') {
+            param.push_back(currParam.toFloat()); //1, 2
+            currParam = "";
         }
         else {
-            test += cc;
+            currParam += currChar;
         }
     }
-    param.push_back(test.toFloat()); //3
-
-    *index += 2;
+    param.push_back(currParam.toFloat()); //3
     return param;
 }
