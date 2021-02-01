@@ -28,8 +28,8 @@ GLArea::GLArea(QWidget *parent) :
 
     /*shapes.push_back(new Cuboid(2,10,2, V3(15,5,0), V3(0, 0, 0)));
     shapes.push_back(new Cuboid(10,3,10, V3(15,7,0), V3(0, 0, 0)));*/
-    shapes.push_back(new Cylinder(5,10,20, V3(25,5,0), V3(PI/2, PI/2, 0)));
-    shapes.push_back(new Cylinder(15,2,6, V3(25,10.5,0), V3(PI/2, PI/2, 0)));
+    shapes.push_back(new Cylinder(5,10,20, V3(25,5,0), V3(0, 0, 0)));
+    shapes.push_back(new Cylinder(15,2,6, V3(25,10.5,0), V3(0, 0, 0)));
     /*shapes.push_back(new Sphere(5, 4, 4, V3(15,5,0), V3(0,0,0)));
     shapes.push_back(new Sphere(5, 15, 15, V3(15,8.5,0), V3(0,0,0)));*/
 
@@ -38,10 +38,13 @@ GLArea::GLArea(QWidget *parent) :
     cyls_screw.push_back(new Cuboid(10,3,10, V3(0,7,0), V3(0, 0, 0)));*/
     cyls_screw.push_back(new Cylinder(5,10,20, V3(0,5,0), V3(PI/2, PI/2, 0)));
     cyls_screw.push_back(new Cylinder(15,2,6, V3(0,10.5,0), V3(PI/2, PI/2, 0)));
+    cyls_screw.push_back(new Cylinder(10,3,8, V3(0,4,0), V3(PI/2, PI/2, 0)));
+
     /*cyls_screw.push_back(new Sphere(5, 4, 4, V3(0,5,0), V3(0,0,0)));
     cyls_screw.push_back(new Sphere(5, 15, 15, V3(0,8.5,0), V3(0,0,0)));*/
     std::vector<Bool_op> ops;
-    ops.push_back(INTERSECTION);
+    ops.push_back(UNION);
+    ops.push_back(DIFFERENCE);
 
     screw = Screw(cyls_screw, ops);
 }
@@ -147,8 +150,8 @@ void GLArea::makeGLObjects()
     }
 
     screw.render();
-    qDebug() << screw.nb_vertices_gl_faces;
-    qDebug() << screw.nb_vertices_gl_lines;
+    qDebug() << "NB FACES OBJET : " << screw.nb_vertices_gl_faces;
+    qDebug() << "NB LIGNES OBJET : " << screw.nb_vertices_gl_lines;
     vbo_screw.create();
     vbo_screw.bind();
     vbo_screw.allocate(screw.gl_data.constData(), screw.gl_data.count() * int(sizeof(GLdouble)));
