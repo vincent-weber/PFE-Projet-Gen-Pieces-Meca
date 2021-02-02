@@ -16,37 +16,55 @@ void Grammar::addRule(QString in, QString out){
 
 void Grammar::createScrewRules(){
     addRule(QString(axiom), QString("V"));
-    addRule(QString("V"), QString("T+B"));
-    QVector3D rot(PI/2,PI/2,0); QVector3D c(0, 10, 0);
 
     std::random_device rd;
     std::uniform_int_distribution<int> distForm{1, 10};
-
-
     int form = distForm(rd);
 
-    if(form){
-        int distRad = std::uniform_int_distribution<int>{2, 7}(rd);
-        int distL = std::uniform_int_distribution<int>{2, 3}(rd);
-        int distPrec = std::uniform_int_distribution<int>{5, 15}(rd);
-        createCyl("T", QVector3D(distRad, distL, distPrec), c, rot);
-        int distRad2 = std::uniform_int_distribution<int>{1, distRad-2}(rd);
-        distL = std::uniform_int_distribution<int>{3, 6}(rd);
-        createCyl("B", QVector3D(distRad2,distL,20), c, rot);
+    if(form < 5) {
+        addRule(QString("V"), QString("S+T+B"));
+    } else {
+        addRule(QString("V"), QString("T+B"));
     }
+
+    QVector3D rot(PI/2,PI/2,0); QVector3D c(0, 10, 0);
+
+
+
+
+
+    int distRad = std::uniform_int_distribution<int>{2, 7}(rd);
+    int distL = std::uniform_int_distribution<int>{2, 3}(rd);
+    int distPrec = std::uniform_int_distribution<int>{5, 15}(rd);
+    int distRad2 = std::uniform_int_distribution<int>{1, distRad-2}(rd);
+    distL = std::uniform_int_distribution<int>{3, 6}(rd);
+    qDebug() << "FORM" << form;
+
+
+
+    createCyl("T", QVector3D(distRad, distL, distPrec), c, rot);
+    if(form < 5) {
+        c[1] += distL;
+        createSphere("S", QVector3D(distRad2, distL, distPrec), c, rot);
+        c[1] -= distL;
+    }
+    createCyl("B", QVector3D(distRad2,distL,20), c, rot);
+
+
+
 
 }
 
 //Cylinder : float rad, float l, float prec, V3 c, V3 rot
 void Grammar::createCyl(QString in, QVector3D param, QVector3D c, QVector3D rot){
 
-    qDebug() << c;
     if(!isFirst()) {
         c[1] -= prev_l/2 + param[1]/2;
+        prev_l += param[1];
     }
-    if(isFirst()) prev_l = param[1];
-
-
+    if(isFirst()) {
+        prev_l = param[1];
+    }
 
     QString out = "cyl(" + QString::number(param[0]) + "," + QString::number(param[1]) + "," + QString::number(param[2]) + ")";
     out += "[cen(";
@@ -67,10 +85,9 @@ void Grammar::createCyl(QString in, QVector3D param, QVector3D c, QVector3D rot)
 }
 
 //Cuboid : float l, float w, float h, V3 c, V3 rot
-void Grammar::createCube(QString in, QVector3D c, QVector3D rot){
-    float l(.0), w(.0), h(.0);
+void Grammar::createCube(QString in, QVector3D param, QVector3D c, QVector3D rot){
 
-    QString out = "cub(" + QString::number(l) + "," + QString::number(w) + "," + QString::number(h) + ")";
+    QString out = "cub(" + QString::number(param[0]) + "," + QString::number(param[1]) + "," + QString::number(param[2]) + ")";
     out += "[cen(";
     for(int i = 0; i < 3; i++) {
         out += QString::number(c[i]);
@@ -89,10 +106,17 @@ void Grammar::createCube(QString in, QVector3D c, QVector3D rot){
 }
 
 //Sphere : float rad, float stack_c, float sector_c, V3 c, V3 rot
-void Grammar::createSphere(QString in, QVector3D c, QVector3D rot){
-    float rad(.0), stack(.0), sector(.0);
+void Grammar::createSphere(QString in, QVector3D param, QVector3D c, QVector3D rot){
 
-    QString out = "sph(" + QString::number(rad) + QString::number(stack) + QString::number(sector) + ")";
+    if(!isFirst()) {
+        c[1] -= prev_l/2 + param[0]/2;
+        prev_l += param[0];
+    }
+    if(isFirst()) {
+        prev_l = param[0];
+    }
+
+    QString out = "sph(" + QString::number(param[0]) + "," + QString::number(param[1]) + "," + QString::number(param[2]) + ")";
     out += "[cen(";
     for(int i = 0; i < 3; i++) {
         out += QString::number(c[i]);

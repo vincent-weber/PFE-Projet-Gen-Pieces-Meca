@@ -36,9 +36,6 @@ GLArea::GLArea(QWidget *parent) :
     Parser parser(gramtest.sentence);
     parser.reader();
 
-    for(int i = 0; i < parser.cylinders.size(); i++){
-        shapes.push_back(parser.cylinders[i]);
-    }
 
 //    shapes.push_back(new Sphere(3,10,10, V3(10,10,10)));
 //    shapes.push_back(new Cuboid(2,8,5, V3(-10, -10, -10)));
@@ -56,7 +53,7 @@ GLArea::GLArea(QWidget *parent) :
 //    ops.push_back(UNION);
 //    ops.push_back(DIFFERENCE);
 
-//    screw = Screw(cyls_screw, ops);
+    screw = Screw(parser.cyls_screw, parser.ops);
 }
 
 
