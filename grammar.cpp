@@ -29,10 +29,6 @@ void Grammar::createScrewRules(){
 
     QVector3D rot(PI/2,PI/2,0); QVector3D c(0, 10, 0);
 
-
-
-
-
     int distRad = std::uniform_int_distribution<int>{2, 7}(rd);
     int distL = std::uniform_int_distribution<int>{2, 3}(rd);
     int distPrec = std::uniform_int_distribution<int>{5, 15}(rd);
@@ -41,18 +37,13 @@ void Grammar::createScrewRules(){
     distL = std::uniform_int_distribution<int>{3, 6}(rd);
     qDebug() << "FORM" << form;
 
-
-
     createCyl("T", QVector3D(distRad, distL, distPrec), c, rot);
     if(form < 5) {
         c[1] += distL;
         createSphere("S", QVector3D(distRad3, distL, 20), c, rot);
+        c[1] -= distL;
     }
     createCyl("B", QVector3D(distRad2,distL,20), c, rot);
-
-
-
-
 }
 
 //Cylinder : float rad, float l, float prec, V3 c, V3 rot

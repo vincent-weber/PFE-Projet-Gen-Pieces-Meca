@@ -7,7 +7,7 @@ Parser::Parser(QString sentence){
 //Mot possible cyl, cen, rot.
 //float rad, float diam, float prec, V3 c, V3 rot
 void Parser::reader(){
-
+    bool test = false;
     int i = 0;
     while(i < sentence.size()){
 

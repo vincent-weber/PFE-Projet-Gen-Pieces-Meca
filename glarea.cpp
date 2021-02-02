@@ -25,34 +25,25 @@ GLArea::GLArea(QWidget *parent) :
     timer->start();
     elapsedTimer.start();
 
-    Grammar gramtest("X");
-    gramtest.createScrewRules();
-    qDebug() << gramtest.rules;
-    qDebug() << gramtest.prev_l;
-    for(int i = 0; i < 3; i++){
-        gramtest.computeGrammar();
-    }
-
-    Parser parser(gramtest.sentence);
-    parser.reader();
 
 
-    shapes.push_back(new Sphere(5,10,20, V3(0,11.5,20), V3(PI/2, PI/2, 0)));
-    shapes.push_back(new Cylinder(7,4,15, V3(0,10,20), V3(PI/2, PI/2, 0)));
-    shapes.push_back(new Cylinder(5,4,20, V3(0,6.5,20), V3(PI/2, PI/2, 0)));
+
+//    shapes.push_back(new Sphere(5,10,20, V3(0,11.5,20), V3(PI/2, PI/2, 0)));
+//    shapes.push_back(new Cylinder(7,4,15, V3(0,10,20), V3(PI/2, PI/2, 0)));
+//    shapes.push_back(new Cylinder(5,4,20, V3(0,6.5,20), V3(PI/2, PI/2, 0)));
 
 //    shapes = parser.cyls_screw;
 
-    std::vector<Shape3D*> cyls_screw;
-    cyls_screw.push_back(new Sphere(5,10,20, V3(0,11.5,10), V3(PI/2, PI/2, 0)));
-    cyls_screw.push_back(new Cylinder(7,4,15, V3(0,10,10), V3(PI/2, PI/2, 0)));
-    cyls_screw.push_back(new Cylinder(5,4,20, V3(0,6.5,10), V3(PI/2, PI/2, 0)));
+//    std::vector<Shape3D*> cyls_screw;
+//    cyls_screw.push_back(new Sphere(5,10,20, V3(0,11.5,10), V3(PI/2, PI/2, 0)));
+//    cyls_screw.push_back(new Cuboid(2,4,3, V3(0,10,10), V3(PI/2, PI/2, 0)));
+//    cyls_screw.push_back(new Cylinder(5,4,20, V3(0,6.5,10), V3(PI/2, PI/2, 0)));
 
-    std::vector<Bool_op> ops;
-    ops.push_back(UNION);
-    ops.push_back(UNION);
+//    std::vector<Bool_op> ops;
+//    ops.push_back(UNION);
+//    ops.push_back(UNION);
 
-    screw = Screw(cyls_screw, ops);
+//    screw = Screw(parser.cyls_screw, parser.ops);
 }
 
 
@@ -101,6 +92,7 @@ void GLArea::initializeGL()
 
 void GLArea::makeGLObjects()
 {
+    qDebug() << __FUNCTION__;
     // Création du sol
     float tailleSol = 20.0f;
 
@@ -351,4 +343,18 @@ void GLArea::onTimeout()
 
 
     update();
+}
+
+void GLArea::runGram(){
+    Grammar gramtest("X");
+    gramtest.createScrewRules();
+    for(int i = 0; i < 3; i++){
+        gramtest.computeGrammar();
+    }
+    Parser parser(gramtest.sentence);
+    parser.reader();
+
+    screw = Screw(parser.cyls_screw, parser.ops);
+
+    makeGLObjects();
 }

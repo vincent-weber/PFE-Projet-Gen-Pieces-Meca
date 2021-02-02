@@ -31,6 +31,7 @@ public:
 
 protected slots:
     void onTimeout();
+    void runGram();
 
 protected:
     void initializeGL() override;

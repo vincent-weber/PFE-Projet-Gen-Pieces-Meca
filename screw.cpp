@@ -7,7 +7,7 @@ Screw::Screw(std::vector<Shape3D*> shapes, std::vector<Bool_op> op_bool) : shape
     mesh = shapes[0]->mesh;
     for (unsigned i = 1 ; i < shapes.size() ; ++i) {
         bool res = compute_boolean_operation(&mesh, &shapes[i]->mesh, &mesh, op_bool[i-1]);
-
+        qDebug() << op_bool[i-1];
         if (res) {
             qDebug() << "Op OK";
         }
