@@ -345,9 +345,17 @@ void GLArea::onTimeout()
 void GLArea::runGram(){
     Grammar gramtest("X");
     gramtest.createScrewRules();
+
+    qDebug() << gramtest.rulesH.value("T");
+    qDebug() << gramtest.rulesH.value("B");
+    qDebug() << gramtest.rulesH.value("S");
+
     for(int i = 0; i < 3; i++){
         gramtest.computeGrammar();
     }
+
+    qDebug() << gramtest.sentence;
+
     Parser parser(gramtest.sentence);
     parser.reader();
 

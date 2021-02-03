@@ -1,7 +1,5 @@
 #include "grammar.h"
 #include <QDebug>
-#include <random>
-
 Grammar::Grammar(QString axiom)
 {
     this->axiom = axiom;
@@ -9,49 +7,48 @@ Grammar::Grammar(QString axiom)
 }
 
 void Grammar::addRule(QString in, QString out){
-    QVector<QString> rule;
-    rule.push_back(in); rule.push_back(out);
-    rules.push_back(rule);
+    rulesH[in].push_back(out);
 }
 
 void Grammar::createScrewRules(){
-    addRule(QString(axiom), QString("V"));
+    addRule(axiom, "V");
+    addRule("V", "S+T+B");
+    addRule("V", "T+B");
 
-    std::random_device rd;
-    std::uniform_int_distribution<int> distForm{1, 10};
-    int form = distForm(rd);
+    QVector3D rot(PI/2,PI/2,0);
 
-    if(form < 5) {
-        addRule(QString("V"), QString("S+T+B"));
-    } else {
-        addRule(QString("V"), QString("T+B"));
+    createSphere("S", createParam(SPHERE), *c, rot);
+    createCyl("T", createParam(CYLINDRE), *c, rot);
+    createCyl("B", createParamB(), *c, rot);
+}
+
+QVector3D Grammar::createParamB(){
+    return QVector3D(std::uniform_int_distribution<int>{1,3}(rd),
+                std::uniform_int_distribution<int>{5,10}(rd),
+                20
+           );
+}
+
+QVector3D Grammar::createParam(TypeForm type){
+    if (type == CYLINDRE){
+        return QVector3D(std::uniform_int_distribution<int>{4,5}(rd),
+                    std::uniform_int_distribution<int>{2,3}(rd),
+                    std::uniform_int_distribution<int>{5, 20}(rd)
+               );
+    } else if (type == SPHERE){
+        return QVector3D(std::uniform_int_distribution<int>{1,3}(rd),
+                         20,
+                         20
+               );
     }
-
-    QVector3D rot(PI/2,PI/2,0); QVector3D c(0, 10, 0);
-
-    int distRad = std::uniform_int_distribution<int>{3, 7}(rd);
-    int distL = std::uniform_int_distribution<int>{2, 3}(rd);
-    int distPrec = std::uniform_int_distribution<int>{5, 15}(rd);
-    int distRad2 = std::uniform_int_distribution<int>{1, distRad-2}(rd);
-    int distRad3 = std::uniform_int_distribution<int>{1, 2}(rd);
-    distL = std::uniform_int_distribution<int>{3, 6}(rd);
-    qDebug() << "FORM" << form;
-
-    createCyl("T", QVector3D(distRad, distL, distPrec), c, rot);
-    if(form < 5) {
-        c[1] += distL;
-        createSphere("S", QVector3D(distRad3, distL, 20), c, rot);
-        c[1] -= distL/2;
-    }
-    createCyl("B", QVector3D(distRad2,distL,20), c, rot);
 }
 
 //Cylinder : float rad, float l, float prec, V3 c, V3 rot
 void Grammar::createCyl(QString in, QVector3D param, QVector3D c, QVector3D rot){
 
     if(!isFirst()) {
-        c[1] -= prev_l/2 + param[1]/2;
-        prev_l += param[1];
+        c[1] -= prev_l + param[1]/2;
+        prev_l = param[1];
     }
     if(isFirst()) {
         prev_l = param[1];
@@ -85,7 +82,7 @@ void Grammar::createCube(QString in, QVector3D param, QVector3D c, QVector3D rot
         if(i < 2) out += ",";
     }
     out += ")";
-    out += "[rot(";
+    out += "rot(";
     for(int i = 0; i < 3; i++) {
         out += QString::number(rot[i]);
         if(i < 2) out += ",";
@@ -100,8 +97,7 @@ void Grammar::createCube(QString in, QVector3D param, QVector3D c, QVector3D rot
 void Grammar::createSphere(QString in, QVector3D param, QVector3D c, QVector3D rot){
 
     if(!isFirst()) {
-        c[1] -= prev_l/2 + param[0]/2;
-        prev_l += param[0];
+        c[1] -= param[0];
     }
     if(isFirst()) {
         prev_l = param[0];
@@ -114,7 +110,7 @@ void Grammar::createSphere(QString in, QVector3D param, QVector3D c, QVector3D r
         if(i < 2) out += ",";
     }
     out += ")";
-    out += "[rot(";
+    out += "rot(";
     for(int i = 0; i < 3; i++) {
         out += QString::number(rot[i]);
         if(i < 2) out += ",";
@@ -127,23 +123,18 @@ void Grammar::createSphere(QString in, QVector3D param, QVector3D c, QVector3D r
 
 //Permet d'appliquer les regles existantes à la phrase courante.
 void Grammar::computeGrammar(){
-    QString newSentence = "";
+    int num;
 
     for(int i = 0; i < sentence.size(); i++){
-        bool found = false;
-        for(int j = 0; j < rules.size(); j++){
-            if(sentence.at(i) == rules[j][0]){
-                found = true;
-                for(int k = 0; k < rules[j][1].size(); k++){
-                    newSentence += rules[j][1].at(k);
-                }
-            }
+        if(rulesH.contains(sentence.at(i))){
+            qDebug() << "Taille :" << rulesH.value(sentence.at(i)).length();
+            if(rulesH.value(sentence.at(i)).length() > 0) {
+                num = std::uniform_int_distribution<int>{0, rulesH.value(sentence.at(i)).length()-1}(rd);
+            } else num = 0;
+            qDebug() << "INDEX ALEATOIRE" << num;
+            sentence.replace(QString(sentence.at(i)), rulesH.value(sentence.at(i))[num]);
         }
-        if(!found) newSentence += sentence.at(i);
     }
-
-    this->sentence = newSentence;
-    qDebug() << this->sentence;
 }
 
 bool Grammar::isFirst(){

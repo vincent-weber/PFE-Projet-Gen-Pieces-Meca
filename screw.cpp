@@ -23,7 +23,7 @@ void Screw::render() {
         for(boost::tie(vbegin, vend) = vertices_around_face(mesh.halfedge(face), mesh) ; vbegin != vend ; ++vbegin) {
             P3 p = mesh.point(*vbegin);
             gl_data.push_back(CGAL::to_double(p[0]));gl_data.push_back(CGAL::to_double(p[1]));gl_data.push_back(CGAL::to_double(p[2]));
-            gl_data.push_back(147); gl_data.push_back(47); gl_data.push_back(247);
+            gl_data.push_back(255); gl_data.push_back(0); gl_data.push_back(0);
             ++nb_vertices_gl_faces;
         }
     }
