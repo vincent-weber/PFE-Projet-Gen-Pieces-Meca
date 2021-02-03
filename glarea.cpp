@@ -339,9 +339,6 @@ void GLArea::onTimeout()
     qint64 chrono = elapsedTimer.elapsed();
     dt = (chrono - old_chrono) / 1000.0f;
     old_chrono = chrono;
-
-
-
     update();
 }
 
