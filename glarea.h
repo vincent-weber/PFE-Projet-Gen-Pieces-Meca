@@ -16,7 +16,7 @@
 #include "cylinder.h"
 #include "sphere.h"
 #include "cuboid.h"
-#include "screw.h"
+#include "mechanicalpart.h"
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions
@@ -60,7 +60,7 @@ private:
     std::vector<QOpenGLBuffer> vbos;
     std::vector<Shape3D*> shapes;
 
-    Screw screw;
+    MechanicalPart screw;
 
     void makeGLObjects();
     void tearGLObjects();

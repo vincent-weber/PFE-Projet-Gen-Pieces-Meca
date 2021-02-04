@@ -21,9 +21,9 @@ SOURCES += main.cpp\
         boolean_op.cpp \
         cuboid.cpp \
         cylinder.cpp \
+        mechanicalpart.cpp \
         princ.cpp \
         glarea.cpp \
-        screw.cpp \
         shape3d.cpp \
         sphere.cpp \
         util.cpp
@@ -34,7 +34,7 @@ HEADERS  += princ.h \
         cuboid.h \
         cylinder.h \
         glarea.h \
-        screw.h \
+        mechanicalpart.h \
         shape3d.h \
         sphere.h \
         util.h
