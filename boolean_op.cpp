@@ -11,8 +11,6 @@ bool compute_boolean_operation(Mesh_CGAL* in1, Mesh_CGAL* in2, Mesh_CGAL* out, B
     bool bound_volume_in2 = PMP::does_bound_a_volume(*in2);
     PMP::orient_to_bound_a_volume(*in1);
     PMP::orient_to_bound_a_volume(*in2);
-//    bool bound_volume_in3 = PMP::does_bound_a_volume(*in1);
-//    bool bound_volume_in4 = PMP::does_bound_a_volume(*in2);
 
     qDebug() << "IN1 VALID ? " << in1_valid;
     qDebug() << "IN2 VALID ? " << in2_valid;
@@ -20,10 +18,6 @@ bool compute_boolean_operation(Mesh_CGAL* in1, Mesh_CGAL* in2, Mesh_CGAL* out, B
     qDebug() << "SELF INTERSECT IN2 ? " << self_inter_in2;
     qDebug() << "BOUNDS A VOLUME IN1 AVANT ORIENT ? " << bound_volume_in1;
     qDebug() << "BOUNDS A VOLUME IN2 AVANT ORIENT ? " << bound_volume_in2;
-//    qDebug() << "BOUNDS A VOLUME IN1 APRES ORIENT ? " << bound_volume_in3;
-//    qDebug() << "BOUNDS A VOLUME IN2 APRES ORIENT ? " << bound_volume_in4;
-//    qDebug() << "NB VERT IN1 : " << in1->num_vertices();
-//    qDebug() << "NB VERT IN2 : " << in2->num_vertices();
 
     bool valid_op = false;
     switch(op_type) {

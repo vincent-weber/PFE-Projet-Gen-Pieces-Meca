@@ -7,7 +7,7 @@ MechanicalPart::MechanicalPart(std::vector<Shape3D*> shapes, std::vector<Bool_op
     mesh = shapes[0]->mesh;
     for (unsigned i = 1 ; i < shapes.size() ; ++i) {
         bool res = compute_boolean_operation(&mesh, &shapes[i]->mesh, &mesh, op_bool[i-1]);
-
+        qDebug() << op_bool[i-1];
         if (res) {
             qDebug() << "Op OK";
         }
@@ -23,7 +23,7 @@ void MechanicalPart::render() {
         for(boost::tie(vbegin, vend) = vertices_around_face(mesh.halfedge(face), mesh) ; vbegin != vend ; ++vbegin) {
             P3 p = mesh.point(*vbegin);
             gl_data.push_back(CGAL::to_double(p[0]));gl_data.push_back(CGAL::to_double(p[1]));gl_data.push_back(CGAL::to_double(p[2]));
-            gl_data.push_back(1); gl_data.push_back(247); gl_data.push_back(247);
+            gl_data.push_back(255); gl_data.push_back(0); gl_data.push_back(0);
             ++nb_vertices_gl_faces;
         }
     }

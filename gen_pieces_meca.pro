@@ -22,6 +22,8 @@ SOURCES += main.cpp\
         cuboid.cpp \
         cylinder.cpp \
         mechanicalpart.cpp \
+        grammar.cpp \
+        parser.cpp \
         princ.cpp \
         glarea.cpp \
         shape3d.cpp \
@@ -35,6 +37,8 @@ HEADERS  += princ.h \
         cylinder.h \
         glarea.h \
         mechanicalpart.h \
+        grammar.h \
+        parser.h \
         shape3d.h \
         sphere.h \
         util.h

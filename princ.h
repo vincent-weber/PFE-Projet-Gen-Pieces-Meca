@@ -12,6 +12,12 @@ class Princ : public QMainWindow, private Ui::Princ
 
 public:
     explicit Princ(QWidget *parent = nullptr);
+private slots:
+    void on_run_button_clicked();
+
+signals:
+    void run_grammar();
+
 };
 
 #endif // PRINC_H

@@ -18,6 +18,9 @@
 #include "cuboid.h"
 #include "mechanicalpart.h"
 
+#include "grammar.h"
+#include "parser.h"
+
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions
 {
@@ -29,6 +32,7 @@ public:
 
 protected slots:
     void onTimeout();
+    void runGram();
 
 protected:
     void initializeGL() override;

@@ -7,7 +7,6 @@
 
 #include "glarea.h"
 
-
 GLArea::GLArea(QWidget *parent) :
     QOpenGLWidget(parent)
 {
@@ -26,15 +25,6 @@ GLArea::GLArea(QWidget *parent) :
     timer->start();
     elapsedTimer.start();
 
-    std::vector<Shape3D*> cyls_screw;
-
-    cyls_screw.push_back(new Sphere(5, 4, 4, V3(0,5,0), V3(0,0,0)));
-    cyls_screw.push_back(new Sphere(5, 15, 15, V3(0,8.5,0), V3(0,0,0)));
-    std::vector<Bool_op> ops;
-    ops.push_back(UNION);
-    //ops.push_back(UNION);
-
-    screw = MechanicalPart(cyls_screw, ops);
 }
 
 
@@ -83,6 +73,7 @@ void GLArea::initializeGL()
 
 void GLArea::makeGLObjects()
 {
+    qDebug() << __FUNCTION__;
     // Création du sol
     float tailleSol = 20.0f;
 
@@ -138,8 +129,8 @@ void GLArea::makeGLObjects()
     }
 
     screw.render();
-    qDebug() << "NB FACES OBJET : " << screw.nb_vertices_gl_faces;
-    qDebug() << "NB LIGNES OBJET : " << screw.nb_vertices_gl_lines;
+//    qDebug() << "NB FACES OBJET : " << screw.nb_vertices_gl_faces;
+//    qDebug() << "NB LIGNES OBJET : " << screw.nb_vertices_gl_lines;
     vbo_screw.create();
     vbo_screw.bind();
     vbo_screw.allocate(screw.gl_data.constData(), screw.gl_data.count() * int(sizeof(GLdouble)));
@@ -180,6 +171,8 @@ void GLArea::render_shape_color(QOpenGLBuffer& vbo, QMatrix4x4& projectionMatrix
     program_simple_color->setAttributeBuffer("in_color", GL_DOUBLE, 3 * sizeof(GLdouble), 3, 6 * sizeof(GLdouble));
     program_simple_color->enableAttributeArray("in_position");
     program_simple_color->enableAttributeArray("in_color");
+
+//    qDebug() << nb_vert_faces << nb_vert_lines;
 
     glDrawArrays(GL_TRIANGLES, 0, nb_vert_faces);
     if (nb_vert_lines != 0)
@@ -327,8 +320,28 @@ void GLArea::onTimeout()
     qint64 chrono = elapsedTimer.elapsed();
     dt = (chrono - old_chrono) / 1000.0f;
     old_chrono = chrono;
-
-
-
     update();
+}
+
+void GLArea::runGram(){
+    Grammar gramtest("X");
+    gramtest.createNutRules();
+
+    qDebug() << gramtest.rulesH.value("T");
+    qDebug() << gramtest.rulesH.value("B");
+    qDebug() << gramtest.rulesH.value("S");
+
+    for(int i = 0; i < 3; i++){
+        gramtest.computeGrammar();
+    }
+
+    qDebug() << gramtest.sentence;
+
+    Parser parser(gramtest.sentence);
+    parser.reader();
+
+
+    screw = Screw(parser.cyls_screw, parser.ops);
+
+    makeGLObjects();
 }

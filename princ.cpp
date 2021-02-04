@@ -7,4 +7,11 @@
 Princ::Princ(QWidget *parent) : QMainWindow(parent)
 {
     setupUi(this);
+    connect(this, SIGNAL(run_grammar()), glarea, SLOT(runGram()));
+}
+
+void Princ::on_run_button_clicked()
+{
+    qDebug() << __FUNCTION__;
+    emit run_grammar();
 }
