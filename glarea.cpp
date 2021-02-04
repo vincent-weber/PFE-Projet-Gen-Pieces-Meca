@@ -25,6 +25,8 @@ GLArea::GLArea(QWidget *parent) :
     timer->start();
     elapsedTimer.start();
 
+    Generator::initRules();
+
 }
 
 
@@ -341,7 +343,7 @@ void GLArea::runGram(){
     parser.reader();
 
 
-    screw = Screw(parser.cyls_screw, parser.ops);
+    screw = MechanicalPart(parser.cyls_screw, parser.ops);
 
     makeGLObjects();
 }

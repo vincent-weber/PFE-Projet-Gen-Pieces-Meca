@@ -14,7 +14,7 @@ public:
 
     QString axiom;
     QString sentence = axiom;
-    QVector<QVector<QString>> rules;
+    //QVector<QVector<QString>> rules;
     QHash<QString, QVector<QString>> rulesH;
     QVector3D *c = new QVector3D(0, 10, 0);
     std::random_device rd;

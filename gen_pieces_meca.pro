@@ -21,11 +21,13 @@ SOURCES += main.cpp\
         boolean_op.cpp \
         cuboid.cpp \
         cylinder.cpp \
-        mechanicalpart.cpp \
+        generator.cpp \
         grammar.cpp \
+        mechanicalpart.cpp \
         parser.cpp \
         princ.cpp \
         glarea.cpp \
+        screwgenerator.cpp \
         shape3d.cpp \
         sphere.cpp \
         util.cpp
@@ -35,10 +37,12 @@ HEADERS  += princ.h \
         boolean_op.h \
         cuboid.h \
         cylinder.h \
+        generator.h \
         glarea.h \
-        mechanicalpart.h \
         grammar.h \
+        mechanicalpart.h \
         parser.h \
+        screwgenerator.h \
         shape3d.h \
         sphere.h \
         util.h

@@ -20,6 +20,7 @@
 
 #include "grammar.h"
 #include "parser.h"
+#include "generator.h"
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions
