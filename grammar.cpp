@@ -12,14 +12,14 @@ void Grammar::addRule(QString in, QString out){
 
 void Grammar::createScrewRules(){
     addRule(axiom, "V");
-    addRule("V", "S+T+B");
     addRule("V", "T+B");
 
     QVector3D rot(PI/2,PI/2,0);
 
-    createSphere("S", createParam(SPHERE), *c, rot);
-    createCyl("T", createParam(CYLINDRE), *c, rot);
-    createCyl("B", createParamB(), *c, rot);
+    createCyl("T", createParam(CYLINDRE), c, rot);
+    QVector3D paramB = createParamB();
+    c->setY(c->y() - (prev_l/2 + paramB[1]/2));
+    createCyl("B", paramB, c, rot);
 }
 
 QVector3D Grammar::createParamB(){
@@ -43,23 +43,25 @@ QVector3D Grammar::createParam(TypeForm type){
     }
 }
 
-//Cylinder : float rad, float l, float prec, V3 c, V3 rot
-void Grammar::createCyl(QString in, QVector3D param, QVector3D c, QVector3D rot){
+void Grammar::createNutRules(){
+    addRule(axiom, "N");
+    addRule("N", "C-T");
 
-    if(!isFirst()) {
-        c[1] -= prev_l + param[1]/2;
-        prev_l = param[1];
-    }
-    if(isFirst()) {
-        prev_l = param[1];
-    }
+    QVector3D rot(PI/2, PI/2, 0);
+    createCyl("C", createParam(CYLINDRE), c, rot);
+    createCyl("T", createParamB(), c, rot);
+}
+
+//Cylinder : float rad, float l, float prec, V3 c, V3 rot
+void Grammar::createCyl(QString in, QVector3D param, QVector3D *c, QVector3D rot){
+
+    prev_l = param[1];
 
     QString out = "cyl(" + QString::number(param[0]) + "," + QString::number(param[1]) + "," + QString::number(param[2]) + ")";
     out += "[cen(";
-    for(int i = 0; i < 3; i++) {
-        out += QString::number(c[i]);
-        if(i < 2) out += ",";
-    }
+    out += QString::number(c->x()); out += ',';
+    out += QString::number(c->y()); out += ',';
+    out += QString::number(c->z());
     out += ")";
     out += "rot(";
     for(int i = 0; i < 3; i++) {
@@ -73,14 +75,15 @@ void Grammar::createCyl(QString in, QVector3D param, QVector3D c, QVector3D rot)
 }
 
 //Cuboid : float l, float w, float h, V3 c, V3 rot
-void Grammar::createCube(QString in, QVector3D param, QVector3D c, QVector3D rot){
+void Grammar::createCube(QString in, QVector3D param, QVector3D *c, QVector3D rot){
 
     QString out = "cub(" + QString::number(param[0]) + "," + QString::number(param[1]) + "," + QString::number(param[2]) + ")";
     out += "[cen(";
-    for(int i = 0; i < 3; i++) {
-        out += QString::number(c[i]);
-        if(i < 2) out += ",";
-    }
+
+    out += QString::number(c->x()); out += ',';
+    out += QString::number(c->y()); out += ',';
+    out += QString::number(c->z());
+
     out += ")";
     out += "rot(";
     for(int i = 0; i < 3; i++) {
@@ -94,21 +97,17 @@ void Grammar::createCube(QString in, QVector3D param, QVector3D c, QVector3D rot
 }
 
 //Sphere : float rad, float stack_c, float sector_c, V3 c, V3 rot
-void Grammar::createSphere(QString in, QVector3D param, QVector3D c, QVector3D rot){
+void Grammar::createSphere(QString in, QVector3D param, QVector3D *c, QVector3D rot){
 
-    if(!isFirst()) {
-        c[1] -= param[0];
-    }
-    if(isFirst()) {
-        prev_l = param[0];
-    }
+
+    prev_l = param[0];
+
 
     QString out = "sph(" + QString::number(param[0]) + "," + QString::number(param[1]) + "," + QString::number(param[2]) + ")";
     out += "[cen(";
-    for(int i = 0; i < 3; i++) {
-        out += QString::number(c[i]);
-        if(i < 2) out += ",";
-    }
+    out += QString::number(c->x()); out += ',';
+    out += QString::number(c->y()); out += ',';
+    out += QString::number(c->z());
     out += ")";
     out += "rot(";
     for(int i = 0; i < 3; i++) {
@@ -127,11 +126,11 @@ void Grammar::computeGrammar(){
 
     for(int i = 0; i < sentence.size(); i++){
         if(rulesH.contains(sentence.at(i))){
-            qDebug() << "Taille :" << rulesH.value(sentence.at(i)).length();
+//            qDebug() << "Taille :" << rulesH.value(sentence.at(i)).length();
             if(rulesH.value(sentence.at(i)).length() > 0) {
                 num = std::uniform_int_distribution<int>{0, rulesH.value(sentence.at(i)).length()-1}(rd);
             } else num = 0;
-            qDebug() << "INDEX ALEATOIRE" << num;
+//            qDebug() << "INDEX ALEATOIRE" << num;
             sentence.replace(QString(sentence.at(i)), rulesH.value(sentence.at(i))[num]);
         }
     }

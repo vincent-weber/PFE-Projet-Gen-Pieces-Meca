@@ -344,7 +344,7 @@ void GLArea::onTimeout()
 
 void GLArea::runGram(){
     Grammar gramtest("X");
-    gramtest.createScrewRules();
+    gramtest.createNutRules();
 
     qDebug() << gramtest.rulesH.value("T");
     qDebug() << gramtest.rulesH.value("B");
@@ -358,6 +358,7 @@ void GLArea::runGram(){
 
     Parser parser(gramtest.sentence);
     parser.reader();
+
 
     screw = Screw(parser.cyls_screw, parser.ops);
 

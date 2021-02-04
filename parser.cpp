@@ -45,6 +45,9 @@ void Parser::reader(){
         if (sentence.at(i) == '+'){
             ops.push_back(UNION);
         }
+        if (sentence.at(i) == '-'){
+            ops.push_back(DIFFERENCE);
+        }
         i++;
     }
 }
