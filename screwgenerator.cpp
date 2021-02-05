@@ -21,13 +21,13 @@ void ScrewGenerator::generate(QString screw_part) {
         body_width = body_radius;
         int body_precision  = std::uniform_real_distribution<float>{10,20}(rd);
         if (body_precision % 2 == 1) ++body_precision;
-        float body_length = std::uniform_real_distribution<float>{body_radius,body_radius*4}(rd);
+        float body_length = std::uniform_real_distribution<float>{body_radius*2,body_radius*8}(rd);
         body_height = body_length;
         createLeafRules("cyl", screw_part, QVector3D(body_radius, body_length, body_precision), QVector3D(0,0,0), QVector3D(PI/2,PI/2,0));
     }
     else if (screw_part == "ScrewHeadCyl") {
         float head_radius = std::uniform_real_distribution<float>{body_width+1, body_width*2+1}(rd);
-        int head_precision  = std::uniform_real_distribution<float>{6,12}(rd);
+        int head_precision  = std::uniform_real_distribution<float>{7,12}(rd);
         if (head_precision % 2 == 1) ++head_precision;
         float head_length = std::uniform_real_distribution<float>{1,head_radius}(rd);
         createLeafRules("cyl", screw_part, QVector3D(head_radius, head_length, head_precision), QVector3D(0,body_height/2,0), QVector3D(PI/2,PI/2,0));
