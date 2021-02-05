@@ -20,6 +20,9 @@ public:
 
     float body_height = 0;
     float body_width = 0;
+    float head_height = 0;
+    float head_width = 0;
+    int body_precision = 0;
 };
 
 #endif // SCREWGENERATOR_H

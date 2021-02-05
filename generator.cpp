@@ -3,7 +3,7 @@
 QHash<QString, QVector<QString>> Generator::rules;
 
 void Generator::initRules() {
-    rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub"});
+    rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub", "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
     rules.insert("Nut", {"BONJOUR", "CA VA"});
     rules.insert("Box", {"JE SUIS", "QUELQUUN"});
 }
