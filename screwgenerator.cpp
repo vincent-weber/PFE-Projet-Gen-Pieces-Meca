@@ -2,24 +2,14 @@
 
 ScrewGenerator::ScrewGenerator()
 {
-
-}
-
-void ScrewGenerator::createRules() {
-    int nb_screw_possibilities = rules.find("Screw")->count();
-    unsigned index = std::uniform_int_distribution<int>{0,nb_screw_possibilities-1}(rd);
-    sentence = rules.find("Screw")->at(index);
-    QStringList primitives_str = sentence.split(QRegExp("\\-|\\+|\\*"));
-    for (int i = 0 ; i < primitives_str.size() ; ++i) {
-        generate(primitives_str.at(i));
-    }
+    generator_name = "Screw";
 }
 
 void ScrewGenerator::generate(QString screw_part) {
     if (screw_part == "ScrewBodyCyl") {
         float body_radius = std::uniform_real_distribution<float>{1,3}(rd);
         body_width = body_radius;
-        body_precision  = std::uniform_real_distribution<float>{10,20}(rd);
+        body_precision  = std::uniform_int_distribution<int>{10,20}(rd);
         if (body_precision % 2 == 1) ++body_precision;
         float body_length = std::uniform_real_distribution<float>{body_radius*2,body_radius*8}(rd);
         body_height = body_length;
@@ -28,7 +18,7 @@ void ScrewGenerator::generate(QString screw_part) {
     else if (screw_part == "ScrewHeadCyl") {
         float head_radius = std::uniform_real_distribution<float>{body_width+1, body_width*2+1}(rd);
         head_width = head_radius;
-        int head_precision  = std::uniform_real_distribution<float>{7,12}(rd);
+        int head_precision  = std::uniform_int_distribution<int>{7,12}(rd);
         if (head_precision % 2 == 1) ++head_precision;
         float head_length = std::uniform_real_distribution<float>{1,head_radius}(rd);
         head_height = head_length;

@@ -7,11 +7,18 @@
 Princ::Princ(QWidget *parent) : QMainWindow(parent)
 {
     setupUi(this);
-    connect(this, SIGNAL(run_grammar()), glarea, SLOT(runGram()));
+    connect(this, SIGNAL(run_gen_screw_button()), glarea, SLOT(run_gen_screw()));
+    connect(this, SIGNAL(run_gen_nut_button()), glarea, SLOT(run_gen_nut()));
 }
 
-void Princ::on_run_button_clicked()
+void Princ::on_gen_screw_button_clicked()
 {
     qDebug() << __FUNCTION__;
-    emit run_grammar();
+    emit run_gen_screw_button();
+}
+
+void Princ::on_gen_nut_button_clicked()
+{
+    qDebug() << __FUNCTION__;
+    emit run_gen_nut_button();
 }

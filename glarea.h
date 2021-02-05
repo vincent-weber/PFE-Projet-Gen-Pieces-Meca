@@ -20,6 +20,7 @@
 
 #include "parser.h"
 #include "screwgenerator.h"
+#include "nutgenerator.h"
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions
@@ -32,7 +33,8 @@ public:
 
 protected slots:
     void onTimeout();
-    void runGram();
+    void run_gen_screw();
+    void run_gen_nut();
 
 protected:
     void initializeGL() override;

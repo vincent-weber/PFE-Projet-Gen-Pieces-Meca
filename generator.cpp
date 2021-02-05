@@ -4,8 +4,18 @@ QHash<QString, QVector<QString>> Generator::rules;
 
 void Generator::initRules() {
     rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub", "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
-    rules.insert("Nut", {"BONJOUR", "CA VA"});
+    rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
     rules.insert("Box", {"JE SUIS", "QUELQUUN"});
+}
+
+void Generator::createRules() {
+    int nb_part_possibilities = rules.find(generator_name)->count();
+    unsigned index = std::uniform_int_distribution<int>{0,nb_part_possibilities-1}(rd_gen);
+    sentence = rules.find(generator_name)->at(index);
+    QStringList primitives_str = sentence.split(QRegExp("\\-|\\+|\\*"));
+    for (int i = 0 ; i < primitives_str.size() ; ++i) {
+        generate(primitives_str.at(i));
+    }
 }
 
 void Generator::createLeafRules(QString primitive_type, QString in, QVector3D param, QVector3D c, QVector3D rot){

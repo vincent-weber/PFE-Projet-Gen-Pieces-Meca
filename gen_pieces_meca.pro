@@ -23,6 +23,7 @@ SOURCES += main.cpp\
         cylinder.cpp \
         generator.cpp \
         mechanicalpart.cpp \
+        nutgenerator.cpp \
         parser.cpp \
         princ.cpp \
         glarea.cpp \
@@ -39,6 +40,7 @@ HEADERS  += princ.h \
         generator.h \
         glarea.h \
         mechanicalpart.h \
+        nutgenerator.h \
         parser.h \
         screwgenerator.h \
         shape3d.h \

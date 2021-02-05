@@ -23,9 +23,16 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QPushButton" name="run_button">
+         <widget class="QPushButton" name="gen_screw_button">
           <property name="text">
-           <string>Run</string>
+           <string>Gen Vis</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="gen_nut_button">
+          <property name="text">
+           <string>Gen Ecrou</string>
           </property>
          </widget>
         </item>

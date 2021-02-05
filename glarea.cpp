@@ -325,7 +325,7 @@ void GLArea::onTimeout()
     update();
 }
 
-void GLArea::runGram(){
+void GLArea::run_gen_screw(){
     ScrewGenerator screw_gen;
     screw_gen.createRules();
     screw_gen.computeSentence();
@@ -335,7 +335,22 @@ void GLArea::runGram(){
     Parser parser(screw_gen.sentence);
     parser.reader();
 
-    screw = MechanicalPart(parser.cyls_screw, parser.ops);
+    screw = MechanicalPart(parser.shapes, parser.ops);
+
+    makeGLObjects();
+}
+
+void GLArea::run_gen_nut(){
+    NutGenerator nut_gen;
+    nut_gen.createRules();
+    nut_gen.computeSentence();
+
+    qDebug() << "PHRASE FINALE : " << nut_gen.sentence;
+
+    Parser parser(nut_gen.sentence);
+    parser.reader();
+
+    screw = MechanicalPart(parser.shapes, parser.ops);
 
     makeGLObjects();
 }

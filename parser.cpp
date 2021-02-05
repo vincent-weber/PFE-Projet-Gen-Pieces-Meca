@@ -18,7 +18,7 @@ void Parser::reader(){
             Cylinder *cyl = new Cylinder(params[0][0], params[0][1], params[0][2],
                                 V3(params[1][0], params[1][1], params[1][2]),
                                 V3(params[2][0], params[2][1], params[2][2]));
-            cyls_screw.push_back(cyl);
+            shapes.push_back(cyl);
         }
 
         //Recupere les informations du cube
@@ -28,7 +28,7 @@ void Parser::reader(){
             Cuboid *cub = new Cuboid(params[0][0], params[0][1], params[0][2],
                     V3(params[1][0], params[1][1], params[1][2]),
                     V3(params[2][0], params[2][1], params[2][2]));
-            cyls_screw.push_back(cub);
+            shapes.push_back(cub);
         }
 
         //Recupere les informations d'une sphere
@@ -39,7 +39,7 @@ void Parser::reader(){
             Sphere *sph = new Sphere(params[0][0], params[0][1], params[0][2],
                     V3(params[1][0], params[1][1], params[1][2]),
                     V3(params[2][0], params[2][1], params[2][2]));
-            cyls_screw.push_back(sph);
+            shapes.push_back(sph);
         }
 
         if (sentence.at(i) == '+'){
