@@ -217,7 +217,7 @@ void GLArea::paintGL()
     program_texture->enableAttributeArray("in_uv");
 
     textures[0]->bind();
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    //glDrawArrays(GL_TRIANGLES, 0, 6);
     textures[0]->release();
 
     program_texture->disableAttributeArray("in_position");
@@ -326,22 +326,14 @@ void GLArea::onTimeout()
 }
 
 void GLArea::runGram(){
-    Grammar gramtest("X");
-    gramtest.createNutRules();
+    ScrewGenerator screw_gen;
+    screw_gen.createRules();
+    screw_gen.computeSentence();
 
-    qDebug() << gramtest.rulesH.value("T");
-    qDebug() << gramtest.rulesH.value("B");
-    qDebug() << gramtest.rulesH.value("S");
+    qDebug() << "PHRASE FINALE : " << screw_gen.sentence;
 
-    for(int i = 0; i < 3; i++){
-        gramtest.computeGrammar();
-    }
-
-    qDebug() << gramtest.sentence;
-
-    Parser parser(gramtest.sentence);
+    Parser parser(screw_gen.sentence);
     parser.reader();
-
 
     screw = MechanicalPart(parser.cyls_screw, parser.ops);
 

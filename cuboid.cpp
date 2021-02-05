@@ -3,7 +3,7 @@
 Cuboid::Cuboid()
 {}
 
-Cuboid::Cuboid(float l, float w, float h, V3 c, V3 r) : length(l), width(w), height(h) {
+Cuboid::Cuboid(float l, float h, float w, V3 c, V3 r) : length(l), width(w), height(h) {
     center = c;
     rotation = r;
     create_vertices();
