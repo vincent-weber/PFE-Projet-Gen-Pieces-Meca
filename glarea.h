@@ -18,7 +18,6 @@
 #include "cuboid.h"
 #include "mechanicalpart.h"
 
-#include "grammar.h"
 #include "parser.h"
 #include "screwgenerator.h"
 

@@ -22,7 +22,6 @@ SOURCES += main.cpp\
         cuboid.cpp \
         cylinder.cpp \
         generator.cpp \
-        grammar.cpp \
         mechanicalpart.cpp \
         parser.cpp \
         princ.cpp \
@@ -39,7 +38,6 @@ HEADERS  += princ.h \
         cylinder.h \
         generator.h \
         glarea.h \
-        grammar.h \
         mechanicalpart.h \
         parser.h \
         screwgenerator.h \
