@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QSurfaceFormat>
 #include <QMatrix4x4>
+#include <QRegularExpression>
 
 #include "glarea.h"
 
@@ -25,7 +26,9 @@ GLArea::GLArea(QWidget *parent) :
     timer->start();
     elapsedTimer.start();
 
-
+    QString test = "Sĥere+head-body*test";
+    QStringList reg = test.split(QRegExp("\\+|\\-|\\*"));
+    qDebug() << reg;
 
 
 //    shapes.push_back(new Sphere(5,10,20, V3(0,11.5,20), V3(PI/2, PI/2, 0)));
@@ -344,15 +347,14 @@ void GLArea::onTimeout()
 
 void GLArea::runGram(){
     Grammar gramtest("X");
-    gramtest.createNutRules();
+//    gramtest.createNutRules();
+    gramtest.createScrewRules();
 
     qDebug() << gramtest.rulesH.value("T");
     qDebug() << gramtest.rulesH.value("B");
     qDebug() << gramtest.rulesH.value("S");
 
-    for(int i = 0; i < 3; i++){
-        gramtest.computeGrammar();
-    }
+    gramtest.computeGrammar();
 
     qDebug() << gramtest.sentence;
 

@@ -123,17 +123,26 @@ void Grammar::createSphere(QString in, QVector3D param, QVector3D *c, QVector3D 
 //Permet d'appliquer les regles existantes à la phrase courante.
 void Grammar::computeGrammar(){
     int num;
+    bool found = true;
 
-    for(int i = 0; i < sentence.size(); i++){
-        if(rulesH.contains(sentence.at(i))){
-//            qDebug() << "Taille :" << rulesH.value(sentence.at(i)).length();
-            if(rulesH.value(sentence.at(i)).length() > 0) {
-                num = std::uniform_int_distribution<int>{0, rulesH.value(sentence.at(i)).length()-1}(rd);
-            } else num = 0;
-//            qDebug() << "INDEX ALEATOIRE" << num;
-            sentence.replace(QString(sentence.at(i)), rulesH.value(sentence.at(i))[num]);
+    while(found){
+        found = false;
+        for(int i = 0; i < sentence.size(); i++){
+            if(rulesH.contains(sentence.at(i))){
+                found = true;
+    //            qDebug() << "Taille :" << rulesH.value(sentence.at(i)).length();
+                if(rulesH.value(sentence.at(i)).length() > 0) {
+                    num = std::uniform_int_distribution<int>{0, rulesH.value(sentence.at(i)).length()-1}(rd);
+                } else num = 0;
+    //            qDebug() << "INDEX ALEATOIRE" << num;
+                sentence.replace(QString(sentence.at(i)), rulesH.value(sentence.at(i))[num]);
+            }
         }
+
     }
+
+
+
 }
 
 bool Grammar::isFirst(){
