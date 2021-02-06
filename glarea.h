@@ -16,9 +16,11 @@
 #include "cylinder.h"
 #include "sphere.h"
 #include "cuboid.h"
-#include "grammar.h"
+#include "mechanicalpart.h"
+
 #include "parser.h"
-#include "screw.h"
+#include "screwgenerator.h"
+#include "nutgenerator.h"
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions
@@ -31,7 +33,8 @@ public:
 
 protected slots:
     void onTimeout();
-    void runGram();
+    void run_gen_screw();
+    void run_gen_nut();
 
 protected:
     void initializeGL() override;
@@ -63,7 +66,7 @@ private:
     std::vector<QOpenGLBuffer> vbos;
     std::vector<Shape3D*> shapes;
 
-    Screw screw;
+    MechanicalPart screw;
 
     void makeGLObjects();
     void tearGLObjects();

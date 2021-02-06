@@ -19,7 +19,7 @@ public:
     Parser(QString sentence);
 
     QString sentence;
-    std::vector<Shape3D*> cyls_screw;
+    std::vector<Shape3D*> shapes;
     std::vector<Bool_op> ops;
 
     void reader();

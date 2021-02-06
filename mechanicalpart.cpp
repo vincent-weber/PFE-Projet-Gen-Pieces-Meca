@@ -1,8 +1,8 @@
-#include "screw.h"
+#include "mechanicalpart.h"
 
-Screw::Screw() {}
+MechanicalPart::MechanicalPart() {}
 
-Screw::Screw(std::vector<Shape3D*> shapes, std::vector<Bool_op> op_bool) : shapes(shapes), op_bool(op_bool)
+MechanicalPart::MechanicalPart(std::vector<Shape3D*> shapes, std::vector<Bool_op> op_bool) : shapes(shapes), op_bool(op_bool)
 {
     mesh = shapes[0]->mesh;
     for (unsigned i = 1 ; i < shapes.size() ; ++i) {
@@ -17,7 +17,7 @@ Screw::Screw(std::vector<Shape3D*> shapes, std::vector<Bool_op> op_bool) : shape
     }
 }
 
-void Screw::render() {
+void MechanicalPart::render() {
     for (face_descriptor& face : mesh.faces()) {
         CGAL::Vertex_around_face_iterator<Mesh_CGAL> vbegin, vend;
         for(boost::tie(vbegin, vend) = vertices_around_face(mesh.halfedge(face), mesh) ; vbegin != vend ; ++vbegin) {

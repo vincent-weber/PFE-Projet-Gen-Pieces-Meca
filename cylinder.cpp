@@ -4,7 +4,7 @@ Cylinder::Cylinder()
 {
 }
 
-Cylinder::Cylinder(float rad, float diam, float prec, V3 c, V3 rot) : radius(rad), length(diam), precision(prec) {
+Cylinder::Cylinder(float rad, float diam, int prec, V3 c, V3 rot) : radius(rad), length(diam), precision(prec) {
     center = c;
     rotation = rot;
     create_vertices();

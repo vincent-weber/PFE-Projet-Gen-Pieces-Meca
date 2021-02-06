@@ -1,10 +1,10 @@
-#ifndef SCREW_H
-#define SCREW_H
+#ifndef MECHANICALPART_H
+#define MECHANICALPART_H
 
 #include "boolean_op.h"
 #include "shape3d.h"
 
-class Screw
+class MechanicalPart
 {
 public:
 
@@ -16,10 +16,10 @@ public:
     int nb_vertices_gl_faces = 0;
     int nb_vertices_gl_lines = 0;
 
-    Screw();
-    Screw(std::vector<Shape3D*> shapes, std::vector<Bool_op> op_bool);
+    MechanicalPart();
+    MechanicalPart(std::vector<Shape3D*> shapes, std::vector<Bool_op> op_bool);
     void render();
 
 };
 
-#endif // SCREW_H
+#endif // MECHANICALPART_H

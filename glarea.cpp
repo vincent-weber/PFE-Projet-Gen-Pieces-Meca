@@ -26,9 +26,9 @@ GLArea::GLArea(QWidget *parent) :
     timer->start();
     elapsedTimer.start();
 
-    QString test = "Sĥere+head-body*test";
-    QStringList reg = test.split(QRegExp("\\+|\\-|\\*"));
-    qDebug() << reg;
+//    QString test = "Sĥere+head-body*test";
+//    QStringList reg = test.split(QRegExp("\\+|\\-|\\*"));
+//    qDebug() << reg;
 
 
 //    shapes.push_back(new Sphere(5,10,20, V3(0,11.5,20), V3(PI/2, PI/2, 0)));
@@ -47,6 +47,9 @@ GLArea::GLArea(QWidget *parent) :
 //    ops.push_back(UNION);
 
 //    screw = Screw(parser.cyls_screw, parser.ops);
+
+    Generator::initRules();
+
 }
 
 
@@ -237,7 +240,7 @@ void GLArea::paintGL()
     program_texture->enableAttributeArray("in_uv");
 
     textures[0]->bind();
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    //glDrawArrays(GL_TRIANGLES, 0, 6);
     textures[0]->release();
 
     program_texture->disableAttributeArray("in_position");
@@ -345,24 +348,33 @@ void GLArea::onTimeout()
     update();
 }
 
-void GLArea::runGram(){
-    Grammar gramtest("X");
-//    gramtest.createNutRules();
-    gramtest.createScrewRules();
 
-    qDebug() << gramtest.rulesH.value("T");
-    qDebug() << gramtest.rulesH.value("B");
-    qDebug() << gramtest.rulesH.value("S");
+void GLArea::run_gen_screw(){
+    ScrewGenerator screw_gen;
+    screw_gen.createRules();
+    screw_gen.computeSentence();
 
-    gramtest.computeGrammar();
+    qDebug() << "PHRASE FINALE : " << screw_gen.sentence;
 
-    qDebug() << gramtest.sentence;
-
-    Parser parser(gramtest.sentence);
+    Parser parser(screw_gen.sentence);
     parser.reader();
 
+    screw = MechanicalPart(parser.shapes, parser.ops);
 
-    screw = Screw(parser.cyls_screw, parser.ops);
+    makeGLObjects();
+}
+
+void GLArea::run_gen_nut(){
+    NutGenerator nut_gen;
+    nut_gen.createRules();
+    nut_gen.computeSentence();
+
+    qDebug() << "PHRASE FINALE : " << nut_gen.sentence;
+
+    Parser parser(nut_gen.sentence);
+    parser.reader();
+
+    screw = MechanicalPart(parser.shapes, parser.ops);
 
     makeGLObjects();
 }
