@@ -22,7 +22,8 @@ public:
     void createRules();
     float computeParameter(float param, std::random_device &rd, float min, float max);
     int computeParameter(int param, std::random_device &rd, int min, int max);
-    void createLeafRules(QString primitive_type, QString in, QVector3D param, QVector3D c, QVector3D rot);
+    QString createLeafRulesMultiple(QVector<QString>& primitives, QString op_bools, QVector<QVector3D>& params, QVector<QVector3D>& centers, QVector<QVector3D>& rots);
+    void createLeafRulesSingle(QString primitive_type, QString in, QVector3D param, QVector3D c, QVector3D rot);
     void computeSentence();
 };
 

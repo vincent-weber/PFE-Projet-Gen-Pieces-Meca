@@ -5,7 +5,7 @@ QHash<QString, QVector<QString>> Generator::rules;
 void Generator::initRules() {
     rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub", "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
     rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
-    rules.insert("Box", {"JE SUIS", "QUELQUUN"});
+    rules.insert("Box", {"BoiteCube+VisAnglesBoiteCub"});
 }
 
 void Generator::createRules() {
@@ -35,7 +35,33 @@ int Generator::computeParameter(int param, std::random_device& rd, int min, int 
     }
 }
 
-void Generator::createLeafRules(QString primitive_type, QString in, QVector3D param, QVector3D c, QVector3D rot){
+QString Generator::createLeafRulesMultiple(QVector<QString>& primitives, QString op_bools, QVector<QVector3D>& params, QVector<QVector3D>& centers, QVector<QVector3D>& rots) {
+    QString out = "";
+    int size = primitives.size();
+    for (int index_pr = 0 ; index_pr < size ; ++index_pr) {
+        qDebug() << QString::number(params[index_pr][0]) << "," << QString::number(params[index_pr][1]) << "," << QString::number(params[index_pr][2]) << ")";
+        out += primitives[index_pr] + "(" + QString::number(params[index_pr][0]) + "," + QString::number(params[index_pr][1]) + "," + QString::number(params[index_pr][2]) + ")";
+        out += "[cen(";
+        out += QString::number(centers[index_pr].x()); out += ',';
+        out += QString::number(centers[index_pr].y()); out += ',';
+        out += QString::number(centers[index_pr].z());
+        out += ")";
+        out += "rot(";
+        for(int index_rot = 0; index_rot < 3; index_rot++) {
+            out += QString::number(rots[index_pr][index_rot]);
+            if(index_rot < 2) out += ",";
+        }
+        out += ")";
+        out += "]";
+
+        if (index_pr != size-1) {
+            out += op_bools[index_pr];
+        }
+    }
+    return out;
+}
+
+void Generator::createLeafRulesSingle(QString primitive_type, QString in, QVector3D param, QVector3D c, QVector3D rot){
 
     QString out = primitive_type + "(" + QString::number(param[0]) + "," + QString::number(param[1]) + "," + QString::number(param[2]) + ")";
     out += "[cen(";

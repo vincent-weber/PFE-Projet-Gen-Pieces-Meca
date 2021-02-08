@@ -174,8 +174,6 @@ void GLArea::render_shape_color(QOpenGLBuffer& vbo, QMatrix4x4& projectionMatrix
     program_simple_color->enableAttributeArray("in_position");
     program_simple_color->enableAttributeArray("in_color");
 
-//    qDebug() << nb_vert_faces << nb_vert_lines;
-
     glDrawArrays(GL_TRIANGLES, 0, nb_vert_faces);
     if (nb_vert_lines != 0)
         glDrawArrays(GL_LINES, nb_vert_faces, nb_vert_faces + nb_vert_lines);
@@ -350,6 +348,21 @@ void GLArea::run_gen_nut(){
     qDebug() << "PHRASE FINALE : " << nut_gen.sentence;
 
     Parser parser(nut_gen.sentence);
+    parser.reader();
+
+    screw = MechanicalPart(parser.shapes, parser.ops);
+
+    makeGLObjects();
+}
+
+void GLArea::run_gen_box(){
+    BoxGenerator box_gen;
+    box_gen.createRules();
+    box_gen.computeSentence();
+
+    qDebug() << "PHRASE FINALE : " << box_gen.sentence;
+
+    Parser parser(box_gen.sentence);
     parser.reader();
 
     screw = MechanicalPart(parser.shapes, parser.ops);
