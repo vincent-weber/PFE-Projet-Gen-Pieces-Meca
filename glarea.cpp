@@ -327,6 +327,7 @@ void GLArea::onTimeout()
 
 void GLArea::run_gen_screw(){
     ScrewGenerator screw_gen;
+    screw_gen.set_body_width(2);
     screw_gen.createRules();
     screw_gen.computeSentence();
 
@@ -342,6 +343,7 @@ void GLArea::run_gen_screw(){
 
 void GLArea::run_gen_nut(){
     NutGenerator nut_gen;
+    nut_gen.set_main_cyl_radius(2.5f);
     nut_gen.createRules();
     nut_gen.computeSentence();
 

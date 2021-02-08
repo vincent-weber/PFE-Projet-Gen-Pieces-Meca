@@ -18,6 +18,23 @@ void Generator::createRules() {
     }
 }
 
+float Generator::computeParameter(float param, std::random_device& rd, float min, float max) {
+    if (param == -1) {
+        return std::uniform_real_distribution<float>{min, max}(rd);
+    }
+    else {
+        return param;
+    }
+}
+int Generator::computeParameter(int param, std::random_device& rd, int min, int max) {
+    if (param == -1) {
+        return std::uniform_int_distribution<int>{min, max}(rd);
+    }
+    else {
+        return param;
+    }
+}
+
 void Generator::createLeafRules(QString primitive_type, QString in, QVector3D param, QVector3D c, QVector3D rot){
 
     QString out = primitive_type + "(" + QString::number(param[0]) + "," + QString::number(param[1]) + "," + QString::number(param[2]) + ")";
