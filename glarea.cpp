@@ -378,3 +378,18 @@ void GLArea::run_gen_nut(){
 
     makeGLObjects();
 }
+
+void GLArea::run_gen_butterfly(){
+    ButterflyGenerator butterfly_gen;
+    butterfly_gen.createRules();
+    butterfly_gen.computeSentence();
+
+    qDebug() << "PHRASE FINALE : " << butterfly_gen.sentence;
+
+    Parser parser(butterfly_gen.sentence);
+    parser.reader();
+
+    screw = MechanicalPart(parser.shapes, parser.ops);
+
+    makeGLObjects();
+}

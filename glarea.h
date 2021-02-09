@@ -21,6 +21,7 @@
 #include "parser.h"
 #include "screwgenerator.h"
 #include "nutgenerator.h"
+#include "butterflygenerator.h"
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions
@@ -35,6 +36,7 @@ protected slots:
     void onTimeout();
     void run_gen_screw();
     void run_gen_nut();
+    void run_gen_butterfly();
 
 protected:
     void initializeGL() override;

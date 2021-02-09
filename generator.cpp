@@ -6,6 +6,7 @@ void Generator::initRules() {
     rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub", "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
     rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
     rules.insert("Box", {"JE SUIS", "QUELQUUN"});
+    rules.insert("Butterfly", {"ButterflyBoby+LeftWing+RightWing"});
 }
 
 void Generator::createRules() {
