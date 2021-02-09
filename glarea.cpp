@@ -130,19 +130,22 @@ void GLArea::makeGLObjects()
         vbos.push_back(vbo);
     }
 
-    screw.render();
-//    qDebug() << "NB FACES OBJET : " << screw.nb_vertices_gl_faces;
-//    qDebug() << "NB LIGNES OBJET : " << screw.nb_vertices_gl_lines;
-    vbo_screw.create();
-    vbo_screw.bind();
-    vbo_screw.allocate(screw.gl_data.constData(), screw.gl_data.count() * int(sizeof(GLdouble)));
-
-
     // Création de textures
     QImage image_sol(":/textures/ground.jpg");
     if (image_sol.isNull())
         qDebug() << "load image ground.jpg failed";
     textures[0] = new QOpenGLTexture(image_sol);
+}
+
+void GLArea::prepareMechaParts() {
+    for (unsigned i = 0 ; i < mecha_parts.size() ; ++i) {
+        mecha_parts[i].render();
+        QOpenGLBuffer vbo;
+        vbo.create();
+        vbo.bind();
+        vbo.allocate(mecha_parts[i].gl_data.constData(), mecha_parts[i].gl_data.count() * int(sizeof(GLdouble)));
+        vbos_mecha_parts.push_back(vbo);
+    }
 }
 
 
@@ -230,8 +233,11 @@ void GLArea::paintGL()
         render_shape_color(vbos[i], projectionMatrix, viewMatrix, shapes[i]->nb_vertices_gl_faces, shapes[i]->nb_vertices_gl_lines);
     }
 
-    //Screw
-    render_shape_color(vbo_screw, projectionMatrix, viewMatrix, screw.nb_vertices_gl_faces, screw.nb_vertices_gl_lines);
+    //Rendu des pièces mécaniques
+    for (unsigned i = 0 ; i < mecha_parts.size() ; ++i) {
+        render_shape_color(vbos_mecha_parts[i], projectionMatrix, viewMatrix, mecha_parts[i].nb_vertices_gl_faces, mecha_parts[i].nb_vertices_gl_lines);
+    }
+
 }
 
 
@@ -324,6 +330,8 @@ void GLArea::onTimeout()
 }
 
 void GLArea::run_gen_screw(){
+    mecha_parts.clear();
+    vbos_mecha_parts.clear();
     ScrewGenerator screw_gen;
     screw_gen.set_body_width(2);
     screw_gen.createRules();
@@ -334,12 +342,14 @@ void GLArea::run_gen_screw(){
     Parser parser(screw_gen.sentence);
     parser.reader();
 
-    screw = MechanicalPart(parser.shapes, parser.ops);
+    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
 
-    makeGLObjects();
+    prepareMechaParts();
 }
 
 void GLArea::run_gen_nut(){
+    mecha_parts.clear();
+    vbos_mecha_parts.clear();
     NutGenerator nut_gen;
     nut_gen.set_main_cyl_radius(2.5f);
     nut_gen.createRules();
@@ -350,22 +360,31 @@ void GLArea::run_gen_nut(){
     Parser parser(nut_gen.sentence);
     parser.reader();
 
-    screw = MechanicalPart(parser.shapes, parser.ops);
+    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
 
-    makeGLObjects();
+    prepareMechaParts();
 }
 
 void GLArea::run_gen_box(){
+    mecha_parts.clear();
+    vbos_mecha_parts.clear();
     BoxGenerator box_gen;
     box_gen.createRules();
     box_gen.computeSentence();
 
     qDebug() << "PHRASE FINALE : " << box_gen.sentence;
 
-    Parser parser(box_gen.sentence);
-    parser.reader();
+    Parser parser_box(box_gen.sentence);
+    parser_box.reader();
 
-    screw = MechanicalPart(parser.shapes, parser.ops);
+    QString box_top = box_gen.generate_top();
+    Parser parser_box_top(box_top);
+    parser_box_top.reader();
 
-    makeGLObjects();
+    qDebug() << "PHRASE BOX TOP : " << box_top;
+
+    mecha_parts.push_back(MechanicalPart(parser_box.shapes, parser_box.ops));
+    mecha_parts.push_back(MechanicalPart(parser_box_top.shapes, parser_box_top.ops));
+
+    prepareMechaParts();
 }

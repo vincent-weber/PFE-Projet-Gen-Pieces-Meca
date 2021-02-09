@@ -18,12 +18,25 @@ MechanicalPart::MechanicalPart(std::vector<Shape3D*> shapes, std::vector<Bool_op
 }
 
 void MechanicalPart::render() {
+    std::random_device rd;
+    float c1 = std::uniform_real_distribution<float>{0, 255}(rd);
+    float c2 = std::uniform_real_distribution<float>{0, 255}(rd);
+    int rand = std::uniform_int_distribution<int>{0, 2}(rd);
     for (face_descriptor& face : mesh.faces()) {
         CGAL::Vertex_around_face_iterator<Mesh_CGAL> vbegin, vend;
         for(boost::tie(vbegin, vend) = vertices_around_face(mesh.halfedge(face), mesh) ; vbegin != vend ; ++vbegin) {
             P3 p = mesh.point(*vbegin);
             gl_data.push_back(CGAL::to_double(p[0]));gl_data.push_back(CGAL::to_double(p[1]));gl_data.push_back(CGAL::to_double(p[2]));
-            gl_data.push_back(255.0); gl_data.push_back(0.0); gl_data.push_back(0.0);
+            if (rand == 0) {
+                gl_data.push_back(c1); gl_data.push_back(c2); gl_data.push_back(0.0);
+            }
+            else if (rand == 1) {
+                gl_data.push_back(c1); gl_data.push_back(0); gl_data.push_back(c2);
+            }
+            else if (rand == 2) {
+                gl_data.push_back(0); gl_data.push_back(c1); gl_data.push_back(c2);
+            }
+
             ++nb_vertices_gl_faces;
         }
     }

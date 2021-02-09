@@ -26,10 +26,10 @@ void BoxGenerator::generate(QString box_part) {
         screws_width = computeParameter(screws_width, rd, box_length/16, box_length/8);
         screws_precision = computeParameter(screws_precision, rd, 10, 20);
 
-        QVector<QVector3D> centers({{box_length - screw_spot_thickness - screws_width + box_thickness/2, box_thickness/2, box_width - screw_spot_thickness - screws_width + box_thickness/2},
-                                    {box_length - screw_spot_thickness - screws_width + box_thickness/2, box_thickness/2, -(box_width - screw_spot_thickness - screws_width) - box_thickness/2},
-                                    {-(box_length - screw_spot_thickness - screws_width) - box_thickness/2, box_thickness/2, -(box_width - screw_spot_thickness - screws_width) - box_thickness/2},
-                                    {-(box_length - screw_spot_thickness - screws_width) - box_thickness/2, box_thickness/2, box_width - screw_spot_thickness - screws_width + box_thickness/2}});
+        QVector<QVector3D> centers({{box_length - screw_spot_thickness - screws_width + box_thickness/2, box_thickness/2 - 0.01f, box_width - screw_spot_thickness - screws_width + box_thickness/2},
+                                    {box_length - screw_spot_thickness - screws_width + box_thickness/2, box_thickness/2  - 0.01f, -(box_width - screw_spot_thickness - screws_width) - box_thickness/2},
+                                    {-(box_length - screw_spot_thickness - screws_width) - box_thickness/2, box_thickness/2  - 0.01f, -(box_width - screw_spot_thickness - screws_width) - box_thickness/2},
+                                    {-(box_length - screw_spot_thickness - screws_width) - box_thickness/2, box_thickness/2  - 0.01f, box_width - screw_spot_thickness - screws_width + box_thickness/2}});
 
         QString rule = "";
         for (int i = 0 ; i < 4 ; ++i) {
@@ -46,4 +46,28 @@ void BoxGenerator::generate(QString box_part) {
         }
         rules.insert(box_part, {rule});
     }
+}
+
+QString BoxGenerator::generate_top() {
+    QVector<QString> primitives = {"cub", "cyl", "cyl", "cyl", "cyl"};
+    QString op_bools = "----";
+    QVector<QVector3D> params;
+    params.push_back({box_length + box_thickness*2, box_thickness, box_width + box_thickness*2});
+    params.push_back({screws_width, box_thickness*2.1f, (float)screws_precision});
+    params.push_back({screws_width, box_thickness*2.1f, (float)screws_precision});
+    params.push_back({screws_width, box_thickness*2.1f, (float)screws_precision});
+    params.push_back({screws_width, box_thickness*2.1f, (float)screws_precision});
+
+    QVector<QVector3D> centers;
+    float offset = 2;
+    float height = box_height + box_thickness*1.5f + offset;
+    centers.push_back({0,height,0});
+    centers.push_back({box_length - screw_spot_thickness - screws_width + box_thickness/2, height, box_width - screw_spot_thickness - screws_width + box_thickness/2});
+    centers.push_back({box_length - screw_spot_thickness - screws_width + box_thickness/2, height, -(box_width - screw_spot_thickness - screws_width) - box_thickness/2});
+    centers.push_back({-(box_length - screw_spot_thickness - screws_width) - box_thickness/2, height, -(box_width - screw_spot_thickness - screws_width) - box_thickness/2});
+    centers.push_back({-(box_length - screw_spot_thickness - screws_width) - box_thickness/2, height, box_width - screw_spot_thickness - screws_width + box_thickness/2});
+
+    QVector<QVector3D> rots({{0,0,0},{PI/2,PI/2,0},{PI/2,PI/2,0},{PI/2,PI/2,0},{PI/2,PI/2,0}});
+    QString rule = createLeafRulesMultiple(primitives, op_bools, params, centers, rots);
+    return rule;
 }

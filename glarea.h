@@ -62,15 +62,18 @@ private:
     QOpenGLShaderProgram *program_texture;
     QOpenGLBuffer vbo_axes;
     QOpenGLBuffer vbo_sol;
-    QOpenGLBuffer vbo_screw;
+    //QOpenGLBuffer vbo_screw;
     QOpenGLTexture *textures[1];
 
     std::vector<QOpenGLBuffer> vbos;
     std::vector<Shape3D*> shapes;
 
-    MechanicalPart screw;
+    std::vector<MechanicalPart> mecha_parts;
+    std::vector<QOpenGLBuffer> vbos_mecha_parts;
+    std::vector<bool> display_mecha_part;
 
     void makeGLObjects();
+    void prepareMechaParts();
     void tearGLObjects();
     void render_shape_color(QOpenGLBuffer& vbo, QMatrix4x4& projectionMatrix, QMatrix4x4& viewMatrix, int nb_vert_faces, int nb_vert_lines);
 };

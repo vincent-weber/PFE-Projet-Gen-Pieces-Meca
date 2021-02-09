@@ -18,6 +18,8 @@ public:
     BoxGenerator();
     std::random_device rd;
     void generate(QString screw_part) override;
+    QString generate_top();
+    QString generate_screws();
 };
 
 #endif // BOXGENERATOR_H
