@@ -1,6 +1,7 @@
 #ifndef MECHANICALPART_H
 #define MECHANICALPART_H
 
+#include <random>
 #include "boolean_op.h"
 #include "shape3d.h"
 

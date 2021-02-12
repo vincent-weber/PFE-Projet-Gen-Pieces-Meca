@@ -20,6 +20,7 @@ LIBS += -L$(HOME)/lib/CGAL-5.2/lib -lgmp -lmpfr
 SOURCES += main.cpp\
         boolean_op.cpp \
         butterflygenerator.cpp \
+        boxgenerator.cpp \
         cuboid.cpp \
         cylinder.cpp \
         generator.cpp \
@@ -37,6 +38,7 @@ HEADERS  += princ.h \
         Cgal.h \
         boolean_op.h \
         butterflygenerator.h \
+        boxgenerator.h \
         cuboid.h \
         cylinder.h \
         generator.h \
