@@ -1,12 +1,12 @@
-#include "screwgenerator.h"
+#include "screw.h"
 
-ScrewGenerator::ScrewGenerator()
+Screw::Screw()
 {
     generator_name = "Screw";
     center = QVector3D(0,0,0);
 }
 
-void ScrewGenerator::generate(QString screw_part) {
+void Screw::generate(QString screw_part) {
     if (screw_part == "ScrewBodyCyl") {
         body_width = computeParameter(body_width, rd, 1.0f, 3.0f);
         body_precision = computeParameter(body_precision, rd, 10, 20);

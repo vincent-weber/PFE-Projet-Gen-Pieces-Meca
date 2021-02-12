@@ -1,12 +1,12 @@
-#include "boxgenerator.h"
+#include "box.h"
 
-BoxGenerator::BoxGenerator()
+Box::Box()
 {
     generator_name = "Box";
 }
 
 //TODO : stocker les 4 centres des 4 cylindres pour les vis
-void BoxGenerator::generate(QString box_part) {
+void Box::generate(QString box_part) {
     if (box_part == "BoiteCube") {
         box_height = computeParameter(box_height, rd, 5.0f, 10.0f);
         box_width = computeParameter(box_width, rd, 5.0f, 10.0f);
@@ -49,7 +49,7 @@ void BoxGenerator::generate(QString box_part) {
     }
 }
 
-QString BoxGenerator::generate_top() {
+QString Box::generate_top() {
     QVector<QString> primitives = {"cub", "cyl", "cyl", "cyl", "cyl"};
     QString op_bools = "----";
     QVector<QVector3D> params;
@@ -73,9 +73,9 @@ QString BoxGenerator::generate_top() {
     return rule;
 }
 
-QVector<MechanicalPart> BoxGenerator::generate_screws() {
+QVector<MechanicalPart> Box::generate_screws() {
     QVector<MechanicalPart> screws;
-    ScrewGenerator screw_gen;
+    Screw screw_gen;
     screw_gen.set_body_height(box_thickness*3);
     screw_gen.set_body_width(screws_width);
     screw_gen.set_body_precision(screws_precision);

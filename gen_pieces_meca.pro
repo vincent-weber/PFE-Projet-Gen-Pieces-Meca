@@ -19,33 +19,33 @@ LIBS += -L$(HOME)/lib/CGAL-5.2/lib -lgmp -lmpfr
 
 SOURCES += main.cpp\
         boolean_op.cpp \
-        boxgenerator.cpp \
+        box.cpp \
         cuboid.cpp \
         cylinder.cpp \
         generator.cpp \
         mechanicalpart.cpp \
-        nutgenerator.cpp \
+        nut.cpp \
         parser.cpp \
+        primitive.cpp \
         princ.cpp \
         glarea.cpp \
-        screwgenerator.cpp \
-        shape3d.cpp \
+        screw.cpp \
         sphere.cpp \
         util.cpp
 
 HEADERS  += princ.h \
         Cgal.h \
         boolean_op.h \
-        boxgenerator.h \
+        box.h \
         cuboid.h \
         cylinder.h \
         generator.h \
         glarea.h \
         mechanicalpart.h \
-        nutgenerator.h \
+        nut.h \
         parser.h \
-        screwgenerator.h \
-        shape3d.h \
+        primitive.h \
+        screw.h \
         sphere.h \
         util.h
 

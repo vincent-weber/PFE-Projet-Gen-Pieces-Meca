@@ -19,9 +19,9 @@
 #include "mechanicalpart.h"
 
 #include "parser.h"
-#include "screwgenerator.h"
-#include "nutgenerator.h"
-#include "boxgenerator.h"
+#include "screw.h"
+#include "nut.h"
+#include "box.h"
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions
@@ -66,7 +66,7 @@ private:
     QOpenGLTexture *textures[1];
 
     std::vector<QOpenGLBuffer> vbos;
-    std::vector<Shape3D*> shapes;
+    std::vector<Primitive*> shapes;
 
     std::vector<MechanicalPart> mecha_parts;
     std::vector<QOpenGLBuffer> vbos_mecha_parts;

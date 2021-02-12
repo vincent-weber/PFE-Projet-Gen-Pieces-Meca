@@ -1,9 +1,9 @@
- #ifndef SCREWGENERATOR_H
-#define SCREWGENERATOR_H
+#ifndef SCREW_H
+#define SCREW_H
 
 #include "generator.h"
 
-class ScrewGenerator : public Generator
+class Screw : public Generator
 {
 private:
     float body_height = -1;
@@ -12,7 +12,7 @@ private:
     float head_width = -1;
     int body_precision = -1;
 public:
-    ScrewGenerator();
+    Screw();
     std::random_device rd;
     void generate(QString screw_part) override;
 
@@ -33,4 +33,4 @@ public:
     }
 };
 
-#endif // SCREWGENERATOR_H
+#endif // SCREW_H

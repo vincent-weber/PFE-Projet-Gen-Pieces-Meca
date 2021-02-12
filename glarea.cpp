@@ -332,7 +332,7 @@ void GLArea::onTimeout()
 void GLArea::run_gen_screw(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
-    ScrewGenerator screw_gen;
+    Screw screw_gen;
     screw_gen.set_body_width(2);
     screw_gen.createRules();
     screw_gen.computeSentence();
@@ -350,7 +350,7 @@ void GLArea::run_gen_screw(){
 void GLArea::run_gen_nut(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
-    NutGenerator nut_gen;
+    Nut nut_gen;
     nut_gen.set_main_cyl_radius(2.5f);
     nut_gen.createRules();
     nut_gen.computeSentence();
@@ -368,7 +368,7 @@ void GLArea::run_gen_nut(){
 void GLArea::run_gen_box(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
-    BoxGenerator box_gen;
+    Box box_gen;
     box_gen.createRules();
     box_gen.computeSentence();
 

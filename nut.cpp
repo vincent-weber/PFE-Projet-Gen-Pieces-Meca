@@ -1,11 +1,11 @@
-#include "nutgenerator.h"
+#include "nut.h"
 
-NutGenerator::NutGenerator()
+Nut::Nut()
 {
     generator_name = "Nut";
 }
 
-void NutGenerator::generate(QString nut_part) {
+void Nut::generate(QString nut_part) {
     if (nut_part == "NutMainCyl") {
         main_cyl_radius = computeParameter(main_cyl_radius, rd, 1.0f, 3.0f);
         int precision  = std::uniform_real_distribution<float>{7,12}(rd);

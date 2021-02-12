@@ -1,12 +1,12 @@
-#ifndef BOXGENERATOR_H
-#define BOXGENERATOR_H
+#ifndef BOX_H
+#define BOX_H
 
 #include "generator.h"
-#include "screwgenerator.h"
+#include "screw.h"
 #include "parser.h"
 #include "mechanicalpart.h"
 
-class BoxGenerator : public Generator
+class Box : public Generator
 {
 private :
     float box_width = -1;
@@ -18,11 +18,11 @@ private :
     float screw_spot_thickness = -1;
     int screws_precision = -1;
 public:
-    BoxGenerator();
+    Box();
     std::random_device rd;
     void generate(QString screw_part) override;
     QString generate_top();
     QVector<MechanicalPart> generate_screws();
 };
 
-#endif // BOXGENERATOR_H
+#endif // BOX_H

@@ -1,12 +1,12 @@
-#ifndef SHAPE3D_H
-#define SHAPE3D_H
+#ifndef PRIMITIVE_H
+#define PRIMITIVE_H
 
 #include "Cgal.h"
 #include "util.h"
 #include <QOpenGLFunctions>
 #include <QDebug>
 
-class Shape3D
+class Primitive
 {
 public:
 
@@ -27,4 +27,4 @@ public:
     virtual void render() = 0;
 };
 
-#endif // SHAPE3D_H
+#endif // PRIMITIVE_H

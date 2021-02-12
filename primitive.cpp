@@ -1,12 +1,12 @@
-#include "shape3d.h"
+#include "primitive.h"
 
-void Shape3D::create() {
+void Primitive::create() {
     create_vertices();
     create_mesh();
     transform();
 }
 
-void Shape3D::transform() {
+void Primitive::transform() {
     //Rotation Y
     double rotY = CGAL::to_double(rotation[0]);
     double rotZ = CGAL::to_double(rotation[1]);

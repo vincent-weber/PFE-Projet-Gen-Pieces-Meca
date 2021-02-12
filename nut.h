@@ -1,15 +1,15 @@
-#ifndef NUTGENERATOR_H
-#define NUTGENERATOR_H
+#ifndef NUT_H
+#define NUT_H
 
 #include "generator.h"
 
-class NutGenerator : public Generator
+class Nut : public Generator
 {
 private:
     float main_cyl_radius = -1;
     float main_cyl_length = -1;
 public:
-    NutGenerator();
+    Nut();
     std::random_device rd;
     void generate(QString screw_part) override;
 
@@ -23,4 +23,4 @@ public:
 
 };
 
-#endif // NUTGENERATOR_H
+#endif // NUT_H

@@ -1,9 +1,9 @@
 #ifndef CUBOID_H
 #define CUBOID_H
 
-#include "shape3d.h"
+#include "primitive.h"
 
-class Cuboid : public Shape3D
+class Cuboid : public Primitive
 {
 public:
 
