@@ -1,9 +1,9 @@
 #ifndef CYLINDER_H
 #define CYLINDER_H
 
-#include "shape3d.h"
+#include "primitive.h"
 
-class Cylinder : public Shape3D
+class Cylinder : public Primitive
 {
 public:
 

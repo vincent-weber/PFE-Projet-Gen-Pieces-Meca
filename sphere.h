@@ -1,9 +1,9 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include "shape3d.h"
+#include "primitive.h"
 
-class Sphere : public Shape3D
+class Sphere : public Primitive
 {
 public:
 

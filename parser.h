@@ -10,7 +10,7 @@
 #include "cylinder.h"
 #include "sphere.h"
 #include "cuboid.h"
-#include "shape3d.h"
+#include "primitive.h"
 #include "boolean_op.h"
 
 class Parser
@@ -19,7 +19,7 @@ public:
     Parser(QString sentence);
 
     QString sentence;
-    std::vector<Shape3D*> shapes;
+    std::vector<Primitive*> shapes;
     std::vector<Bool_op> ops;
 
     void reader();

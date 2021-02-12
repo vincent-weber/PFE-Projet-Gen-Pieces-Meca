@@ -37,17 +37,18 @@
          </widget>
         </item>
         <item>
-<<<<<<< HEAD
          <widget class="QPushButton" name="gen_butterfly_button">
           <property name="text">
            <string>Gen Butterfly</string>
-=======
-         <widget class="QPushButton" name="gen_box_button">
-          <property name="text">
-           <string>Gen Boite</string>
->>>>>>> b-vincent
-          </property>
-         </widget>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="gen_box_button">
+           <property name="text">
+            <string>Gen Boite</string>
+           </property>
+          </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer">

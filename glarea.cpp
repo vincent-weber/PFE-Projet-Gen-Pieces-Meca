@@ -356,7 +356,7 @@ void GLArea::onTimeout()
 void GLArea::run_gen_screw(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
-    ScrewGenerator screw_gen;
+    Screw screw_gen;
     screw_gen.set_body_width(2);
     screw_gen.createRules();
     screw_gen.computeSentence();
@@ -374,7 +374,7 @@ void GLArea::run_gen_screw(){
 void GLArea::run_gen_nut(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
-    NutGenerator nut_gen;
+    Nut nut_gen;
     nut_gen.set_main_cyl_radius(2.5f);
     nut_gen.createRules();
     nut_gen.computeSentence();
@@ -392,7 +392,7 @@ void GLArea::run_gen_nut(){
 void GLArea::run_gen_box(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
-    BoxGenerator box_gen;
+    Box box_gen;
     box_gen.createRules();
     box_gen.computeSentence();
 
@@ -409,11 +409,18 @@ void GLArea::run_gen_box(){
 
     mecha_parts.push_back(MechanicalPart(parser_box.shapes, parser_box.ops));
     mecha_parts.push_back(MechanicalPart(parser_box_top.shapes, parser_box_top.ops));
+    QVector<MechanicalPart> screws = box_gen.generate_screws();
+    mecha_parts.push_back(screws[0]);
+    mecha_parts.push_back(screws[1]);
+    mecha_parts.push_back(screws[2]);
+    mecha_parts.push_back(screws[3]);
 
     prepareMechaParts();
 }
 
 void GLArea::run_gen_butterfly(){
+    mecha_parts.clear();
+    vbos_mecha_parts.clear();
     ButterflyGenerator butterfly_gen;
     butterfly_gen.createRules();
     butterfly_gen.computeSentence();
@@ -423,7 +430,7 @@ void GLArea::run_gen_butterfly(){
     Parser parser(butterfly_gen.sentence);
     parser.reader();
 
-    screw = MechanicalPart(parser.shapes, parser.ops);
+    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
 
-    makeGLObjects();
+    prepareMechaParts();
 }

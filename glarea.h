@@ -19,13 +19,11 @@
 #include "mechanicalpart.h"
 
 #include "parser.h"
-#include "screwgenerator.h"
-#include "nutgenerator.h"
-<<<<<<< HEAD
 #include "butterflygenerator.h"
-=======
-#include "boxgenerator.h"
->>>>>>> b-vincent
+
+#include "screw.h"
+#include "nut.h"
+#include "box.h"
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions
@@ -40,11 +38,8 @@ protected slots:
     void onTimeout();
     void run_gen_screw();
     void run_gen_nut();
-<<<<<<< HEAD
     void run_gen_butterfly();
-=======
     void run_gen_box();
->>>>>>> b-vincent
 
 protected:
     void initializeGL() override;
@@ -74,7 +69,7 @@ private:
     QOpenGLTexture *textures[1];
 
     std::vector<QOpenGLBuffer> vbos;
-    std::vector<Shape3D*> shapes;
+    std::vector<Primitive*> shapes;
 
     std::vector<MechanicalPart> mecha_parts;
     std::vector<QOpenGLBuffer> vbos_mecha_parts;

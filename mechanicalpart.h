@@ -3,13 +3,13 @@
 
 #include <random>
 #include "boolean_op.h"
-#include "shape3d.h"
+#include "primitive.h"
 
 class MechanicalPart
 {
 public:
 
-    std::vector<Shape3D*> shapes;
+    std::vector<Primitive*> shapes;
     std::vector<Bool_op> op_bool;
 
     Mesh_CGAL mesh;
@@ -18,7 +18,7 @@ public:
     int nb_vertices_gl_lines = 0;
 
     MechanicalPart();
-    MechanicalPart(std::vector<Shape3D*> shapes, std::vector<Bool_op> op_bool);
+    MechanicalPart(std::vector<Primitive*> shapes, std::vector<Bool_op> op_bool);
     void render();
 
 };

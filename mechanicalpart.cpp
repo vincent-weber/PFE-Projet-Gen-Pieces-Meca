@@ -2,7 +2,7 @@
 
 MechanicalPart::MechanicalPart() {}
 
-MechanicalPart::MechanicalPart(std::vector<Shape3D*> shapes, std::vector<Bool_op> op_bool) : shapes(shapes), op_bool(op_bool)
+MechanicalPart::MechanicalPart(std::vector<Primitive*> shapes, std::vector<Bool_op> op_bool) : shapes(shapes), op_bool(op_bool)
 {
     mesh = shapes[0]->mesh;
     for (unsigned i = 1 ; i < shapes.size() ; ++i) {

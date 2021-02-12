@@ -5,12 +5,9 @@ QHash<QString, QVector<QString>> Generator::rules;
 void Generator::initRules() {
     rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub", "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
     rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
-<<<<<<< HEAD
     rules.insert("Box", {"JE SUIS", "QUELQUUN"});
     rules.insert("Butterfly", {"ButterflyBoby+LeftWing+RightWing"});
-=======
     rules.insert("Box", {"BoiteCube+VisAnglesBoiteCub"});
->>>>>>> b-vincent
 }
 
 void Generator::createRules() {
