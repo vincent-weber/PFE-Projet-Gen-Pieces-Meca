@@ -13,7 +13,7 @@ class Generator
 public:
     QString sentence;
     QString generator_name;
-    //virtual void createRules() = 0;
+    QVector3D center;
     virtual void generate(QString part) = 0;
     static void initRules();
     static QHash<QString, QVector<QString>> rules;

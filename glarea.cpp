@@ -385,6 +385,11 @@ void GLArea::run_gen_box(){
 
     mecha_parts.push_back(MechanicalPart(parser_box.shapes, parser_box.ops));
     mecha_parts.push_back(MechanicalPart(parser_box_top.shapes, parser_box_top.ops));
+    QVector<MechanicalPart> screws = box_gen.generate_screws();
+    mecha_parts.push_back(screws[0]);
+    mecha_parts.push_back(screws[1]);
+    mecha_parts.push_back(screws[2]);
+    mecha_parts.push_back(screws[3]);
 
     prepareMechaParts();
 }

@@ -2,6 +2,9 @@
 #define BOXGENERATOR_H
 
 #include "generator.h"
+#include "screwgenerator.h"
+#include "parser.h"
+#include "mechanicalpart.h"
 
 class BoxGenerator : public Generator
 {
@@ -19,7 +22,7 @@ public:
     std::random_device rd;
     void generate(QString screw_part) override;
     QString generate_top();
-    QString generate_screws();
+    QVector<MechanicalPart> generate_screws();
 };
 
 #endif // BOXGENERATOR_H
