@@ -18,6 +18,7 @@ INCLUDEPATH += $(HOME)/lib/CGAL-5.2/include
 LIBS += -L$(HOME)/lib/CGAL-5.2/lib -lgmp -lmpfr
 
 SOURCES += main.cpp\
+        anchorpoint.cpp \
         boolean_op.cpp \
         box.cpp \
         cuboid.cpp \
@@ -35,6 +36,7 @@ SOURCES += main.cpp\
 
 HEADERS  += princ.h \
         Cgal.h \
+        anchorpoint.h \
         boolean_op.h \
         box.h \
         cuboid.h \

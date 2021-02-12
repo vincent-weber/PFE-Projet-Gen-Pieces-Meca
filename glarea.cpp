@@ -29,7 +29,6 @@ GLArea::GLArea(QWidget *parent) :
 
 }
 
-
 GLArea::~GLArea()
 {
     delete timer;
@@ -342,7 +341,7 @@ void GLArea::run_gen_screw(){
     Parser parser(screw_gen.sentence);
     parser.reader();
 
-    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
+    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops, QVector3D(0,0,0)));
 
     prepareMechaParts();
 }
@@ -360,7 +359,7 @@ void GLArea::run_gen_nut(){
     Parser parser(nut_gen.sentence);
     parser.reader();
 
-    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
+    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops, QVector3D(0,0,0)));
 
     prepareMechaParts();
 }
@@ -368,28 +367,29 @@ void GLArea::run_gen_nut(){
 void GLArea::run_gen_box(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
-    Box box_gen;
-    box_gen.createRules();
-    box_gen.computeSentence();
-
-    qDebug() << "PHRASE FINALE : " << box_gen.sentence;
-
-    Parser parser_box(box_gen.sentence);
+    Box box;
+    box.createRules();
+    box.computeSentence();
+    Parser parser_box(box.sentence);
     parser_box.reader();
+    mecha_parts.push_back(MechanicalPart(parser_box.shapes, parser_box.ops, QVector3D(0,0,0)));
 
-    QString box_top = box_gen.generate_top();
-    Parser parser_box_top(box_top);
-    parser_box_top.reader();
 
-    qDebug() << "PHRASE BOX TOP : " << box_top;
+    Screw sc;
+    //sc.set_body_width(0.1f);
+    sc.createRules();
+    sc.computeSentence();
+    Parser parser_sc(sc.sentence);
+    parser_sc.reader();
 
-    mecha_parts.push_back(MechanicalPart(parser_box.shapes, parser_box.ops));
-    mecha_parts.push_back(MechanicalPart(parser_box_top.shapes, parser_box_top.ops));
-    QVector<MechanicalPart> screws = box_gen.generate_screws();
-    mecha_parts.push_back(screws[0]);
-    mecha_parts.push_back(screws[1]);
-    mecha_parts.push_back(screws[2]);
-    mecha_parts.push_back(screws[3]);
+    for (int i = 0 ; i < box.anchor_points.size() ; ++i) {
+        for (int j = 0 ; j < box.anchor_points[0].size(); ++j) {
+            //sc.setCenter(...) ou on fait un rules.modify() puis un sen
+            //sc.create()
+            mecha_parts.push_back(MechanicalPart(parser_sc.shapes, parser_sc.ops, box.anchor_points[i][j].coords + box.anchor_points[i][j].direction*sc.get_body_height()));
+        }
+    }
 
+    qDebug() << "PHRASE FINALE : " << box.sentence;
     prepareMechaParts();
 }

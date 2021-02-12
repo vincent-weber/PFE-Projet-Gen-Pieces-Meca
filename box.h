@@ -21,8 +21,6 @@ public:
     Box();
     std::random_device rd;
     void generate(QString screw_part) override;
-    QString generate_top();
-    QVector<MechanicalPart> generate_screws();
 };
 
 #endif // BOX_H

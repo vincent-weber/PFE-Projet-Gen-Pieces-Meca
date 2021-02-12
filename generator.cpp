@@ -5,7 +5,7 @@ QHash<QString, QVector<QString>> Generator::rules;
 void Generator::initRules() {
     rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub", "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
     rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
-    rules.insert("Box", {"BoiteCube+VisAnglesBoiteCub"});
+    rules.insert("Box", {/*"BoiteCube+VisAnglesBoiteCub", */"BoiteRelief+AncrageGrille3x3"});
 }
 
 void Generator::createRules() {
@@ -26,6 +26,7 @@ float Generator::computeParameter(float param, std::random_device& rd, float min
         return param;
     }
 }
+
 int Generator::computeParameter(int param, std::random_device& rd, int min, int max) {
     if (param == -1) {
         return std::uniform_int_distribution<int>{min, max}(rd);

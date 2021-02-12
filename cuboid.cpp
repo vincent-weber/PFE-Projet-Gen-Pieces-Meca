@@ -12,14 +12,14 @@ Cuboid::Cuboid(float l, float h, float w, V3 c, V3 r) : length(l), width(w), hei
 }
 
 void Cuboid::create_vertices() {
-    v_handles.push_back(mesh.add_vertex(P3(-length, -height, -width)));
-    v_handles.push_back(mesh.add_vertex(P3(-length, -height, width)));
-    v_handles.push_back(mesh.add_vertex(P3(-length, height, -width)));
-    v_handles.push_back(mesh.add_vertex(P3(-length, height, width)));
-    v_handles.push_back(mesh.add_vertex(P3(length, -height, -width)));
-    v_handles.push_back(mesh.add_vertex(P3(length, -height, width)));
-    v_handles.push_back(mesh.add_vertex(P3(length, height, -width)));
-    v_handles.push_back(mesh.add_vertex(P3(length, height, width)));
+    v_handles.push_back(mesh.add_vertex(P3(-length/2, -height/2, -width/2)));
+    v_handles.push_back(mesh.add_vertex(P3(-length/2, -height/2, width/2)));
+    v_handles.push_back(mesh.add_vertex(P3(-length/2, height/2, -width/2)));
+    v_handles.push_back(mesh.add_vertex(P3(-length/2, height/2, width/2)));
+    v_handles.push_back(mesh.add_vertex(P3(length/2, -height/2, -width/2)));
+    v_handles.push_back(mesh.add_vertex(P3(length/2, -height/2, width/2)));
+    v_handles.push_back(mesh.add_vertex(P3(length/2, height/2, -width/2)));
+    v_handles.push_back(mesh.add_vertex(P3(length/2, height/2, width/2)));
 }
 
 void Cuboid::create_mesh() {

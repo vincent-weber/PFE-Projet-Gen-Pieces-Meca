@@ -31,6 +31,10 @@ public:
     void set_body_precision(int body_precision) {
         this->body_precision = body_precision;
     }
+
+    float get_body_height() {
+        return body_height;
+    }
 };
 
 #endif // SCREW_H

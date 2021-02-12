@@ -7,6 +7,7 @@
 #include <QVector3D>
 #include <QStringList>
 #include "util.h"
+#include "anchorpoint.h"
 
 class Generator
 {
@@ -18,6 +19,8 @@ public:
     static void initRules();
     static QHash<QString, QVector<QString>> rules;
     std::random_device rd_gen;
+
+    QVector<QVector<AnchorPoint>> anchor_points;
 
     void createRules();
     float computeParameter(float param, std::random_device &rd, float min, float max);
