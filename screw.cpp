@@ -55,6 +55,7 @@ void Screw::set_rotation(QVector3D direction, QString screw_part) {
         QVector3D vec_base(0,0,1);
         rotation = (vec_un - (vec_base + direction)) * PI/2;
     }
+    qDebug() << "ROTATION DE" << rotation;
 }
 
 void Screw::generateRules(QString screw_part) {

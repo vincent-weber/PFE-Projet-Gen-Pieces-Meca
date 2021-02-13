@@ -411,16 +411,21 @@ void GLArea::run_gen_box(){
     //sc.set_body_width(0.1f);
     sc.createParams();
 
+    QVector<QVector3D> dirs;
+    dirs.push_back({0,1,0}); dirs.push_back({1,0,0}); dirs.push_back({0,0,1});
+
+    qDebug() << "TEST TAILLE" << box.anchor_points[0].size();
+
+
     for (int i = 0 ; i < box.anchor_points.size() ; ++i) {
         for (int j = 0 ; j < box.anchor_points[0].size(); ++j) {
             sc.center = QVector3D(box.anchor_points[i][j].coords + box.anchor_points[i][j].direction*sc.get_body_height());
-            for (int i = 0 ; i < sc.primitives_str.size() ; ++i) {
-                sc.set_rotation(box.anchor_points[i][j].direction, sc.primitives_str.at(i));
-                sc.generateRules(sc.primitives_str.at(i));
+            for (int k = 0 ; k < sc.primitives_str.size() ; ++k) {
+                sc.set_rotation(box.anchor_points[i][j].direction, sc.primitives_str.at(k));
+                sc.generateRules(sc.primitives_str.at(k));
             }
             sc.sentence = sc.base_sentence;
             sc.computeSentence();
-
             Parser parser_sc(sc.sentence);
             parser_sc.reader();
             mecha_parts.push_back(MechanicalPart(parser_sc.shapes, parser_sc.ops));

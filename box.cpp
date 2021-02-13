@@ -47,7 +47,7 @@ void Box::generateParams(QString box_part) {
             for (int j = 0 ; j < 3 ; ++j) {
                 QVector3D coords(x,y,z);
                 QVector3D coords2(x,y-box_height,z);
-                QVector3D direction(0,1,0);
+                QVector3D direction(0,0,1);
                 QVector3D rotation(0,0,0);
                 AnchorPoint anch(coords, direction, rotation, bounding_box);
                 AnchorPoint anch2(coords2, -direction, rotation, bounding_box);
@@ -73,7 +73,7 @@ void Box::generateParams(QString box_part) {
             for (int j = 0 ; j < 3 ; ++j) {
                 QVector3D coords(x,y,z);
                 QVector3D coords2(x,y,z-box_width);
-                QVector3D direction(0,0,1);
+                QVector3D direction(0,1,0);
                 QVector3D rotation(0,0,0);
                 AnchorPoint anch(coords, direction, rotation, bounding_box);
                 AnchorPoint anch2(coords2, -direction, rotation, bounding_box);

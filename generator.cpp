@@ -96,9 +96,9 @@ void Generator::createLeafRulesSingle(QString primitive_type, QString in, QVecto
     out += ")";
     out += "]";
 
-    qDebug() << "RULES AVANT : " << rules[in];
+//    qDebug() << "RULES AVANT : " << rules[in];
     rules.insert(in, {out});
-    qDebug() << "RULES APRES : " << rules[in];
+//    qDebug() << "RULES APRES : " << rules[in];
 }
 
 void Generator::computeSentence() {
