@@ -15,13 +15,11 @@ public:
 private slots:
     void on_gen_screw_button_clicked();
     void on_gen_nut_button_clicked();
-    void on_gen_butterfly_button_clicked();
     void on_gen_box_button_clicked();
 
 signals:
     void run_gen_screw_button();
     void run_gen_nut_button();
-    void run_gen_butterfly_button();
     void run_gen_box_button();
 };
 

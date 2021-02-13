@@ -7,7 +7,6 @@ class ButterflyGenerator : public Generator
 {
 public:
     ButterflyGenerator();
-    void generate(QString part) override;
     QVector3D body_pos;
     float body_rad;
     float body_len;

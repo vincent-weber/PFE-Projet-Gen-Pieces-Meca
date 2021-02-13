@@ -20,9 +20,9 @@ private :
 public:
     Box();
     std::random_device rd;
-    void generate(QString screw_part) override;
-    QString generate_top();
-    QVector<MechanicalPart> generate_screws();
+    void generateParams(QString screw_part) override;
+    void generateRules(QString screw_part) override;
+    void set_rotation(QVector3D direction, QString screw_part) override;
 };
 
 #endif // BOX_H

@@ -15,6 +15,7 @@ MechanicalPart::MechanicalPart(std::vector<Primitive*> shapes, std::vector<Bool_
             qDebug() << "Op foiree";
         }
     }
+    //PMP::transform(CGAL::Aff_transformation_3<K>(CGAL::Translation(), V3(center[0], center[1], center[2])), mesh);
 }
 
 void MechanicalPart::render() {

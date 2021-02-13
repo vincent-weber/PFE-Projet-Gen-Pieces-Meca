@@ -52,7 +52,6 @@ GLArea::GLArea(QWidget *parent) :
 
 }
 
-
 GLArea::~GLArea()
 {
     delete timer;
@@ -357,8 +356,11 @@ void GLArea::run_gen_screw(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
     Screw screw_gen;
-    screw_gen.set_body_width(2);
-    screw_gen.createRules();
+    //screw_gen.set_body_width(2);
+    screw_gen.createParams();
+    for (int i = 0 ; i < screw_gen.primitives_str.size() ; ++i) {
+        screw_gen.generateRules(screw_gen.primitives_str.at(i));
+    }
     screw_gen.computeSentence();
 
     qDebug() << "PHRASE FINALE : " << screw_gen.sentence;
@@ -376,7 +378,11 @@ void GLArea::run_gen_nut(){
     vbos_mecha_parts.clear();
     Nut nut_gen;
     nut_gen.set_main_cyl_radius(2.5f);
-    nut_gen.createRules();
+    nut_gen.createParams();
+    for (int i = 0 ; i < nut_gen.primitives_str.size() ; ++i) {
+        nut_gen.set_rotation(QVector3D(42,42,42), "JFLKSDJF");
+        nut_gen.generateRules(nut_gen.primitives_str.at(i));
+    }
     nut_gen.computeSentence();
 
     qDebug() << "PHRASE FINALE : " << nut_gen.sentence;
@@ -392,45 +398,35 @@ void GLArea::run_gen_nut(){
 void GLArea::run_gen_box(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
-    Box box_gen;
-    box_gen.createRules();
-    box_gen.computeSentence();
-
-    qDebug() << "PHRASE FINALE : " << box_gen.sentence;
-
-    Parser parser_box(box_gen.sentence);
+    Box box;
+    box.createParams();
+    box.computeSentence();
+    Parser parser_box(box.sentence);
     parser_box.reader();
-
-    QString box_top = box_gen.generate_top();
-    Parser parser_box_top(box_top);
-    parser_box_top.reader();
-
-    qDebug() << "PHRASE BOX TOP : " << box_top;
-
     mecha_parts.push_back(MechanicalPart(parser_box.shapes, parser_box.ops));
-    mecha_parts.push_back(MechanicalPart(parser_box_top.shapes, parser_box_top.ops));
-    QVector<MechanicalPart> screws = box_gen.generate_screws();
-    mecha_parts.push_back(screws[0]);
-    mecha_parts.push_back(screws[1]);
-    mecha_parts.push_back(screws[2]);
-    mecha_parts.push_back(screws[3]);
 
-    prepareMechaParts();
-}
 
-void GLArea::run_gen_butterfly(){
-    mecha_parts.clear();
-    vbos_mecha_parts.clear();
-    ButterflyGenerator butterfly_gen;
-    butterfly_gen.createRules();
-    butterfly_gen.computeSentence();
+    //TODO : phrase finale : union de toutes les phrases des pieces individuellement
+    Screw sc;
+    //sc.set_body_width(0.1f);
+    sc.createParams();
 
-    qDebug() << "PHRASE FINALE : " << butterfly_gen.sentence;
+    for (int i = 0 ; i < box.anchor_points.size() ; ++i) {
+        for (int j = 0 ; j < box.anchor_points[0].size(); ++j) {
+            sc.center = QVector3D(box.anchor_points[i][j].coords + box.anchor_points[i][j].direction*sc.get_body_height());
+            for (int i = 0 ; i < sc.primitives_str.size() ; ++i) {
+                sc.set_rotation(box.anchor_points[i][j].direction, sc.primitives_str.at(i));
+                sc.generateRules(sc.primitives_str.at(i));
+            }
+            sc.sentence = sc.base_sentence;
+            sc.computeSentence();
 
-    Parser parser(butterfly_gen.sentence);
-    parser.reader();
+            Parser parser_sc(sc.sentence);
+            parser_sc.reader();
+            mecha_parts.push_back(MechanicalPart(parser_sc.shapes, parser_sc.ops));
 
-    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
+        }
+    }
 
     prepareMechaParts();
 }
