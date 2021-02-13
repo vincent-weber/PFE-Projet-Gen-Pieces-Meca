@@ -2,9 +2,8 @@
 
 MechanicalPart::MechanicalPart() {}
 
-MechanicalPart::MechanicalPart(std::vector<Primitive*> shapes, std::vector<Bool_op> op_bool, QVector3D center) : shapes(shapes), op_bool(op_bool)
+MechanicalPart::MechanicalPart(std::vector<Primitive*> shapes, std::vector<Bool_op> op_bool) : shapes(shapes), op_bool(op_bool)
 {
-    qDebug() << "CENTER : " << center;
     mesh = shapes[0]->mesh;
     for (unsigned i = 1 ; i < shapes.size() ; ++i) {
         bool res = compute_boolean_operation(&mesh, &shapes[i]->mesh, &mesh, op_bool[i-1]);
@@ -16,7 +15,7 @@ MechanicalPart::MechanicalPart(std::vector<Primitive*> shapes, std::vector<Bool_
             qDebug() << "Op foiree";
         }
     }
-    PMP::transform(CGAL::Aff_transformation_3<K>(CGAL::Translation(), V3(center[0], center[1], center[2])), mesh);
+    //PMP::transform(CGAL::Aff_transformation_3<K>(CGAL::Translation(), V3(center[0], center[1], center[2])), mesh);
 }
 
 void MechanicalPart::render() {

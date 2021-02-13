@@ -8,13 +8,14 @@ void Generator::initRules() {
     rules.insert("Box", {/*"BoiteCube+VisAnglesBoiteCub", */"BoiteRelief+AncrageGrille3x3"});
 }
 
-void Generator::createRules() {
+void Generator::createParams() {
     int nb_part_possibilities = rules.find(generator_name)->count();
     unsigned index = std::uniform_int_distribution<int>{0,nb_part_possibilities-1}(rd_gen);
-    sentence = rules.find(generator_name)->at(index);
-    QStringList primitives_str = sentence.split(QRegExp("\\-|\\+|\\*"));
+    base_sentence = rules.find(generator_name)->at(index);
+    sentence = base_sentence;
+    primitives_str = sentence.split(QRegExp("\\-|\\+|\\*"));
     for (int i = 0 ; i < primitives_str.size() ; ++i) {
-        generate(primitives_str.at(i));
+        generateParams(primitives_str.at(i));
     }
 }
 
@@ -36,12 +37,19 @@ int Generator::computeParameter(int param, std::random_device& rd, int min, int 
     }
 }
 
-QString Generator::createLeafRulesMultiple(QVector<QString>& primitives, QString op_bools, QVector<QVector3D>& params, QVector<QVector3D>& centers, QVector<QVector3D>& rots) {
+QString Generator::createLeafRulesMultiple(QVector<QString>& primitives, QString op_bools, QVector<QVector<float>>& params, QVector<QVector3D>& centers, QVector<QVector3D>& rots) {
     QString out = "";
     int size = primitives.size();
     for (int index_pr = 0 ; index_pr < size ; ++index_pr) {
-        qDebug() << QString::number(params[index_pr][0]) << "," << QString::number(params[index_pr][1]) << "," << QString::number(params[index_pr][2]) << ")";
-        out += primitives[index_pr] + "(" + QString::number(params[index_pr][0]) + "," + QString::number(params[index_pr][1]) + "," + QString::number(params[index_pr][2]) + ")";
+        //changer params en Qvector<Qvector<float>> dans le cas ou on a plusieurs paramètres ?
+        out += "(";
+        for (int i = 0 ; i < params[index_pr].size() ; ++i) {
+            out += QString::number(params[index_pr][0]);
+            if (i < params[index_pr].size() - 1) {
+                out += ",";
+            }
+        }
+        out += ")";
         out += "[cen(";
         out += QString::number(centers[index_pr].x()); out += ',';
         out += QString::number(centers[index_pr].y()); out += ',';
@@ -62,9 +70,17 @@ QString Generator::createLeafRulesMultiple(QVector<QString>& primitives, QString
     return out;
 }
 
-void Generator::createLeafRulesSingle(QString primitive_type, QString in, QVector3D param, QVector3D c, QVector3D rot){
+void Generator::createLeafRulesSingle(QString primitive_type, QString in, QVector<float> param, QVector3D c, QVector3D rot){
 
-    QString out = primitive_type + "(" + QString::number(param[0]) + "," + QString::number(param[1]) + "," + QString::number(param[2]) + ")";
+    QString out = primitive_type;
+    out += "(";
+    for (int i = 0 ; i < param.size() ; ++i) {
+        out += QString::number(param[i]);
+        if (i < param.size() - 1) {
+            out += ",";
+        }
+    }
+    out += ")";
     out += "[cen(";
     out += QString::number(c.x()); out += ',';
     out += QString::number(c.y()); out += ',';
@@ -78,7 +94,9 @@ void Generator::createLeafRulesSingle(QString primitive_type, QString in, QVecto
     out += ")";
     out += "]";
 
+    qDebug() << "RULES AVANT : " << rules[in];
     rules.insert(in, {out});
+    qDebug() << "RULES APRES : " << rules[in];
 }
 
 void Generator::computeSentence() {

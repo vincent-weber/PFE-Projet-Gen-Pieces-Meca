@@ -8,10 +8,15 @@ class Nut : public Generator
 private:
     float main_cyl_radius = -1;
     float main_cyl_length = -1;
+    int precision_main_cyl = -1;
+    int precision_intersect_cyl = -1;
+    float intersect_cyl_radius = -1;
 public:
     Nut();
     std::random_device rd;
-    void generate(QString screw_part) override;
+    void generateParams(QString screw_part) override;
+    void generateRules(QString screw_part) override;
+    void set_rotation(QVector3D direction, QString screw_part) override;
 
     void set_main_cyl_radius(float main_cyl_radius) {
         this->main_cyl_radius = main_cyl_radius;

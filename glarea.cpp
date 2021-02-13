@@ -332,8 +332,11 @@ void GLArea::run_gen_screw(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
     Screw screw_gen;
-    screw_gen.set_body_width(2);
-    screw_gen.createRules();
+    //screw_gen.set_body_width(2);
+    screw_gen.createParams();
+    for (int i = 0 ; i < screw_gen.primitives_str.size() ; ++i) {
+        screw_gen.generateRules(screw_gen.primitives_str.at(i));
+    }
     screw_gen.computeSentence();
 
     qDebug() << "PHRASE FINALE : " << screw_gen.sentence;
@@ -341,7 +344,7 @@ void GLArea::run_gen_screw(){
     Parser parser(screw_gen.sentence);
     parser.reader();
 
-    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops, QVector3D(0,0,0)));
+    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
 
     prepareMechaParts();
 }
@@ -351,7 +354,11 @@ void GLArea::run_gen_nut(){
     vbos_mecha_parts.clear();
     Nut nut_gen;
     nut_gen.set_main_cyl_radius(2.5f);
-    nut_gen.createRules();
+    nut_gen.createParams();
+    for (int i = 0 ; i < nut_gen.primitives_str.size() ; ++i) {
+        nut_gen.set_rotation(QVector3D(42,42,42), "JFLKSDJF");
+        nut_gen.generateRules(nut_gen.primitives_str.at(i));
+    }
     nut_gen.computeSentence();
 
     qDebug() << "PHRASE FINALE : " << nut_gen.sentence;
@@ -359,7 +366,7 @@ void GLArea::run_gen_nut(){
     Parser parser(nut_gen.sentence);
     parser.reader();
 
-    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops, QVector3D(0,0,0)));
+    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
 
     prepareMechaParts();
 }
@@ -368,28 +375,34 @@ void GLArea::run_gen_box(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
     Box box;
-    box.createRules();
+    box.createParams();
     box.computeSentence();
     Parser parser_box(box.sentence);
     parser_box.reader();
-    mecha_parts.push_back(MechanicalPart(parser_box.shapes, parser_box.ops, QVector3D(0,0,0)));
+    mecha_parts.push_back(MechanicalPart(parser_box.shapes, parser_box.ops));
 
 
+    //TODO : phrase finale : union de toutes les phrases des pieces individuellement
     Screw sc;
     //sc.set_body_width(0.1f);
-    sc.createRules();
-    sc.computeSentence();
-    Parser parser_sc(sc.sentence);
-    parser_sc.reader();
+    sc.createParams();
 
     for (int i = 0 ; i < box.anchor_points.size() ; ++i) {
         for (int j = 0 ; j < box.anchor_points[0].size(); ++j) {
-            //sc.setCenter(...) ou on fait un rules.modify() puis un sen
-            //sc.create()
-            mecha_parts.push_back(MechanicalPart(parser_sc.shapes, parser_sc.ops, box.anchor_points[i][j].coords + box.anchor_points[i][j].direction*sc.get_body_height()));
+            sc.center = QVector3D(box.anchor_points[i][j].coords + box.anchor_points[i][j].direction*sc.get_body_height());
+            for (int i = 0 ; i < sc.primitives_str.size() ; ++i) {
+                sc.set_rotation(box.anchor_points[i][j].direction, sc.primitives_str.at(i));
+                sc.generateRules(sc.primitives_str.at(i));
+            }
+            sc.sentence = sc.base_sentence;
+            sc.computeSentence();
+
+            Parser parser_sc(sc.sentence);
+            parser_sc.reader();
+            mecha_parts.push_back(MechanicalPart(parser_sc.shapes, parser_sc.ops));
+
         }
     }
 
-    qDebug() << "PHRASE FINALE : " << box.sentence;
     prepareMechaParts();
 }

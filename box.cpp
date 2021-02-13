@@ -6,7 +6,7 @@ Box::Box()
 }
 
 //TODO : stocker les 4 centres des 4 cylindres pour les vis
-void Box::generate(QString box_part) {
+void Box::generateParams(QString box_part) {
     if (box_part == "BoiteCube") {
         box_height = computeParameter(box_height, rd, 5.0f, 10.0f);
         box_width = computeParameter(box_width, rd, 5.0f, 10.0f);
@@ -16,7 +16,7 @@ void Box::generate(QString box_part) {
 
         QVector<QString> primitives({"cub", "cub"});
         QString op_bools ("-");
-        QVector<QVector3D> params({{box_length + box_thickness*2, box_height + box_thickness*2, box_width + box_thickness*2}, {box_length, box_height + box_thickness*2, box_width}});
+        QVector<QVector<float>> params({{box_length + box_thickness*2, box_height + box_thickness*2, box_width + box_thickness*2}, {box_length, box_height + box_thickness*2, box_width}});
         QVector<QVector3D> centers({{0,0,0}, {0,box_thickness,0}});
         QVector<QVector3D> rots({{0,0,0},{0,0,0}});
         QString rule = createLeafRulesMultiple(primitives, op_bools, params, centers, rots);
@@ -26,12 +26,9 @@ void Box::generate(QString box_part) {
         box_height = computeParameter(box_height, rd, 5.0f, 10.0f);
         box_width = computeParameter(box_width, rd, 5.0f, 10.0f);
         box_length = computeParameter(box_length, rd, 5.0f, 10.0f);
-        /*box_height = 5;
-        box_width = 5;
-        box_length = 5;*/
 
         box_thickness = computeParameter(box_thickness, rd, 0.5f, 1.5f);
-        QVector3D params({box_length, box_height, box_width});
+        QVector<float> params({box_length, box_height, box_width});
         QVector3D center({0,0,0});
         QVector3D rot({0,0,0});
         createLeafRulesSingle("cub", box_part, params, center, rot);
@@ -138,7 +135,7 @@ void Box::generate(QString box_part) {
         for (int i = 0 ; i < 4 ; ++i) {
             QVector<QString> primitives({"cyl", "cyl"});
             QString op_bools ("-");
-            QVector<QVector3D> params({{screws_width + screw_spot_thickness, (box_height + box_thickness*1.5f)*2, (float)screws_precision}, {screws_width, (box_height + box_thickness*1.5f)*2, (float)screws_precision}});
+            QVector<QVector<float>> params({{screws_width + screw_spot_thickness, (box_height + box_thickness*1.5f)*2, (float)screws_precision}, {screws_width, (box_height + box_thickness*1.5f)*2, (float)screws_precision}});
             QVector<QVector3D> c({centers[i], centers[i]});
 
             QVector<QVector3D> rots({{PI/2,PI/2,0},{PI/2,PI/2,0}});
@@ -149,4 +146,12 @@ void Box::generate(QString box_part) {
         }
         rules.insert(box_part, {rule});
     }
+}
+
+void Box::set_rotation(QVector3D direction, QString screw_part) {
+
+}
+
+void Box::generateRules(QString screw_part) {
+
 }

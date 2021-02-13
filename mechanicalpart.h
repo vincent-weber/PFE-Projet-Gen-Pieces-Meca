@@ -20,7 +20,7 @@ public:
     int nb_vertices_gl_lines = 0;
 
     MechanicalPart();
-    MechanicalPart(std::vector<Primitive*> shapes, std::vector<Bool_op> op_bool, QVector3D center);
+    MechanicalPart(std::vector<Primitive*> shapes, std::vector<Bool_op> op_bool);
     void render();
 
 };

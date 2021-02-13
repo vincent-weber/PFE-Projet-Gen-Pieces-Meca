@@ -10,11 +10,14 @@ private:
     float body_width = -1;
     float head_height = -1;
     float head_width = -1;
+    int head_precision = -1;
     int body_precision = -1;
 public:
     Screw();
     std::random_device rd;
-    void generate(QString screw_part) override;
+    void generateParams(QString screw_part) override;
+    void generateRules(QString screw_part) override;
+    void set_rotation(QVector3D direction, QString screw_part) override;
 
     void set_body_height(float body_height) {
         this->body_height = body_height;
