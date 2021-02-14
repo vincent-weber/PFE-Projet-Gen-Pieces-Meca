@@ -19,7 +19,6 @@
 #include "mechanicalpart.h"
 
 #include "parser.h"
-#include "butterflygenerator.h"
 
 #include "screw.h"
 #include "nut.h"
@@ -38,7 +37,6 @@ protected slots:
     void onTimeout();
     void run_gen_screw();
     void run_gen_nut();
-    void run_gen_butterfly();
     void run_gen_box();
 
 protected:

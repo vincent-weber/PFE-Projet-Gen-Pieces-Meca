@@ -405,17 +405,9 @@ void GLArea::run_gen_box(){
     parser_box.reader();
     mecha_parts.push_back(MechanicalPart(parser_box.shapes, parser_box.ops));
 
-
     //TODO : phrase finale : union de toutes les phrases des pieces individuellement
     Screw sc;
-    //sc.set_body_width(0.1f);
     sc.createParams();
-
-    QVector<QVector3D> dirs;
-    dirs.push_back({0,1,0}); dirs.push_back({1,0,0}); dirs.push_back({0,0,1});
-
-    qDebug() << "TEST TAILLE" << box.anchor_points[0].size();
-
 
     for (int i = 0 ; i < box.anchor_points.size() ; ++i) {
         for (int j = 0 ; j < box.anchor_points[0].size(); ++j) {
@@ -429,7 +421,6 @@ void GLArea::run_gen_box(){
             Parser parser_sc(sc.sentence);
             parser_sc.reader();
             mecha_parts.push_back(MechanicalPart(parser_sc.shapes, parser_sc.ops));
-
         }
     }
 

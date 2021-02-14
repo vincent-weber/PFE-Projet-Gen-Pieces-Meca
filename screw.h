@@ -12,7 +12,7 @@ private:
     float head_width = -1;
     int head_precision = -1;
     int body_precision = -1;
-    QVector3D direction;
+    QVector3D direction = QVector3D(0,0,1);
 
 public:
     Screw();
