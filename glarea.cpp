@@ -419,7 +419,7 @@ void GLArea::run_gen_box(){
 
     for (int i = 0 ; i < box.anchor_points.size() ; ++i) {
         for (int j = 0 ; j < box.anchor_points[0].size(); ++j) {
-            sc.center = QVector3D(box.anchor_points[i][j].coords + box.anchor_points[i][j].direction*sc.get_body_height());
+            sc.center = QVector3D(box.anchor_points[i][j].coords - box.anchor_points[i][j].direction*((sc.get_body_height()/2) - sc.get_head_height()/2));
             for (int k = 0 ; k < sc.primitives_str.size() ; ++k) {
                 sc.set_rotation(box.anchor_points[i][j].direction, sc.primitives_str.at(k));
                 sc.generateRules(sc.primitives_str.at(k));

@@ -33,49 +33,55 @@ void Screw::generateParams(QString screw_part) {
 }
 
 void Screw::set_rotation(QVector3D direction, QString screw_part) {
-
+    this->direction = direction;
     QVector3D vec_un(1,1,1);
+    QVector3D vec_base;
+
     if (screw_part == "ScrewBodyCyl") {
-        QVector3D vec_base(0,0,1);
-        rotation = (vec_un - (vec_base + direction)) * PI/2;
+        vec_base= QVector3D(0,0,1);
     }
     else if (screw_part == "ScrewHeadCyl") {
-        QVector3D vec_base(0,0,1);
-        rotation = (vec_un - (vec_base + direction)) * PI/2;
+        vec_base= QVector3D(0,0,1);
     }
     else if (screw_part == "ScrewHeadCyl6") {
-        QVector3D vec_base(0,0,1);
-        rotation = (vec_un - (vec_base + direction)) * PI/2;
+        vec_base = QVector3D(0,0,1);
     }
     else if (screw_part == "ScrewHeadCub") {
-        QVector3D vec_base(0,1,0);
-        rotation = (vec_un - (vec_base + direction)) * PI/2;
+        vec_base = QVector3D(0,1,0);
     }
     else if (screw_part == "ScrewInterCyl6") {
-        QVector3D vec_base(0,0,1);
-        rotation = (vec_un - (vec_base + direction)) * PI/2;
+        vec_base = QVector3D(0,0,1);
     }
-    qDebug() << "ROTATION DE" << rotation;
+
+    if(vec_base == direction || vec_base == -direction) {
+        rotation = QVector3D(0,0,0);
+    }
+    else rotation = (vec_un - (vec_base + direction)) * PI/2;
 }
 
 void Screw::generateRules(QString screw_part) {
+
+    QVector3D centerBody(center[0], center[1], center[2]);
+    QVector3D centerHead(center[0] + body_height/2 * direction[0], center[1] + body_height/2 * direction[1], center[2] + body_height/2 *direction[2]);
+    QVector3D centerInterCyl(center[0] + (body_height/2 - head_height/2) * direction[0], center[1] + (body_height/2 - head_height/2) * direction[1], center[2] + (body_height/2 - head_height/2) *direction[2]);
+
     if (screw_part == "ScrewBodyCyl") {
-        createLeafRulesSingle("cyl", screw_part, QVector<float>({body_width, body_height, (float)body_precision}), QVector3D(center[0], center[1], center[2]), rotation);
+        createLeafRulesSingle("cyl", screw_part, QVector<float>({body_width, body_height, (float)body_precision}), centerBody, rotation);
     }
     else if (screw_part == "ScrewHeadCyl") {
-        createLeafRulesSingle("cyl", screw_part, QVector<float>({head_width, head_height, (float)head_precision}), QVector3D(center[0], center[1] + body_height/2, center[2]), rotation);
+        createLeafRulesSingle("cyl", screw_part, QVector<float>({head_width, head_height, (float)head_precision}), centerHead, rotation);
     }
     else if (screw_part == "ScrewHeadCyl6") {
-        createLeafRulesSingle("cyl", screw_part, QVector<float>({head_width, head_height, 6}), QVector3D(center[0], center[1] + body_height/2, center[2]), rotation);
+        createLeafRulesSingle("cyl", screw_part, QVector<float>({head_width, head_height, 6}), centerHead, rotation);
     }
     else if (screw_part == "ScrewHeadCub") {
-        createLeafRulesSingle("cub", screw_part, QVector<float>({head_width, head_height, head_width}), QVector3D(center[0], center[1] + body_height/2, center[2]), rotation);
+        createLeafRulesSingle("cub", screw_part, QVector<float>({head_width, head_height, head_width}), centerHead, rotation);
     }
     else if (screw_part == "ScrewInterCyl6") {
         float inter_cyl_radius = (head_width + body_width) / 2;
         int inter_cyl_precision = body_precision;
         float inter_cyl_length = head_height;
-        createLeafRulesSingle("cyl", screw_part, QVector<float>({inter_cyl_radius, inter_cyl_length, (float)inter_cyl_precision}), QVector3D(center[0],center[1] + body_height/2 - head_height/2,center[2]), rotation);
+        createLeafRulesSingle("cyl", screw_part, QVector<float>({inter_cyl_radius, inter_cyl_length, (float)inter_cyl_precision}), centerInterCyl, rotation);
     }
 }
 

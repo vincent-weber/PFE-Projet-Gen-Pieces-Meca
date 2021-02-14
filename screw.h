@@ -12,6 +12,8 @@ private:
     float head_width = -1;
     int head_precision = -1;
     int body_precision = -1;
+    QVector3D direction;
+
 public:
     Screw();
     std::random_device rd;
@@ -37,6 +39,10 @@ public:
 
     float get_body_height() {
         return body_height;
+    }
+
+    float get_head_height(){
+        return head_height;
     }
 };
 
