@@ -27,6 +27,8 @@ GLArea::GLArea(QWidget *parent) :
 
     Generator::initRules();
 
+    //shapes.push_back(new Cuboid(5,5,10, V3(0, 0, 0), V3(0,0,0)));
+
 }
 
 GLArea::~GLArea()
@@ -109,12 +111,14 @@ void GLArea::makeGLObjects()
     vbo_sol.allocate(vertData_sol.constData(), vertData_sol.count() * int(sizeof(GLfloat)));
 
     QVector<GLdouble> vertData_axes;
-    vertData_axes.append(0); vertData_axes.append(10); vertData_axes.append(0); vertData_axes.append(255); vertData_axes.append(0); vertData_axes.append(0);
-    vertData_axes.append(5); vertData_axes.append(10); vertData_axes.append(0); vertData_axes.append(255); vertData_axes.append(0); vertData_axes.append(0);
-    vertData_axes.append(0); vertData_axes.append(10); vertData_axes.append(0); vertData_axes.append(0); vertData_axes.append(255); vertData_axes.append(0);
-    vertData_axes.append(0); vertData_axes.append(15); vertData_axes.append(0); vertData_axes.append(0); vertData_axes.append(255); vertData_axes.append(0);
-    vertData_axes.append(0); vertData_axes.append(10); vertData_axes.append(0); vertData_axes.append(0); vertData_axes.append(0); vertData_axes.append(255);
-    vertData_axes.append(0); vertData_axes.append(10); vertData_axes.append(5); vertData_axes.append(0); vertData_axes.append(0); vertData_axes.append(255);
+    float height_axes = 0;
+    float length_axes = 15;
+    vertData_axes.append(0);           vertData_axes.append(height_axes);             vertData_axes.append(0);           vertData_axes.append(255); vertData_axes.append(0); vertData_axes.append(0);
+    vertData_axes.append(length_axes); vertData_axes.append(height_axes);             vertData_axes.append(0);           vertData_axes.append(255); vertData_axes.append(0); vertData_axes.append(0);
+    vertData_axes.append(0);           vertData_axes.append(height_axes);             vertData_axes.append(0);           vertData_axes.append(0); vertData_axes.append(255); vertData_axes.append(0);
+    vertData_axes.append(0);           vertData_axes.append(height_axes+length_axes); vertData_axes.append(0);           vertData_axes.append(0); vertData_axes.append(255); vertData_axes.append(0);
+    vertData_axes.append(0);           vertData_axes.append(height_axes);             vertData_axes.append(0);           vertData_axes.append(0); vertData_axes.append(0); vertData_axes.append(255);
+    vertData_axes.append(0);           vertData_axes.append(height_axes);             vertData_axes.append(length_axes); vertData_axes.append(0); vertData_axes.append(0); vertData_axes.append(255);
 
     vbo_axes.create();
     vbo_axes.bind();

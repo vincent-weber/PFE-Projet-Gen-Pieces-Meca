@@ -12,9 +12,9 @@ void Primitive::transform() {
     double rotZ = CGAL::to_double(rotation[2]);
 
     //Rotation X
-    PMP::transform(CGAL::Aff_transformation_3<K>(cos(rotX), -sin(rotX), 0,
-                                                sin(rotX), cos(rotX), 0,
-                                                0, 0, 1), mesh);
+    PMP::transform(CGAL::Aff_transformation_3<K>(1, 0, 0,
+                                                0, cos(rotX), -sin(rotX),
+                                                0, sin(rotX), cos(rotX)), mesh);
 
     //Rotation Y
     PMP::transform(CGAL::Aff_transformation_3<K>(cos(rotY), 0, -sin(rotY),
