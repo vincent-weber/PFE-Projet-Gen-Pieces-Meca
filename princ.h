@@ -21,7 +21,6 @@ signals:
     void run_gen_screw_button();
     void run_gen_nut_button();
     void run_gen_box_button();
-
 };
 
 #endif // PRINC_H

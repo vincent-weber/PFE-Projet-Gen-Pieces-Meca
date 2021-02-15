@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QSurfaceFormat>
 #include <QMatrix4x4>
+#include <QRegularExpression>
 
 #include "glarea.h"
 
@@ -24,6 +25,28 @@ GLArea::GLArea(QWidget *parent) :
     connect (timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
     timer->start();
     elapsedTimer.start();
+
+//    QString test = "Sĥere+head-body*test";
+//    QStringList reg = test.split(QRegExp("\\+|\\-|\\*"));
+//    qDebug() << reg;
+
+
+//    shapes.push_back(new Sphere(5,10,20, V3(0,11.5,20), V3(PI/2, PI/2, 0)));
+//    shapes.push_back(new Cylinder(7,4,15, V3(0,10,20), V3(PI/2, PI/2, 0)));
+//    shapes.push_back(new Cylinder(5,4,20, V3(0,6.5,20), V3(PI/2, PI/2, 0)));
+
+//    shapes = parser.cyls_screw;
+
+//    std::vector<Shape3D*> cyls_screw;
+//    cyls_screw.push_back(new Sphere(5,10,20, V3(0,11.5,10), V3(PI/2, PI/2, 0)));
+//    cyls_screw.push_back(new Cuboid(2,4,3, V3(0,10,10), V3(PI/2, PI/2, 0)));
+//    cyls_screw.push_back(new Cylinder(5,4,20, V3(0,6.5,10), V3(PI/2, PI/2, 0)));
+
+//    std::vector<Bool_op> ops;
+//    ops.push_back(UNION);
+//    ops.push_back(UNION);
+
+//    screw = Screw(parser.cyls_screw, parser.ops);
 
     Generator::initRules();
 
@@ -332,6 +355,7 @@ void GLArea::onTimeout()
     update();
 }
 
+
 void GLArea::run_gen_screw(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
@@ -385,26 +409,22 @@ void GLArea::run_gen_box(){
     parser_box.reader();
     mecha_parts.push_back(MechanicalPart(parser_box.shapes, parser_box.ops));
 
-
     //TODO : phrase finale : union de toutes les phrases des pieces individuellement
     Screw sc;
-    //sc.set_body_width(0.1f);
     sc.createParams();
 
     for (int i = 0 ; i < box.anchor_points.size() ; ++i) {
         for (int j = 0 ; j < box.anchor_points[0].size(); ++j) {
-            sc.center = QVector3D(box.anchor_points[i][j].coords + box.anchor_points[i][j].direction*sc.get_body_height());
-            for (int i = 0 ; i < sc.primitives_str.size() ; ++i) {
-                sc.set_rotation(box.anchor_points[i][j].direction, sc.primitives_str.at(i));
-                sc.generateRules(sc.primitives_str.at(i));
+            sc.center = QVector3D(box.anchor_points[i][j].coords - box.anchor_points[i][j].direction*((sc.get_body_height()/2) - sc.get_head_height()/2));
+            for (int k = 0 ; k < sc.primitives_str.size() ; ++k) {
+                sc.set_rotation(box.anchor_points[i][j].direction, sc.primitives_str.at(k));
+                sc.generateRules(sc.primitives_str.at(k));
             }
             sc.sentence = sc.base_sentence;
             sc.computeSentence();
-
             Parser parser_sc(sc.sentence);
             parser_sc.reader();
             mecha_parts.push_back(MechanicalPart(parser_sc.shapes, parser_sc.ops));
-
         }
     }
 

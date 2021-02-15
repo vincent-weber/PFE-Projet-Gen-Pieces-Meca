@@ -5,6 +5,8 @@ QHash<QString, QVector<QString>> Generator::rules;
 void Generator::initRules() {
     rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub", "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
     rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
+    rules.insert("Butterfly", {"ButterflyBoby+LeftWing+RightWing"});
+//    rules.insert("Box", {"BoiteCube+VisAnglesBoiteCub"});
     rules.insert("Box", {/*"BoiteCube+VisAnglesBoiteCub", */"BoiteRelief+AncrageGrille3x3"});
 }
 
@@ -94,9 +96,9 @@ void Generator::createLeafRulesSingle(QString primitive_type, QString in, QVecto
     out += ")";
     out += "]";
 
-    qDebug() << "RULES AVANT : " << rules[in];
+//    qDebug() << "RULES AVANT : " << rules[in];
     rules.insert(in, {out});
-    qDebug() << "RULES APRES : " << rules[in];
+//    qDebug() << "RULES APRES : " << rules[in];
 }
 
 void Generator::computeSentence() {
