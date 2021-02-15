@@ -410,9 +410,61 @@ void GLArea::run_gen_box(){
     mecha_parts.push_back(MechanicalPart(parser_box.shapes, parser_box.ops));
 
     //TODO : phrase finale : union de toutes les phrases des pieces individuellement
+
+    //AU début, on créé un objet générator (Box) qui a le level 0. Ensuite, on fait N itérations, N étant le nombre de levels
+    //de profondeurs de l'arbre, et on créé des générator de lvl i+1 aux points d'attache des générators de lvl i.
+    //Quand on parcourt des générator de level i, on regarde le point d'ancrage auquel il est attaché pour savoir quel objet lui est lié.
+    //Selon l'objet lié, on attache tel ou tel objet au générator que l'on parcourt (par ex pour pas attacher une boîte à une autre boîte).
+    //Du coup, quelle structure utiliser pour stocker les objets de type Generator ? Arbre ? Ou on stocke les nouveaux et les précédents dans 2 vectors différents ?
+
+    //Séparer le level 0 des autres ? Car au level 0, on n'a pas besoin de regarder les anciens objets puisqu'il y en a pas : le traitement est plus simple.
+
+    //Comment faire en sorte de ne pas créer de points d'ancrage sur un objet à l'endroit où il est déjà attaché à un objet du lvl précédent ?
+    //Solution moche : calculer la distance de celui qu'on veut créer avec le anchor_point_prev_lvl de l'objet, si elle est trs petite on le créé pas
+    //(ou on met is_active à true et on gère ce bool mais je vois pas trop l'intérêt comme ça).
+
+    int level_max = 2;
+    QVector<Generator*> current_lvl_objects;
+    QVector<Generator*> new_objects;
+    current_lvl_objects.push_back(&box);
+
+    for (int level = 0 ; level < level_max ; ++level) {
+        for (int ind_obj = 0 ; ind_obj < current_lvl_objects.size() ; ++ind_obj) {
+            Generator* object = current_lvl_objects[ind_obj];
+            for (int i = 0 ; i < object->anchor_points.size() ; ++i) {
+                //ici déterminer le type d'objet à attacher (pour l'instant que des screws, et là ca fait que des screws différentes a chaque fois)
+                //je les créé sur le tas pour pouvoir les instancier en tant que Generator*
+                Generator* object = new Screw();
+                object->createParams();
+
+                std::random_device rd;
+                int ind_anchor;
+                do {
+                    //do while degueu, on peut retirer les mêmes plusieurs fois, voir ça plus tard, ptet même inutile car is_active sert ptet a rien
+                    ind_anchor = std::uniform_int_distribution<int>{0, object->anchor_points[i].size()-1}(rd);
+                } while(object->anchor_points[i][ind_anchor].is_active);
+                object->anchor_point_prev_lvl = &object->anchor_points[i][ind_anchor];
+
+                object->set_center(object->anchor_points[i][ind_anchor]);
+                for (int k = 0 ; k < object->primitives_str.size() ; ++k) {
+                    object->set_rotation(object->anchor_points[i][ind_anchor].direction, object->primitives_str.at(k));
+                    object->generateRules(object->primitives_str.at(k));
+                }
+
+                object->sentence = object->base_sentence;
+                object->computeSentence();
+                Parser parser(object->sentence);
+                parser.reader();
+                mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
+                /*for (int j = 0 ; j < object->anchor_points[0].size(); ++j) {
+
+                }*/
+            }
+        }
+    }
+
     Screw sc;
     sc.createParams();
-
     for (int i = 0 ; i < box.anchor_points.size() ; ++i) {
         for (int j = 0 ; j < box.anchor_points[0].size(); ++j) {
             sc.center = QVector3D(box.anchor_points[i][j].coords - box.anchor_points[i][j].direction*((sc.get_body_height()/2) - sc.get_head_height()/2));

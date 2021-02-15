@@ -17,9 +17,11 @@ public:
     QVector3D center;
     QVector3D rotation;
     virtual void set_rotation(QVector3D direction, QString screw_part) = 0;
+    virtual void set_center(AnchorPoint anchor_point);
 
     std::random_device rd_gen;
     QVector<QVector<AnchorPoint>> anchor_points;
+    AnchorPoint* anchor_point_prev_lvl;
 
     QString base_sentence;
     QString sentence;

@@ -59,6 +59,10 @@ void Screw::set_rotation(QVector3D direction, QString screw_part) {
     else rotation = (vec_un - (vec_base + direction)) * PI/2;
 }
 
+void Screw::set_center(AnchorPoint anchor_point) {
+    center = QVector3D(anchor_point.coords - anchor_point.direction*((get_body_height()/2) - get_head_height()/2));
+}
+
 void Screw::generateRules(QString screw_part) {
 
     QVector3D centerBody(center[0], center[1], center[2]);

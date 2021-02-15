@@ -148,6 +148,10 @@ void Box::generateParams(QString box_part) {
     }
 }
 
+void Box::set_center(AnchorPoint anchor_point) {
+
+}
+
 void Box::set_rotation(QVector3D direction, QString screw_part) {
 
 }

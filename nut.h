@@ -16,6 +16,7 @@ public:
     std::random_device rd;
     void generateParams(QString screw_part) override;
     void generateRules(QString screw_part) override;
+    void set_center(AnchorPoint anchor_point) override;
     void set_rotation(QVector3D direction, QString screw_part) override;
 
     void set_main_cyl_radius(float main_cyl_radius) {
