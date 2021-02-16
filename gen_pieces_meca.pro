@@ -24,6 +24,7 @@ SOURCES += main.cpp\
         cuboid.cpp \
         cylinder.cpp \
         generator.cpp \
+        machinery.cpp \
         mechanicalpart.cpp \
         nut.cpp \
         parser.cpp \
@@ -44,6 +45,7 @@ HEADERS  += princ.h \
         cylinder.h \
         generator.h \
         glarea.h \
+        machinery.h \
         mechanicalpart.h \
         nut.h \
         parser.h \

@@ -174,6 +174,13 @@ void GLArea::prepareMechaParts() {
     }
 }
 
+void GLArea::prepareMachinery() {
+    machinery.render();
+    vbo_machinery.create();
+    vbo_machinery.bind();
+    vbo_machinery.allocate(machinery.gl_data.constData(), machinery.gl_data.count() * int(sizeof(GLdouble)));
+}
+
 
 void GLArea::tearGLObjects()
 {
@@ -261,8 +268,10 @@ void GLArea::paintGL()
 
     //Rendu des pièces mécaniques
     for (unsigned i = 0 ; i < mecha_parts.size() ; ++i) {
-        render_shape_color(vbos_mecha_parts[i], projectionMatrix, viewMatrix, mecha_parts[i].nb_vertices_gl_faces, mecha_parts[i].nb_vertices_gl_lines);
+        //render_shape_color(vbos_mecha_parts[i], projectionMatrix, viewMatrix, mecha_parts[i].nb_vertices_gl_faces, mecha_parts[i].nb_vertices_gl_lines);
     }
+
+    render_shape_color(vbo_machinery, projectionMatrix, viewMatrix, machinery.nb_vertices_gl_faces, machinery.nb_vertices_gl_lines);
 
 }
 
@@ -404,11 +413,15 @@ void GLArea::run_gen_box(){
     vbos_mecha_parts.clear();
     Box box;
     box.createParams();
+    for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
+        box.generateRules(box.primitives_str.at(k));
+    }
     box.set_anchor_points();
     box.computeSentence();
     Parser parser_box(box.sentence);
     parser_box.reader();
-    mecha_parts.push_back(MechanicalPart(parser_box.shapes, parser_box.ops));
+    MechanicalPart base(MechanicalPart(parser_box.shapes, parser_box.ops));
+    mecha_parts.push_back(base);
 
     //TODO : phrase finale : union de toutes les phrases des pieces individuellement
 
@@ -424,6 +437,8 @@ void GLArea::run_gen_box(){
     //Solution moche : calculer la distance de celui qu'on veut créer avec le anchor_point_prev_lvl de l'objet, si elle est trs petite on le créé pas
     //(ou on met is_active à true et on gère ce bool mais je vois pas trop l'intérêt comme ça).
 
+    QVector<MechanicalPart> new_parts;
+
     int level_max = 2;
     QVector<Generator*> current_lvl_objects;
     QVector<Generator*> new_objects;
@@ -433,9 +448,9 @@ void GLArea::run_gen_box(){
         for (int ind_obj = 0 ; ind_obj < current_lvl_objects.size() ; ++ind_obj) {
             Generator* prev_object = current_lvl_objects[ind_obj];
             for (int i = 0 ; i < prev_object->anchor_points.size() ; ++i) {
+                if (prev_object->anchor_points[i].size() == 0) continue;
                 std::random_device rd;
-                int ind_anchor;
-                ind_anchor = std::uniform_int_distribution<int>{0, prev_object->anchor_points[i].size()-1}(rd);
+                int ind_anchor = std::uniform_int_distribution<int>{0, prev_object->anchor_points[i].size()-1}(rd);
                 AnchorPoint chosen_anchor_point = prev_object->anchor_points[i][ind_anchor];
 
                 Generator* object;
@@ -467,31 +482,24 @@ void GLArea::run_gen_box(){
                 object->computeSentence();
                 Parser parser(object->sentence);
                 parser.reader();
-                mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
+                MechanicalPart new_part(parser.shapes, parser.ops);
+                mecha_parts.push_back(new_part);
+                new_parts.push_back(new_part);
 
                 new_objects.push_back(object);
             }
         }
+        if (level == 1) {
+            machinery = Machinery(base, new_parts);
+        }
+        else if (level > 1) {
+            machinery.add_new_parts(new_parts);
+        }
+        new_parts.clear();
         current_lvl_objects = new_objects;
         new_objects.clear();
     }
 
-    /*Screw sc;
-    sc.createParams();
-    for (int i = 0 ; i < box.anchor_points.size() ; ++i) {
-        for (int j = 0 ; j < box.anchor_points[0].size(); ++j) {
-            sc.center = QVector3D(box.anchor_points[i][j].coords - box.anchor_points[i][j].direction*((sc.get_body_height()/2) - sc.get_head_height()/2));
-            for (int k = 0 ; k < sc.primitives_str.size() ; ++k) {
-                sc.set_rotation(box.anchor_points[i][j].direction, sc.primitives_str.at(k));
-                sc.generateRules(sc.primitives_str.at(QVector3D(42,42,42), k));
-            }
-            sc.sentence = sc.base_sentence;
-            sc.computeSentence();
-            Parser parser_sc(sc.sentence);
-            parser_sc.reader();
-            mecha_parts.push_back(MechanicalPart(parser_sc.shapes, parser_sc.ops));
-        }
-    }*/
-
-    prepareMechaParts();
+    //prepareMechaParts();
+    prepareMachinery();
 }

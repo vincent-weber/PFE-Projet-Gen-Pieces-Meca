@@ -5,12 +5,13 @@ Screw::Screw()
     generator_name = "Screw";
     center = QVector3D(0,0,0);
     direction = QVector3D(0,0,1);
+    max_size = 0.3f;
 }
 
 void Screw::generateParams(QString screw_part) {
-    //TODO : Si la valeur de taille max du point d'ancrage attaché est plus petite que la borne maximale (ici 0.3), on passe cette taille max en borne maximale
+    float max_value = get_max_possible_size();
     if (screw_part == "ScrewBodyCyl") {
-        body_width = computeParameter(body_width, rd, 0.1f, 0.3f);
+        body_width = computeParameter(body_width, rd, 0.1f, max_value);
         body_precision = computeParameter(body_precision, rd, 10, 20);
         if (body_precision % 2 == 1) ++body_precision;
         body_height = computeParameter(body_height, rd, body_width*2,body_width*8);
@@ -35,7 +36,8 @@ void Screw::generateParams(QString screw_part) {
 }
 
 void Screw::set_center() {
-    center = QVector3D(anchor_point_prev_lvl->coords - anchor_point_prev_lvl->direction*((body_height/2) - head_height/2));
+    QVector3D offset = - anchor_point_prev_lvl->direction*0.001;
+    center = QVector3D(anchor_point_prev_lvl->coords - anchor_point_prev_lvl->direction*((body_height/2) - head_height/2) + offset);
 }
 
 void Screw::set_rotation(QString screw_part) {

@@ -5,9 +5,9 @@
 
 class Pipe : public Generator
 {
-    float radius;
-    float length;
-    int precision;
+    float radius = -1;
+    float length = -1;
+    int precision = -1;
 public:
     Pipe();
     std::random_device rd;

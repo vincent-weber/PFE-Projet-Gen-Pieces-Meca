@@ -17,6 +17,7 @@
 #include "sphere.h"
 #include "cuboid.h"
 #include "mechanicalpart.h"
+#include "machinery.h"
 
 #include "parser.h"
 
@@ -74,8 +75,12 @@ private:
     std::vector<QOpenGLBuffer> vbos_mecha_parts;
     std::vector<bool> display_mecha_part;
 
+    Machinery machinery;
+    QOpenGLBuffer vbo_machinery;
+
     void makeGLObjects();
     void prepareMechaParts();
+    void prepareMachinery();
     void tearGLObjects();
     void render_shape_color(QOpenGLBuffer& vbo, QMatrix4x4& projectionMatrix, QMatrix4x4& viewMatrix, int nb_vert_faces, int nb_vert_lines);
 };

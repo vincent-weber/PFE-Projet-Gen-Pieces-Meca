@@ -4,6 +4,8 @@ Box::Box()
 {
     generator_name = "Box";
     max_size = 10;
+    center = QVector3D(0,0,0);
+    rotation = QVector3D(0,0,0);
 }
 
 //TODO : stocker les 4 centres des 4 cylindres pour les vis
@@ -24,13 +26,7 @@ void Box::generateParams(QString box_part) {
         rules.insert(box_part, {rule});
     }
     else if (box_part == "BoiteRelief") {
-        float max_value = max_size;
-        if (anchor_point_prev_lvl != nullptr) {
-            float max_accepted_size = anchor_point_prev_lvl->max_accepted_size;
-            if (max_accepted_size < max_value) {
-                max_value = max_accepted_size;
-            }
-        }
+        float max_value = get_max_possible_size();
 
         //TODO : gérer la valeur minimale aussi
         box_height = computeParameter(box_height, rd, 5.0f, max_value);
@@ -87,6 +83,7 @@ void Box::set_anchor_points() {
         for (int j = 0 ; j < 3 ; ++j) {
             QVector3D coords(x,y,z);
             QVector3D coords2(x,y-box_height,z);
+            QVector3D direction(0,1,0);
             AnchorPoint anch(coords, direction, max_accepted_size_anchor_point);
             anch.owner_object = this;
             AnchorPoint anch2(coords2, -direction, max_accepted_size_anchor_point);
@@ -154,10 +151,12 @@ void Box::set_center() {
 
 }
 
-void Box::set_rotation(QString screw_part) {
+void Box::set_rotation(QString box_part) {
 
 }
 
-void Box::generateRules(QString screw_part) {
-
+void Box::generateRules(QString box_part) {
+    if (box_part == "BoiteRelief") {
+        createLeafRulesSingle("cub", box_part, {box_length, box_height, box_width}, center, rotation);
+    }
 }

@@ -13,7 +13,7 @@ class Generator
 {
 public:
     QStringList primitives_str;
-    const float min_distance_between_anchor_points = 0.05f;
+    const float min_distance_between_anchor_points = 0.003f;
     float max_size;
 
     QVector3D center;
@@ -23,10 +23,11 @@ public:
     virtual void set_center() = 0;
     virtual void set_anchor_points() = 0;
     void set_prev_anchor_point(AnchorPoint* anchor_point);
+    float get_max_possible_size();
 
     std::random_device rd_gen;
     QVector<QVector<AnchorPoint>> anchor_points;
-    AnchorPoint* anchor_point_prev_lvl;
+    AnchorPoint* anchor_point_prev_lvl = nullptr;
 
     QString base_sentence;
     QString sentence;

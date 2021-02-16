@@ -44,6 +44,17 @@ void Generator::set_prev_anchor_point(AnchorPoint* anchor_point) {
     direction = anchor_point->direction;
 }
 
+float Generator::get_max_possible_size() {
+    float max_value = max_size;
+    if (anchor_point_prev_lvl != nullptr) {
+        float max_accepted_size = anchor_point_prev_lvl->max_accepted_size;
+        if (max_accepted_size < max_value) {
+            max_value = max_accepted_size;
+        }
+    }
+    return max_value;
+}
+
 QString Generator::createLeafRulesMultiple(QVector<QString>& primitives, QString op_bools, QVector<QVector<float>>& params, QVector<QVector3D>& centers, QVector<QVector3D>& rots) {
     QString out = "";
     int size = primitives.size();

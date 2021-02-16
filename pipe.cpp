@@ -3,26 +3,23 @@
 Pipe::Pipe()
 {
     generator_name = "Pipe";
+    max_size = 0.75f;
 }
 
 void Pipe::generateParams(QString pipe_part) {
     if (pipe_part == "ClassicCyl") {
-        float max_value = max_size;
-        if (anchor_point_prev_lvl != nullptr) {
-            float max_accepted_size = anchor_point_prev_lvl->max_accepted_size;
-            if (max_accepted_size < max_value) {
-                max_value = max_accepted_size;
-            }
-        }
-        radius = computeParameter(radius, rd, 1.0f, 3.0f);
+
+        float max_value = get_max_possible_size();
+        radius = computeParameter(radius, rd, 0.15f, max_value);
         precision = computeParameter(precision, rd, 10, 20);
         if (precision % 2 == 1) ++precision;
-        length = computeParameter(length, rd, radius*5,radius*12);
+        length = computeParameter(length, rd, radius*2,radius*5);
     }
 }
 
 void Pipe::set_center() {
-    center = QVector3D(anchor_point_prev_lvl->coords - anchor_point_prev_lvl->direction*(length/2));
+    QVector3D offset = - anchor_point_prev_lvl->direction*0.001;
+    center = QVector3D(anchor_point_prev_lvl->coords + anchor_point_prev_lvl->direction*(length/2)) + offset;
 }
 
 void Pipe::set_rotation(QString pipe_part) {
