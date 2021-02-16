@@ -19,12 +19,16 @@ void Nut::generateParams(QString nut_part) {
     }
 }
 
-void Nut::set_center(AnchorPoint anchor_point) {
+void Nut::set_center() {
 
 }
 
-void Nut::set_rotation(QVector3D direction, QString screw_part) {
+void Nut::set_rotation(QString screw_part) {
     rotation = QVector3D(0, PI/2, PI/2);
+}
+
+void Nut::set_anchor_points() {
+
 }
 
 void Nut::generateRules(QString nut_part) {

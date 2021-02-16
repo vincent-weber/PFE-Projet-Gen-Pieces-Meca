@@ -12,15 +12,15 @@ private:
     float head_width = -1;
     int head_precision = -1;
     int body_precision = -1;
-    QVector3D direction = QVector3D(0,0,1);
 
 public:
     Screw();
     std::random_device rd;
     void generateParams(QString screw_part) override;
     void generateRules(QString screw_part) override;
-    void set_rotation(QVector3D direction, QString screw_part) override;
-    void set_center(AnchorPoint anchor_point) override;
+    void set_rotation(QString screw_part) override;
+    void set_center() override;
+    void set_anchor_points() override;
 
     void set_body_height(float body_height) {
         this->body_height = body_height;

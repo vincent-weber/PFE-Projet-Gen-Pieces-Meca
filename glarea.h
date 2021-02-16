@@ -23,6 +23,7 @@
 #include "screw.h"
 #include "nut.h"
 #include "box.h"
+#include "pipe.h"
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions

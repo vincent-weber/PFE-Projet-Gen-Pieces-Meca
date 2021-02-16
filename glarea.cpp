@@ -384,7 +384,7 @@ void GLArea::run_gen_nut(){
     nut_gen.set_main_cyl_radius(2.5f);
     nut_gen.createParams();
     for (int i = 0 ; i < nut_gen.primitives_str.size() ; ++i) {
-        nut_gen.set_rotation(QVector3D(42,42,42), "JFLKSDJF");
+        nut_gen.set_rotation("JFLKSDJF");
         nut_gen.generateRules(nut_gen.primitives_str.at(i));
     }
     nut_gen.computeSentence();
@@ -404,6 +404,7 @@ void GLArea::run_gen_box(){
     vbos_mecha_parts.clear();
     Box box;
     box.createParams();
+    box.set_anchor_points();
     box.computeSentence();
     Parser parser_box(box.sentence);
     parser_box.reader();
@@ -430,47 +431,59 @@ void GLArea::run_gen_box(){
 
     for (int level = 0 ; level < level_max ; ++level) {
         for (int ind_obj = 0 ; ind_obj < current_lvl_objects.size() ; ++ind_obj) {
-            Generator* object = current_lvl_objects[ind_obj];
-            for (int i = 0 ; i < object->anchor_points.size() ; ++i) {
-                //ici déterminer le type d'objet à attacher (pour l'instant que des screws, et là ca fait que des screws différentes a chaque fois)
-                //je les créé sur le tas pour pouvoir les instancier en tant que Generator*
-                Generator* object = new Screw();
-                object->createParams();
-
+            Generator* prev_object = current_lvl_objects[ind_obj];
+            for (int i = 0 ; i < prev_object->anchor_points.size() ; ++i) {
                 std::random_device rd;
                 int ind_anchor;
-                do {
-                    //do while degueu, on peut retirer les mêmes plusieurs fois, voir ça plus tard, ptet même inutile car is_active sert ptet a rien
-                    ind_anchor = std::uniform_int_distribution<int>{0, object->anchor_points[i].size()-1}(rd);
-                } while(object->anchor_points[i][ind_anchor].is_active);
-                object->anchor_point_prev_lvl = &object->anchor_points[i][ind_anchor];
+                ind_anchor = std::uniform_int_distribution<int>{0, prev_object->anchor_points[i].size()-1}(rd);
+                AnchorPoint chosen_anchor_point = prev_object->anchor_points[i][ind_anchor];
 
-                object->set_center(object->anchor_points[i][ind_anchor]);
+                Generator* object;
+                if (level == 0) {
+                    int lol = std::uniform_int_distribution<int>{0, 1}(rd);
+                    if (lol == 0) {
+                        object = new Pipe();
+                    }
+                    else {
+                        object = new Screw();
+                    }
+
+                }
+                else if (level == 1) {
+                    object = new Screw();
+                }
+
+                object->set_prev_anchor_point(&chosen_anchor_point);
+                object->createParams();
+
+                object->set_center();
                 for (int k = 0 ; k < object->primitives_str.size() ; ++k) {
-                    object->set_rotation(object->anchor_points[i][ind_anchor].direction, object->primitives_str.at(k));
+                    object->set_rotation(object->primitives_str.at(k));
                     object->generateRules(object->primitives_str.at(k));
                 }
+                object->set_anchor_points();
 
                 object->sentence = object->base_sentence;
                 object->computeSentence();
                 Parser parser(object->sentence);
                 parser.reader();
                 mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
-                /*for (int j = 0 ; j < object->anchor_points[0].size(); ++j) {
 
-                }*/
+                new_objects.push_back(object);
             }
         }
+        current_lvl_objects = new_objects;
+        new_objects.clear();
     }
 
-    Screw sc;
+    /*Screw sc;
     sc.createParams();
     for (int i = 0 ; i < box.anchor_points.size() ; ++i) {
         for (int j = 0 ; j < box.anchor_points[0].size(); ++j) {
             sc.center = QVector3D(box.anchor_points[i][j].coords - box.anchor_points[i][j].direction*((sc.get_body_height()/2) - sc.get_head_height()/2));
             for (int k = 0 ; k < sc.primitives_str.size() ; ++k) {
                 sc.set_rotation(box.anchor_points[i][j].direction, sc.primitives_str.at(k));
-                sc.generateRules(sc.primitives_str.at(k));
+                sc.generateRules(sc.primitives_str.at(QVector3D(42,42,42), k));
             }
             sc.sentence = sc.base_sentence;
             sc.computeSentence();
@@ -478,7 +491,7 @@ void GLArea::run_gen_box(){
             parser_sc.reader();
             mecha_parts.push_back(MechanicalPart(parser_sc.shapes, parser_sc.ops));
         }
-    }
+    }*/
 
     prepareMechaParts();
 }

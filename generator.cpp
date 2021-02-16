@@ -5,9 +5,9 @@ QHash<QString, QVector<QString>> Generator::rules;
 void Generator::initRules() {
     rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub", "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
     rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
-    rules.insert("Butterfly", {"ButterflyBoby+LeftWing+RightWing"});
+    rules.insert("Pipe", {"ClassicCyl"});
 //    rules.insert("Box", {"BoiteCube+VisAnglesBoiteCub"});
-    rules.insert("Box", {/*"BoiteCube+VisAnglesBoiteCub", */"BoiteRelief+AncrageGrille3x3"});
+    rules.insert("Box", {/*"BoiteCube+VisAnglesBoiteCub", */"BoiteRelief"});
 }
 
 void Generator::createParams() {
@@ -37,6 +37,11 @@ int Generator::computeParameter(int param, std::random_device& rd, int min, int 
     else {
         return param;
     }
+}
+
+void Generator::set_prev_anchor_point(AnchorPoint* anchor_point) {
+    anchor_point_prev_lvl = anchor_point;
+    direction = anchor_point->direction;
 }
 
 QString Generator::createLeafRulesMultiple(QVector<QString>& primitives, QString op_bools, QVector<QVector<float>>& params, QVector<QVector3D>& centers, QVector<QVector3D>& rots) {

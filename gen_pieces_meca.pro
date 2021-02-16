@@ -27,6 +27,7 @@ SOURCES += main.cpp\
         mechanicalpart.cpp \
         nut.cpp \
         parser.cpp \
+        pipe.cpp \
         primitive.cpp \
         princ.cpp \
         glarea.cpp \
@@ -46,6 +47,7 @@ HEADERS  += princ.h \
         mechanicalpart.h \
         nut.h \
         parser.h \
+        pipe.h \
         primitive.h \
         screw.h \
         sphere.h \
