@@ -19,6 +19,7 @@ public:
     void set_center() override;
     void set_rotation(QString screw_part) override;
     void set_anchor_points() override;
+    QVector<AnchorPoint> choose_anchor_points() override;
 
     void set_main_cyl_radius(float main_cyl_radius) {
         this->main_cyl_radius = main_cyl_radius;

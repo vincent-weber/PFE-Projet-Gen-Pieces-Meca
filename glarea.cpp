@@ -412,6 +412,8 @@ void GLArea::run_gen_box(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
     Box box;
+    box.anch_type = BOX_GRID_3X3;
+    //box.anch_type = BOX_GRID_3X3_RANDOM;
     box.createParams();
     for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
         box.generateRules(box.primitives_str.at(k));
@@ -420,22 +422,8 @@ void GLArea::run_gen_box(){
     box.computeSentence();
     Parser parser_box(box.sentence);
     parser_box.reader();
-    MechanicalPart base(MechanicalPart(parser_box.shapes, parser_box.ops));
+    MechanicalPart base(parser_box.shapes, parser_box.ops);
     mecha_parts.push_back(base);
-
-    //TODO : phrase finale : union de toutes les phrases des pieces individuellement
-
-    //AU début, on créé un objet générator (Box) qui a le level 0. Ensuite, on fait N itérations, N étant le nombre de levels
-    //de profondeurs de l'arbre, et on créé des générator de lvl i+1 aux points d'attache des générators de lvl i.
-    //Quand on parcourt des générator de level i, on regarde le point d'ancrage auquel il est attaché pour savoir quel objet lui est lié.
-    //Selon l'objet lié, on attache tel ou tel objet au générator que l'on parcourt (par ex pour pas attacher une boîte à une autre boîte).
-    //Du coup, quelle structure utiliser pour stocker les objets de type Generator ? Arbre ? Ou on stocke les nouveaux et les précédents dans 2 vectors différents ?
-
-    //Séparer le level 0 des autres ? Car au level 0, on n'a pas besoin de regarder les anciens objets puisqu'il y en a pas : le traitement est plus simple.
-
-    //Comment faire en sorte de ne pas créer de points d'ancrage sur un objet à l'endroit où il est déjà attaché à un objet du lvl précédent ?
-    //Solution moche : calculer la distance de celui qu'on veut créer avec le anchor_point_prev_lvl de l'objet, si elle est trs petite on le créé pas
-    //(ou on met is_active à true et on gère ce bool mais je vois pas trop l'intérêt comme ça).
 
     QVector<MechanicalPart> new_parts;
 
@@ -444,28 +432,40 @@ void GLArea::run_gen_box(){
     QVector<Generator*> new_objects;
     current_lvl_objects.push_back(&box);
 
-    for (int level = 0 ; level < level_max ; ++level) {
+    for (int level = 0 ; level <= level_max ; ++level) {
+        if (level == 1) {
+            machinery = Machinery(base, new_parts);
+        }
+        else if (level > 1) {
+            machinery.add_new_parts(new_parts);
+        }
+        new_parts.clear();
+        if (level == level_max) break;
         for (int ind_obj = 0 ; ind_obj < current_lvl_objects.size() ; ++ind_obj) {
-            Generator* prev_object = current_lvl_objects[ind_obj];
-            for (int i = 0 ; i < prev_object->anchor_points.size() ; ++i) {
-                if (prev_object->anchor_points[i].size() == 0) continue;
-                std::random_device rd;
-                int ind_anchor = std::uniform_int_distribution<int>{0, prev_object->anchor_points[i].size()-1}(rd);
-                AnchorPoint chosen_anchor_point = prev_object->anchor_points[i][ind_anchor];
 
+            Generator* prev_object = current_lvl_objects[ind_obj];
+            //Appel à une fonction dans object qui renvoie le vecteur des anchor points à parcourir selon une stratégie (aléatoire ou symétrique par ex)
+            QVector<AnchorPoint> chosen_anchor_points = prev_object->choose_anchor_points();
+            for (int i = 0 ; i < chosen_anchor_points.size() ; ++i) {
+                AnchorPoint chosen_anchor_point = chosen_anchor_points[i];
+
+                std::random_device rd;
                 Generator* object;
+                //temporaire : créer l'objet en fonction de l'objet précédent
                 if (level == 0) {
-                    int lol = std::uniform_int_distribution<int>{0, 1}(rd);
-                    if (lol == 0) {
+                    int val = std::uniform_int_distribution<int>{0, 1}(rd);
+                    if (val == 0) {
                         object = new Pipe();
+                        object->anch_type = PIPE_ENDS;
                     }
                     else {
                         object = new Screw();
+                        object->anch_type = NO_ANCHOR_POINTS;
                     }
-
                 }
                 else if (level == 1) {
                     object = new Screw();
+                    object->anch_type = NO_ANCHOR_POINTS;
                 }
 
                 object->set_prev_anchor_point(&chosen_anchor_point);
@@ -489,13 +489,7 @@ void GLArea::run_gen_box(){
                 new_objects.push_back(object);
             }
         }
-        if (level == 1) {
-            machinery = Machinery(base, new_parts);
-        }
-        else if (level > 1) {
-            machinery.add_new_parts(new_parts);
-        }
-        new_parts.clear();
+
         current_lvl_objects = new_objects;
         new_objects.clear();
     }

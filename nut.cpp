@@ -31,6 +31,10 @@ void Nut::set_anchor_points() {
 
 }
 
+QVector<AnchorPoint> Nut::choose_anchor_points() {
+
+}
+
 void Nut::generateRules(QString nut_part) {
     if (nut_part == "NutMainCyl") {
         createLeafRulesSingle("cyl", nut_part, QVector<float>({main_cyl_radius, main_cyl_length, (float)precision_main_cyl}), center, rotation);

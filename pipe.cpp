@@ -35,35 +35,49 @@ void Pipe::set_rotation(QString pipe_part) {
 }
 
 void Pipe::set_anchor_points() {
-    float x = center[0] + direction[0] * (length/2);
-    float y = center[1] + direction[1] * (length/2);
-    float z = center[2] + direction[2] * (length/2);
+    if (anch_type == PIPE_ENDS) {
+        float x = center[0] + direction[0] * (length/2);
+        float y = center[1] + direction[1] * (length/2);
+        float z = center[2] + direction[2] * (length/2);
 
-    QVector<AnchorPoint> anchor_point1;
-    float max_accepted_size = radius;
-    QVector3D coords(x,y,z);
-    AnchorPoint anch_point(coords, direction, max_accepted_size);
-    QVector3D coords_used_anchor_point = anchor_point_prev_lvl->coords;
-    float dist = coords_used_anchor_point.distanceToPoint(coords);
-    if (dist > min_distance_between_anchor_points) {
-        anchor_point1.push_back(anch_point);
+        QVector<AnchorPoint> anchor_point1;
+        float max_accepted_size = radius;
+        QVector3D coords(x,y,z);
+        AnchorPoint anch_point(coords, direction, max_accepted_size);
+        QVector3D coords_used_anchor_point = anchor_point_prev_lvl->coords;
+        float dist = coords_used_anchor_point.distanceToPoint(coords);
+        if (dist > min_distance_between_anchor_points) {
+            anchor_point1.push_back(anch_point);
+        }
+
+        float x2 = center[0] + direction[0] * (-length/2);
+        float y2 = center[1] + direction[1] * (-length/2);
+        float z2 = center[2] + direction[2] * (-length/2);
+
+        QVector<AnchorPoint> anchor_point2;
+        max_accepted_size = radius;
+        coords = QVector3D(x2,y2,z2);
+        AnchorPoint anch_point2(coords, direction, max_accepted_size);
+        coords_used_anchor_point = anchor_point_prev_lvl->coords;
+        dist = coords_used_anchor_point.distanceToPoint(coords);
+        if (dist > min_distance_between_anchor_points) {
+            anchor_point2.push_back(anch_point2);
+        }
+        anchor_points.push_back(anchor_point1);
+        anchor_points.push_back(anchor_point2);
     }
+}
 
-    float x2 = center[0] + direction[0] * (-length/2);
-    float y2 = center[1] + direction[1] * (-length/2);
-    float z2 = center[2] + direction[2] * (-length/2);
-
-    QVector<AnchorPoint> anchor_point2;
-    max_accepted_size = radius;
-    coords = QVector3D(x2,y2,z2);
-    AnchorPoint anch_point2(coords, direction, max_accepted_size);
-    coords_used_anchor_point = anchor_point_prev_lvl->coords;
-    dist = coords_used_anchor_point.distanceToPoint(coords);
-    if (dist > min_distance_between_anchor_points) {
-        anchor_point2.push_back(anch_point2);
+QVector<AnchorPoint> Pipe::choose_anchor_points() {
+    QVector<AnchorPoint> res;
+    if (anch_type == PIPE_ENDS) {
+        for (int i = 0 ; i < anchor_points.size() ; ++i) {
+            for (int j = 0 ; j < anchor_points[i].size() ; ++j) {
+                res.push_back(anchor_points[i][j]);
+            }
+        }
     }
-    anchor_points.push_back(anchor_point1);
-    anchor_points.push_back(anchor_point2);
+    return res;
 }
 
 void Pipe::generateRules(QString pipe_part) {

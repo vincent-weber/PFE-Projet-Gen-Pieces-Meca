@@ -70,6 +70,10 @@ void Screw::set_anchor_points() {
 
 }
 
+QVector<AnchorPoint> Screw::choose_anchor_points() {
+    return {};
+}
+
 void Screw::generateRules(QString screw_part) {
 
     QVector3D centerBody(center[0], center[1], center[2]);

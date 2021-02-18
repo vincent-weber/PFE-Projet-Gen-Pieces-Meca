@@ -9,6 +9,14 @@
 #include "util.h"
 #include "anchorpoint.h"
 
+enum AnchorPointType {
+    BOX_GRID_3X3,
+    BOX_GRID_4X4,
+    BOX_GRID_3X3_RANDOM,
+    PIPE_ENDS,
+    NO_ANCHOR_POINTS
+};
+
 class Generator
 {
 public:
@@ -23,11 +31,13 @@ public:
     virtual void set_center() = 0;
     virtual void set_anchor_points() = 0;
     void set_prev_anchor_point(AnchorPoint* anchor_point);
+    virtual QVector<AnchorPoint> choose_anchor_points() = 0;
     float get_max_possible_size();
 
     std::random_device rd_gen;
     QVector<QVector<AnchorPoint>> anchor_points;
     AnchorPoint* anchor_point_prev_lvl = nullptr;
+    AnchorPointType anch_type;
 
     QString base_sentence;
     QString sentence;

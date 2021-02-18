@@ -35,9 +35,7 @@ void Box::generateParams(QString box_part) {
 
         box_thickness = computeParameter(box_thickness, rd, 0.5f, 1.5f);
         QVector<float> params({box_length, box_height, box_width});
-        QVector3D center({0,0,0});
-        QVector3D rot({0,0,0});
-        createLeafRulesSingle("cub", box_part, params, center, rot);
+        createLeafRulesSingle("cub", box_part, params, center, rotation);
     }
 
     else if (box_part == "VisAnglesBoiteCub") {
@@ -68,83 +66,143 @@ void Box::generateParams(QString box_part) {
 }
 
 void Box::set_anchor_points() {
+    //TODO : check la distance avec le point d'ancrage précédent pour ne pas l'ajouter à cet objet
     //génération de points d'ancrage par grille de 3x3, peut etre faire une autre méthode (aléatoire)
 
-    //haut et bas de la boite
-    float offset_x = box_length/4;
-    float offset_z = box_width/4;
-    float y = center.y() + box_height/2;
-    float x = center.x() + offset_x;
-    float z = center.z() + offset_z;
+    if (anch_type == BOX_GRID_3X3 || anch_type == BOX_GRID_3X3_RANDOM) {
+        //haut et bas de la boite
+        float offset_x = box_length/4;
+        float offset_z = box_width/4;
+        float y = center.y() + box_height/2;
+        float x = center.x() + offset_x;
+        float z = center.z() + offset_z;
 
-    float max_accepted_size_anchor_point = min(box_length/4, box_width/4);
-    for (int i = 0 ; i < 3 ; ++i) {
-        QVector<AnchorPoint> anchor_ps;
-        for (int j = 0 ; j < 3 ; ++j) {
-            QVector3D coords(x,y,z);
-            QVector3D coords2(x,y-box_height,z);
-            QVector3D direction(0,1,0);
-            AnchorPoint anch(coords, direction, max_accepted_size_anchor_point);
-            anch.owner_object = this;
-            AnchorPoint anch2(coords2, -direction, max_accepted_size_anchor_point);
-            anchor_ps.push_back(anch);
-            anchor_ps.push_back(anch2);
-            x -= offset_x;
-        }
-        x = center.x() + offset_x;
-        z -= offset_z;
-        anchor_points.push_back(anchor_ps);
-    }
-
-    //fond et devant de la boite
-    offset_x = box_length/4;
-    float offset_y = box_height/4;
-    z = center.z() + box_width/2;
-    x = center.x() + offset_x;
-    y = center.y() + offset_y;
-
-    max_accepted_size_anchor_point = min(box_length/4, box_height/4);
-    for (int i = 0 ; i < 3 ; ++i) {
-        QVector<AnchorPoint> anchor_ps;
-        for (int j = 0 ; j < 3 ; ++j) {
-            QVector3D coords(x,y,z);
-            QVector3D coords2(x,y,z-box_width);
-            QVector3D direction(0,0,1);
-            AnchorPoint anch(coords, direction, max_accepted_size_anchor_point);
-            AnchorPoint anch2(coords2, -direction, max_accepted_size_anchor_point);
-            anchor_ps.push_back(anch);
-            anchor_ps.push_back(anch2);
-            x -= offset_x;
-        }
-        x = center.x() + offset_x;
-        y -= offset_y;
-        anchor_points.push_back(anchor_ps);
-    }
-
-    //gauche et droite de la boite
-    offset_y = box_height/4;
-    offset_z = box_width/4;
-    x = center.x() + box_length/2;
-    y = center.y() + offset_y;
-    z = center.z() + offset_z;
-
-    max_accepted_size_anchor_point = min(box_width/4, box_height/4);
-    for (int i = 0 ; i < 3 ; ++i) {
-        QVector<AnchorPoint> anchor_ps;
-        for (int j = 0 ; j < 3 ; ++j) {
-            QVector3D coords(x,y,z);
-            QVector3D coords2(x-box_length,y,z);
-            QVector3D direction(1,0,0);
-            AnchorPoint anch(coords, direction, max_accepted_size_anchor_point);
-            AnchorPoint anch2(coords2, -direction, max_accepted_size_anchor_point);
-            anchor_ps.push_back(anch);
-            anchor_ps.push_back(anch2);
+        float max_accepted_size_anchor_point = min(box_length/4, box_width/4);
+        QVector<AnchorPoint> anchor_face1;
+        QVector<AnchorPoint> anchor_face2;
+        for (int i = 0 ; i < 3 ; ++i) {
+            for (int j = 0 ; j < 3 ; ++j) {
+                QVector3D coords(x,y,z);
+                QVector3D coords2(x,y-box_height,z);
+                QVector3D direction(0,1,0);
+                AnchorPoint anch(coords, direction, max_accepted_size_anchor_point);
+                anch.owner_object = this;
+                AnchorPoint anch2(coords2, -direction, max_accepted_size_anchor_point);
+                anchor_face1.push_back(anch);
+                anchor_face2.push_back(anch2);
+                x -= offset_x;
+            }
+            x = center.x() + offset_x;
             z -= offset_z;
+
         }
+        anchor_points.push_back(anchor_face1);
+        anchor_points.push_back(anchor_face2);
+
+        //fond et devant de la boite
+        offset_x = box_length/4;
+        float offset_y = box_height/4;
+        z = center.z() + box_width/2;
+        x = center.x() + offset_x;
+        y = center.y() + offset_y;
+
+        QVector<AnchorPoint> anchor_face3;
+        QVector<AnchorPoint> anchor_face4;
+        max_accepted_size_anchor_point = min(box_length/4, box_height/4);
+        for (int i = 0 ; i < 3 ; ++i) {
+            for (int j = 0 ; j < 3 ; ++j) {
+                QVector3D coords(x,y,z);
+                QVector3D coords2(x,y,z-box_width);
+                QVector3D direction(0,0,1);
+                AnchorPoint anch(coords, direction, max_accepted_size_anchor_point);
+                AnchorPoint anch2(coords2, -direction, max_accepted_size_anchor_point);
+                anchor_face3.push_back(anch);
+                anchor_face4.push_back(anch2);
+                x -= offset_x;
+            }
+            x = center.x() + offset_x;
+            y -= offset_y;
+        }
+        anchor_points.push_back(anchor_face3);
+        anchor_points.push_back(anchor_face4);
+
+        //gauche et droite de la boite
+        offset_y = box_height/4;
+        offset_z = box_width/4;
+        x = center.x() + box_length/2;
+        y = center.y() + offset_y;
         z = center.z() + offset_z;
-        y -= offset_y;
-        anchor_points.push_back(anchor_ps);
+
+        QVector<AnchorPoint> anchor_face5;
+        QVector<AnchorPoint> anchor_face6;
+        max_accepted_size_anchor_point = min(box_width/4, box_height/4);
+        for (int i = 0 ; i < 3 ; ++i) {
+            for (int j = 0 ; j < 3 ; ++j) {
+                QVector3D coords(x,y,z);
+                QVector3D coords2(x-box_length,y,z);
+                QVector3D direction(1,0,0);
+                AnchorPoint anch(coords, direction, max_accepted_size_anchor_point);
+                AnchorPoint anch2(coords2, -direction, max_accepted_size_anchor_point);
+                anchor_face5.push_back(anch);
+                anchor_face6.push_back(anch2);
+                z -= offset_z;
+            }
+            z = center.z() + offset_z;
+            y -= offset_y;
+        }
+        anchor_points.push_back(anchor_face5);
+        anchor_points.push_back(anchor_face6);
     }
+}
+
+QVector<AnchorPoint> Box::choose_anchor_points() {
+    QVector<AnchorPoint> res;
+    if (anch_type == BOX_GRID_3X3) {
+        QVector<int> pattern;
+        int val0 = std::uniform_int_distribution<int>{0, 1}(rd);
+        int val1 = std::uniform_int_distribution<int>{0, 1}(rd);
+        int val2 = std::uniform_int_distribution<int>{0, 1}(rd);
+        int val3 = std::uniform_int_distribution<int>{0, 1}(rd);
+        int val4 = std::uniform_int_distribution<int>{0, 1}(rd);
+
+        if(val0 == 1) {
+            pattern.push_back(0);pattern.push_back(8);
+        }
+        if(val1 == 1) {
+            pattern.push_back(1);pattern.push_back(7);
+        }
+        if(val2 == 1) {
+            pattern.push_back(2);pattern.push_back(6);
+        }
+        if(val3 == 1) {
+            pattern.push_back(3);pattern.push_back(5);
+        }
+        if(val4 == 1) {
+            pattern.push_back(4);
+        }
+
+        for (int i = 0 ; i < anchor_points.size() ; ++i) {
+            for (int j = 0 ; j < pattern.size() ; ++j) {
+                res.push_back(anchor_points[i][pattern[j]]);
+            }
+        }
+    }
+    else if (anch_type == BOX_GRID_4X4) {
+
+    }
+    else if (anch_type == BOX_GRID_3X3_RANDOM) {
+        for (int i = 0 ; i < anchor_points.size() ; ++i) {
+            if (anchor_points[i].size() == 0) continue;
+            std::random_device rd;
+            int ind_anchor = std::uniform_int_distribution<int>{0, anchor_points[i].size()-1}(rd);
+            AnchorPoint chosen_anchor_point = anchor_points[i][ind_anchor];
+            res.push_back(chosen_anchor_point);
+        }
+    }
+    else {
+        qDebug() << "ERROR BOX ANCH TYPE INVALID";
+    }
+    return res;
 }
 
 void Box::set_center() {
