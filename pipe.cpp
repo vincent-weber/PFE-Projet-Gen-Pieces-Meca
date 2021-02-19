@@ -69,4 +69,3 @@ void Pipe::set_anchor_points() {
 void Pipe::generateRules(QString pipe_part) {
     createLeafRulesSingle("cyl", pipe_part, QVector<float>({radius, length, (float)precision}), center, rotation);
 }
-

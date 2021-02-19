@@ -40,6 +40,7 @@ protected slots:
     void run_gen_screw();
     void run_gen_nut();
     void run_gen_box();
+    void run_gen_piston();
 
 protected:
     void initializeGL() override;
