@@ -421,6 +421,7 @@ void GLArea::run_gen_box(){
     box.set_anchor_points();
     box.computeSentence();
     Parser parser_box(box.sentence);
+    qDebug() << "BOX SENTENCE : " << box.sentence;
     parser_box.reader();
     MechanicalPart base(parser_box.shapes, parser_box.ops);
     mecha_parts.push_back(base);

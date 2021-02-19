@@ -4,6 +4,7 @@ Box::Box()
 {
     generator_name = "Box";
     max_size = 10;
+    min_size = 5;
     center = QVector3D(0,0,0);
     rotation = QVector3D(0,0,0);
 }
@@ -11,31 +12,28 @@ Box::Box()
 //TODO : stocker les 4 centres des 4 cylindres pour les vis
 void Box::generateParams(QString box_part) {
     if (box_part == "BoiteCube") {
-        box_height = computeParameter(box_height, rd, 5.0f, 10.0f);
-        box_width = computeParameter(box_width, rd, 5.0f, 10.0f);
-        box_length = computeParameter(box_length, rd, 5.0f, 10.0f);
-
-        box_thickness = computeParameter(box_thickness, rd, 0.5f, 1.5f);
-
-        QVector<QString> primitives({"cub", "cub"});
-        QString op_bools ("-");
-        QVector<QVector<float>> params({{box_length + box_thickness*2, box_height + box_thickness*2, box_width + box_thickness*2}, {box_length, box_height + box_thickness*2, box_width}});
-        QVector<QVector3D> centers({{0,0,0}, {0,box_thickness,0}});
-        QVector<QVector3D> rots({{0,0,0},{0,0,0}});
-        QString rule = createLeafRulesMultiple(primitives, op_bools, params, centers, rots);
-        rules.insert(box_part, {rule});
-    }
-    else if (box_part == "BoiteRelief") {
         float max_value = get_max_possible_size();
 
-        //TODO : gérer la valeur minimale aussi
         box_height = computeParameter(box_height, rd, 5.0f, max_value);
         box_width = computeParameter(box_width, rd, 5.0f, max_value);
         box_length = computeParameter(box_length, rd, 5.0f, max_value);
 
-        box_thickness = computeParameter(box_thickness, rd, 0.5f, 1.5f);
         QVector<float> params({box_length, box_height, box_width});
         createLeafRulesSingle("cub", box_part, params, center, rotation);
+    }
+    else if (box_part == "BoiteRelief") {
+        float max_value = get_max_possible_size();
+        float min_value = min_size;
+        if (max_value < min_value) min_value = max_value;
+        box_height = computeParameter(box_height, rd, min_value, max_value);
+        box_width = computeParameter(box_width, rd, min_value, max_value);
+        box_length = computeParameter(box_length, rd, min_value, max_value);
+
+        float min_param = min(box_height, box_width);
+        min_param = min(min_param, box_length);
+
+        box_thickness = min_param / 16;
+
     }
 
     else if (box_part == "VisAnglesBoiteCub") {
@@ -206,7 +204,15 @@ QVector<AnchorPoint> Box::choose_anchor_points() {
 }
 
 void Box::set_center() {
-
+    if (anchor_point_prev_lvl == nullptr) {
+        center = QVector3D(0,0,0);
+    }
+    else {
+        QVector3D vec({anchor_point_prev_lvl->direction[0] * box_length/2,
+                       anchor_point_prev_lvl->direction[1] * box_height/2,
+                       anchor_point_prev_lvl->direction[2] * box_width/2});
+        center = QVector3D(anchor_point_prev_lvl->coords + vec);
+    }
 }
 
 void Box::set_rotation(QString box_part) {
@@ -214,7 +220,29 @@ void Box::set_rotation(QString box_part) {
 }
 
 void Box::generateRules(QString box_part) {
-    if (box_part == "BoiteRelief") {
+    if (box_part == "BoiteCube") {
         createLeafRulesSingle("cub", box_part, {box_length, box_height, box_width}, center, rotation);
+    }
+    else if (box_part == "BoiteRelief") {
+        QVector<QString> primitives({"cub", "cub", "cub", "cub", "cub", "cub", "cub"});
+        QString op_bools ("------");
+        QVector<float> params_main_cube({box_length + box_thickness*2, box_height + box_thickness*2, box_width + box_thickness*2});
+        QVector<float> params_cube_x({   box_thickness*2,              box_height,                   box_width});
+        QVector<float> params_cube_y({   box_length,                   box_thickness*2,              box_width});
+        QVector<float> params_cube_z({   box_length,                   box_height,                   box_thickness*2});
+
+        QVector3D center_cube_neg_x(center[0] - box_length/2 - box_thickness, center[1],                              center[2]                            );
+        QVector3D center_cube_pos_x(center[0] + box_length /2+ box_thickness, center[1],                              center[2]                            );
+        QVector3D center_cube_neg_y(center[0],                              center[1] - box_height/2 - box_thickness, center[2]                            );
+        QVector3D center_cube_pos_y(center[0],                              center[1] + box_height/2 + box_thickness, center[2]                            );
+        QVector3D center_cube_neg_z(center[0],                              center[1],                              center[2] - box_width/2 - box_thickness);
+        QVector3D center_cube_pos_z(center[0],                              center[1],                              center[2] + box_width/2 + box_thickness);
+
+
+        QVector<QVector<float>> params({params_main_cube, params_cube_x,     params_cube_x,     params_cube_y,     params_cube_y,     params_cube_z,     params_cube_z});
+        QVector<QVector3D> centers(    {center,           center_cube_neg_x, center_cube_pos_x, center_cube_neg_y, center_cube_pos_y, center_cube_neg_z, center_cube_pos_z});
+        QVector<QVector3D> rots({{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}});
+        QString rule = createLeafRulesMultiple(primitives, op_bools, params, centers, rots);
+        rules.insert(box_part, {rule});
     }
 }

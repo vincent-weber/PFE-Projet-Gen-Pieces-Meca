@@ -6,8 +6,7 @@ void Generator::initRules() {
     rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub", "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
     rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
     rules.insert("Pipe", {"ClassicCyl"});
-//    rules.insert("Box", {"BoiteCube+VisAnglesBoiteCub"});
-    rules.insert("Box", {/*"BoiteCube+VisAnglesBoiteCub", */"BoiteRelief"});
+    rules.insert("Box", {"BoiteCube", "BoiteRelief"});
 }
 
 void Generator::createParams() {
@@ -60,9 +59,10 @@ QString Generator::createLeafRulesMultiple(QVector<QString>& primitives, QString
     int size = primitives.size();
     for (int index_pr = 0 ; index_pr < size ; ++index_pr) {
         //changer params en Qvector<Qvector<float>> dans le cas ou on a plusieurs paramètres ?
+        out += primitives[index_pr];
         out += "(";
         for (int i = 0 ; i < params[index_pr].size() ; ++i) {
-            out += QString::number(params[index_pr][0]);
+            out += QString::number(params[index_pr][i]);
             if (i < params[index_pr].size() - 1) {
                 out += ",";
             }

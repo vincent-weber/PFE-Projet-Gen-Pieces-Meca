@@ -23,6 +23,7 @@ public:
     QStringList primitives_str;
     const float min_distance_between_anchor_points = 0.003f;
     float max_size;
+    float min_size;
 
     QVector3D center;
     QVector3D rotation;
