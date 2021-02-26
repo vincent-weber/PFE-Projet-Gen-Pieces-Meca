@@ -524,12 +524,14 @@ void GLArea::run_gen_piston(){
     piston.computeSentence();
     qDebug() << "SENTENCE" << piston.sentence;
 
-//    Parser parser_piston(piston.sentence);
-//    parser_piston.reader();
+    Parser parser_piston(piston.sentence);
+    parser_piston.reader();
 
-//    MechanicalPart base(MechanicalPart(parser_box.shapes, parser_box.ops));
-//    mecha_parts.push_back(base);
-//    qDebug() << piston.sentence;
-//    Parser parser(piston->sentence);
-//    parser.reader();
+    MechanicalPart mecha_piston(MechanicalPart(parser_piston.shapes, parser_piston.ops));
+    mecha_parts.push_back(mecha_piston);
+
+    QVector<MechanicalPart> new_parts;
+    machinery = Machinery(mecha_piston, new_parts);
+
+    prepareMachinery();
 }
