@@ -160,3 +160,4 @@ void Box::generateRules(QString box_part) {
         createLeafRulesSingle("cub", box_part, {box_length, box_height, box_width}, center, rotation);
     }
 }
+

@@ -416,10 +416,16 @@ void GLArea::run_gen_box(){
     for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
         box.generateRules(box.primitives_str.at(k));
     }
+
     box.set_anchor_points();
     box.computeSentence();
+
+
     Parser parser_box(box.sentence);
     parser_box.reader();
+
+    qDebug() << "TEST" << parser_box.sentence;
+
     MechanicalPart base(MechanicalPart(parser_box.shapes, parser_box.ops));
     mecha_parts.push_back(base);
 
@@ -507,59 +513,23 @@ void GLArea::run_gen_box(){
 void GLArea::run_gen_piston(){
     qDebug() << __FUNCTION__;
 
-    std::random_device rd;
+    Piston piston;
+    piston.createParams();
 
-    mecha_parts.clear();
-    vbos_mecha_parts.clear();
-    QVector<MechanicalPart> mecha_parts;
-    QVector<MechanicalPart> new_parts;
 
-    Box box;
-    box.createParams();
-    for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
-        box.generateRules(box.primitives_str.at(k));
-    }
+    qDebug() << "TESTSET" << piston.primitives_str;
 
-    box.set_anchor_points();
-    box.computeSentence();
-    Parser parser_box(box.sentence);
-    parser_box.reader();
+    piston.generateRules("TEST");
+    piston.computeSentence();
+    piston.computeSentence();
+    qDebug() << "SENTENCE" << piston.sentence;
 
-    MechanicalPart pistonBody(MechanicalPart(parser_box.shapes, parser_box.ops));
+//    Parser parser_piston(piston.sentence);
+//    parser_piston.reader();
 
-    Generator* prev_object = &box;
-    AnchorPoint chosen_anchor_point;
-
-    float prev_rad = -1;
-
-    for(int i = 0; i < 2; i++)
-    {
-        if (i == 0) chosen_anchor_point = prev_object->anchor_points[7][3];
-        else {
-            int ind_anchor = std::uniform_int_distribution<int>{0, prev_object->anchor_points[0].size()-1}(rd);
-            chosen_anchor_point = prev_object->anchor_points[0][ind_anchor];
-        }
-        Generator *piston = new Pipe();
-        prev_object = piston;
-        piston->set_prev_anchor_point(&chosen_anchor_point);
-        piston->createParams();
-
-        piston->set_center();
-        for (int k = 0 ; k < piston->primitives_str.size() ; ++k) {
-            piston->set_rotation(piston->primitives_str.at(k));
-            piston->generateRules(piston->primitives_str.at(k));
-        }
-        piston->set_anchor_points();
-        piston->computeSentence();
-        Parser parser(piston->sentence);
-        parser.reader();
-        MechanicalPart new_part(parser.shapes, parser.ops);
-        mecha_parts.push_back(new_part);
-        new_parts.push_back(new_part);
-
-        if(i == 0) machinery = Machinery(pistonBody, new_parts);
-        else machinery.add_new_parts(new_parts);
-    }
-
-    prepareMachinery();
+//    MechanicalPart base(MechanicalPart(parser_box.shapes, parser_box.ops));
+//    mecha_parts.push_back(base);
+//    qDebug() << piston.sentence;
+//    Parser parser(piston->sentence);
+//    parser.reader();
 }
