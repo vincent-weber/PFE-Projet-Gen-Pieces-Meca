@@ -48,9 +48,11 @@ public:
     virtual void generateRules(QString part) = 0;
     static void initRules();
     static QHash<QString, QVector<QString>> rules;
+    static QHash<QString, QVector<QString>> base_rules;
 
 
     void createParams();
+    QString recurs(QString in);
     float computeParameter(float param, std::random_device &rd, float min, float max);
     int computeParameter(int param, std::random_device &rd, int min, int max);
     QString createLeafRulesMultiple(QVector<QString>& primitives, QString op_bools, QVector<QVector<float>>& params, QVector<QVector3D>& centers, QVector<QVector3D>& rots);

@@ -25,6 +25,7 @@
 #include "nut.h"
 #include "box.h"
 #include "pipe.h"
+#include "engine.h"
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions

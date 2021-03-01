@@ -23,6 +23,7 @@ SOURCES += main.cpp\
         box.cpp \
         cuboid.cpp \
         cylinder.cpp \
+        engine.cpp \
         generator.cpp \
         machinery.cpp \
         mechanicalpart.cpp \
@@ -43,6 +44,7 @@ HEADERS  += princ.h \
         box.h \
         cuboid.h \
         cylinder.h \
+        engine.h \
         generator.h \
         glarea.h \
         machinery.h \

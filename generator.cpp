@@ -1,18 +1,49 @@
 #include "generator.h"
 
 QHash<QString, QVector<QString>> Generator::rules;
+QHash<QString, QVector<QString>> Generator::base_rules;
 
 void Generator::initRules() {
     rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub", "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
     rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
     rules.insert("Pipe", {"ClassicCyl"});
     rules.insert("Box", {"BoiteCube", "BoiteRelief"});
+    rules.insert("Piston", {"Box+Pipe+Screw+Screw"});
+
+    rules.insert("Engine", {"EngineAxis+GroupPistons+SeparatorPistons"});
+    rules.insert("EngineAxis", {"CylHeadEngine+CylMainAxe+CylExtEngine", "CubHeadEngine+CylMainAxe+CubExtEngine"});
+    rules.insert("GroupPistons", {"AlignedPistons4", "AlternatedPistons4"});
+    rules.insert("SeparatorPistons", {"CylSeparators", "CubSeparators"});
+    base_rules = rules;
+}
+
+QString Generator::recurs(QString in) {
+    QString out = in;
+    QStringList split_entries = in.split(QRegExp("\\-|\\+|\\*"));
+    bool changed = false;
+    for (int i = 0 ; i < split_entries.size() ; ++i) {
+        bool exists = base_rules.keys().contains(split_entries.at(i));
+        if (exists) {
+            QString key = split_entries.at(i);
+            int nb_possibilities = base_rules.find(key)->count();
+            unsigned index = std::uniform_int_distribution<int>{0,nb_possibilities-1}(rd_gen);
+            out.replace(split_entries.at(i), base_rules.find(key)->at(index));
+            changed = true;
+        }
+    }
+    if (changed) {
+        out = recurs(out);
+    }
+    return out;
 }
 
 void Generator::createParams() {
     int nb_part_possibilities = rules.find(generator_name)->count();
     unsigned index = std::uniform_int_distribution<int>{0,nb_part_possibilities-1}(rd_gen);
     base_sentence = rules.find(generator_name)->at(index);
+    qDebug() << "BASE SENTENCE AVANT : " << base_sentence;
+    base_sentence = recurs(base_sentence);
+    qDebug() << "BASE SENTENCE APRES : " << base_sentence;
     sentence = base_sentence;
     primitives_str = sentence.split(QRegExp("\\-|\\+|\\*"));
     for (int i = 0 ; i < primitives_str.size() ; ++i) {
