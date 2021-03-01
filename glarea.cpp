@@ -268,10 +268,10 @@ void GLArea::paintGL()
 
     //Rendu des pièces mécaniques
     for (unsigned i = 0 ; i < mecha_parts.size() ; ++i) {
-        //render_shape_color(vbos_mecha_parts[i], projectionMatrix, viewMatrix, mecha_parts[i].nb_vertices_gl_faces, mecha_parts[i].nb_vertices_gl_lines);
+        render_shape_color(vbos_mecha_parts[i], projectionMatrix, viewMatrix, mecha_parts[i].nb_vertices_gl_faces, mecha_parts[i].nb_vertices_gl_lines);
     }
 
-    render_shape_color(vbo_machinery, projectionMatrix, viewMatrix, machinery.nb_vertices_gl_faces, machinery.nb_vertices_gl_lines);
+//    render_shape_color(vbo_machinery, projectionMatrix, viewMatrix, machinery.nb_vertices_gl_faces, machinery.nb_vertices_gl_lines);
 
 }
 
@@ -468,7 +468,6 @@ void GLArea::run_gen_box(){
                     else {
                         object = new Screw();
                     }
-
                 }
                 else if (level == 1) {
                     object = new Screw();
@@ -512,26 +511,23 @@ void GLArea::run_gen_box(){
 
 void GLArea::run_gen_piston(){
     qDebug() << __FUNCTION__;
+    mecha_parts.clear();
+    vbos_mecha_parts.clear();
 
     Piston piston;
     piston.createParams();
 
-
-    qDebug() << "TESTSET" << piston.primitives_str;
-
-    piston.generateRules("TEST");
+    for (int i = 0 ; i < piston.primitives_str.size() ; ++i) {
+        piston.generateRules(piston.primitives_str.at(i));
+    }
     piston.computeSentence();
-    piston.computeSentence();
-    qDebug() << "SENTENCE" << piston.sentence;
 
-    Parser parser_piston(piston.sentence);
-    parser_piston.reader();
+    qDebug() << "PHRASE FINALE : " << piston.sentence;
 
-    MechanicalPart mecha_piston(MechanicalPart(parser_piston.shapes, parser_piston.ops));
-    mecha_parts.push_back(mecha_piston);
+    Parser parser(piston.sentence);
+    parser.reader();
 
-    QVector<MechanicalPart> new_parts;
-    machinery = Machinery(mecha_piston, new_parts);
+    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
 
-    prepareMachinery();
+    prepareMechaParts();
 }

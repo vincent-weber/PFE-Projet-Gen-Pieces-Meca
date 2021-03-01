@@ -8,7 +8,7 @@ void Generator::initRules() {
     rules.insert("Pipe", {"ClassicCyl"});
 //    rules.insert("Box", {"BoiteCube+VisAnglesBoiteCub"});
     rules.insert("Box", {/*"BoiteCube+VisAnglesBoiteCub", */"BoiteRelief"});
-    rules.insert("Piston", {"Box+Pipe+Pipe+Screw"});
+    rules.insert("Piston", {"HeadCyl-HeadIntersect+BodyCuboid+EndCyl-EndIntersect"});
 }
 
 void Generator::createParams() {
