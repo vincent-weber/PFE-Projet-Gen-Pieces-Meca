@@ -429,20 +429,6 @@ void GLArea::run_gen_box(){
     MechanicalPart base(MechanicalPart(parser_box.shapes, parser_box.ops));
     mecha_parts.push_back(base);
 
-    //TODO : phrase finale : union de toutes les phrases des pieces individuellement
-
-    //AU début, on créé un objet générator (Box) qui a le level 0. Ensuite, on fait N itérations, N étant le nombre de levels
-    //de profondeurs de l'arbre, et on créé des générator de lvl i+1 aux points d'attache des générators de lvl i.
-    //Quand on parcourt des générator de level i, on regarde le point d'ancrage auquel il est attaché pour savoir quel objet lui est lié.
-    //Selon l'objet lié, on attache tel ou tel objet au générator que l'on parcourt (par ex pour pas attacher une boîte à une autre boîte).
-    //Du coup, quelle structure utiliser pour stocker les objets de type Generator ? Arbre ? Ou on stocke les nouveaux et les précédents dans 2 vectors différents ?
-
-    //Séparer le level 0 des autres ? Car au level 0, on n'a pas besoin de regarder les anciens objets puisqu'il y en a pas : le traitement est plus simple.
-
-    //Comment faire en sorte de ne pas créer de points d'ancrage sur un objet à l'endroit où il est déjà attaché à un objet du lvl précédent ?
-    //Solution moche : calculer la distance de celui qu'on veut créer avec le anchor_point_prev_lvl de l'objet, si elle est trs petite on le créé pas
-    //(ou on met is_active à true et on gère ce bool mais je vois pas trop l'intérêt comme ça).
-
     QVector<MechanicalPart> new_parts;
 
     int level_max = 2;
@@ -472,6 +458,7 @@ void GLArea::run_gen_box(){
                 else if (level == 1) {
                     object = new Screw();
                 }
+                object = new Piston();
 
                 object->set_prev_anchor_point(&chosen_anchor_point);
                 object->createParams();
@@ -485,6 +472,7 @@ void GLArea::run_gen_box(){
 
                 object->sentence = object->base_sentence;
                 object->computeSentence();
+                qDebug() << object->sentence;
                 Parser parser(object->sentence);
                 parser.reader();
                 MechanicalPart new_part(parser.shapes, parser.ops);
@@ -492,6 +480,7 @@ void GLArea::run_gen_box(){
                 new_parts.push_back(new_part);
 
                 new_objects.push_back(object);
+                break;
             }
         }
         if (level == 1) {
@@ -505,8 +494,8 @@ void GLArea::run_gen_box(){
         new_objects.clear();
     }
 
-    //prepareMechaParts();
-    prepareMachinery();
+    prepareMechaParts();
+//    prepareMachinery();
 }
 
 void GLArea::run_gen_piston(){
@@ -518,6 +507,7 @@ void GLArea::run_gen_piston(){
     piston.createParams();
 
     for (int i = 0 ; i < piston.primitives_str.size() ; ++i) {
+        piston.set_rotation(piston.primitives_str.at(i));
         piston.generateRules(piston.primitives_str.at(i));
     }
     piston.computeSentence();
