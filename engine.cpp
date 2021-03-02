@@ -22,14 +22,16 @@ void Engine::generateParams(QString engine_part) {
     }
 
     else if (engine_part == "AlignedPistons4" || engine_part == "AlternatedPistons4") {
-        nb_pistons = 4;
-        pistons_gap = pipe_length / (nb_pistons * 3);
+
 
     }
 
     else if (engine_part == "CylSeparators" || engine_part == "CubSeparators") {
-        sep_width = computeParameter(end_width, rd, (pipe_width + head_width) / 2, head_width);
-        sep_length = (pipe_length - (nb_pistons+1) * pistons_gap) / nb_pistons * 2;
+        nb_pistons = 4;
+        pistons_gap = pipe_length * (1.0f/((nb_pistons+1)+nb_pistons*2));
+        sep_width = computeParameter(sep_width, rd, (pipe_width + head_width) / 2, head_width);
+        //sep_length = (pipe_length - (nb_pistons*2+1) * pistons_gap) / nb_pistons * 2;
+        sep_length = pistons_gap / 2;
     }
 
 }
@@ -53,6 +55,9 @@ void Engine::set_rotation(QString engine_part) {
     else if (engine_part == "CylExtEngine") {
         vec_base = QVector3D(0,0,1);
     }
+    else if (engine_part == "CylSeparators") {
+        vec_base = QVector3D(0,0,1);
+    }
 
     if(vec_base == direction || vec_base == -direction) {
         rotation = QVector3D(0,0,0);
@@ -69,7 +74,7 @@ void Engine::generateRules(QString engine_part) {
     set_rotation(engine_part);
     if (engine_part == "CubHeadEngine") {
         QVector3D center_cyl_head = center - direction * (pipe_length/2 + head_length/2);
-        createLeafRulesSingle("cub", engine_part, QVector<float>({head_width, head_length, head_width}), center_cyl_head, rotation);
+        createLeafRulesSingle("cub", engine_part, QVector<float>({head_width*2, head_length, head_width*2}), center_cyl_head, rotation);
     }
     else if (engine_part == "CylHeadEngine") {
         QVector3D center_cyl_head = center - direction * (pipe_length/2 + head_length/2);
@@ -91,7 +96,35 @@ void Engine::generateRules(QString engine_part) {
 
     }
 
-    else if (engine_part == "CylSeparators" || engine_part == "CubSeparators") {
+    else if (engine_part == "CylSeparators") {
+        QVector<QVector<float>> params;
+        QVector<float> param({sep_width, sep_length, precision});
+        QVector<QVector3D> centers;
+        QVector<QVector3D> rots;
+        QVector<QString> primitives;
+        QString op_bools;
+
+        QVector3D center_cyl_head = center - direction * (pipe_length/2 + head_length/2);
+        float offset = pistons_gap + sep_length;
+        QVector3D center = center_cyl_head + direction*(head_length/2 + pistons_gap + sep_length/2);
+        params.push_back(param);
+        centers.push_back(center);
+        rots.push_back(rotation);
+        primitives.push_back("cyl");
+        for (int i = 0 ; i < nb_pistons*2-1 ; ++i) {
+            params.push_back(param);
+            center = QVector3D(center[0] + direction[0] * offset, center[1] + direction[1] * offset, center[2] + direction[2] * offset);
+            centers.push_back(center);
+            rots.push_back(rotation);
+            primitives.push_back("cyl");
+            op_bools += "+";
+        }
+        qDebug() << "CENTERS : " << centers;
+
+        QString rule = createLeafRulesMultiple(primitives, op_bools, params, centers, rots);
+        rules.insert(engine_part, {rule});
+    }
+    else if (engine_part == "CubSeparators") {
 
     }
 

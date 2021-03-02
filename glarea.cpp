@@ -268,10 +268,10 @@ void GLArea::paintGL()
 
     //Rendu des pièces mécaniques
     for (unsigned i = 0 ; i < mecha_parts.size() ; ++i) {
-        //render_shape_color(vbos_mecha_parts[i], projectionMatrix, viewMatrix, mecha_parts[i].nb_vertices_gl_faces, mecha_parts[i].nb_vertices_gl_lines);
+        render_shape_color(vbos_mecha_parts[i], projectionMatrix, viewMatrix, mecha_parts[i].nb_vertices_gl_faces, mecha_parts[i].nb_vertices_gl_lines);
     }
 
-    render_shape_color(vbo_machinery, projectionMatrix, viewMatrix, machinery.nb_vertices_gl_faces, machinery.nb_vertices_gl_lines);
+    //render_shape_color(vbo_machinery, projectionMatrix, viewMatrix, machinery.nb_vertices_gl_faces, machinery.nb_vertices_gl_lines);
 
 }
 
@@ -499,6 +499,6 @@ void GLArea::run_gen_box(){
         new_objects.clear();
     }
 
-    //prepareMechaParts();
-    prepareMachinery();
+    prepareMechaParts();
+    //prepareMachinery();
 }
