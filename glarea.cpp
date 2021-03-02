@@ -412,8 +412,8 @@ void GLArea::run_gen_box(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
     Box box;
-    box.anch_type = BOX_GRID_3X3;
-    //box.anch_type = BOX_GRID_3X3_RANDOM;
+    //box.anch_type = BOX_GRID_3X3;
+    box.anch_type = BOX_GRID_3X3_RANDOM;
     box.createParams();
     for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
         box.generateRules(box.primitives_str.at(k));
@@ -468,19 +468,23 @@ void GLArea::run_gen_box(){
                     object = new Screw();
                     object->anch_type = NO_ANCHOR_POINTS;
                 }
+                object = new Engine();
 
                 object->set_prev_anchor_point(&chosen_anchor_point);
                 object->createParams();
 
                 object->set_center();
                 for (int k = 0 ; k < object->primitives_str.size() ; ++k) {
-                    object->set_rotation(object->primitives_str.at(k));
+                    //appeler set_rotation dans generateRules ? (semble bcp plus logique ?)
+                    //object->set_rotation(object->primitives_str.at(k));
                     object->generateRules(object->primitives_str.at(k));
                 }
                 object->set_anchor_points();
 
                 object->sentence = object->base_sentence;
+                qDebug() << "ENGINE SETNENCE : " << object->sentence;
                 object->computeSentence();
+                qDebug() << "ENGINE SETNENCE APRES : " << object->sentence;
                 Parser parser(object->sentence);
                 parser.reader();
                 MechanicalPart new_part(parser.shapes, parser.ops);

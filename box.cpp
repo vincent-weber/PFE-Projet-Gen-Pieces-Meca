@@ -4,7 +4,7 @@ Box::Box()
 {
     generator_name = "Box";
     max_size = 10;
-    min_size = 5;
+    min_size = 2.5f;
     center = QVector3D(0,0,0);
     rotation = QVector3D(0,0,0);
 }
@@ -13,10 +13,12 @@ Box::Box()
 void Box::generateParams(QString box_part) {
     if (box_part == "BoiteCube") {
         float max_value = get_max_possible_size();
+        float min_value = min_size;
+        if (max_value < min_value) min_value = max_value;
 
-        box_height = computeParameter(box_height, rd, 5.0f, max_value);
-        box_width = computeParameter(box_width, rd, 5.0f, max_value);
-        box_length = computeParameter(box_length, rd, 5.0f, max_value);
+        box_height = computeParameter(box_height, rd, min_value, max_value);
+        box_width = computeParameter(box_width, rd, min_value, max_value);
+        box_length = computeParameter(box_length, rd, min_value, max_value);
 
         QVector<float> params({box_length, box_height, box_width});
         createLeafRulesSingle("cub", box_part, params, center, rotation);
@@ -220,6 +222,7 @@ void Box::set_rotation(QString box_part) {
 }
 
 void Box::generateRules(QString box_part) {
+    set_rotation(box_part);
     if (box_part == "BoiteCube") {
         createLeafRulesSingle("cub", box_part, {box_length, box_height, box_width}, center, rotation);
     }
