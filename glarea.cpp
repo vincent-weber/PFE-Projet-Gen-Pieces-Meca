@@ -418,6 +418,7 @@ void GLArea::run_gen_box(){
     for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
         box.generateRules(box.primitives_str.at(k));
     }
+
     box.set_anchor_points();
     box.computeSentence();
     Parser parser_box(box.sentence);
@@ -468,7 +469,8 @@ void GLArea::run_gen_box(){
                     object = new Screw();
                     object->anch_type = NO_ANCHOR_POINTS;
                 }
-                object = new Engine();
+                //object = new Engine();
+                object = new Piston();
 
                 object->set_prev_anchor_point(&chosen_anchor_point);
                 object->createParams();
@@ -492,6 +494,7 @@ void GLArea::run_gen_box(){
                 new_parts.push_back(new_part);
 
                 new_objects.push_back(object);
+                break;
             }
         }
 
@@ -501,4 +504,28 @@ void GLArea::run_gen_box(){
 
     prepareMechaParts();
     //prepareMachinery();
+}
+
+void GLArea::run_gen_piston(){
+    qDebug() << __FUNCTION__;
+    mecha_parts.clear();
+    vbos_mecha_parts.clear();
+
+    Piston piston;
+    piston.createParams();
+
+    for (int i = 0 ; i < piston.primitives_str.size() ; ++i) {
+        piston.set_rotation(piston.primitives_str.at(i));
+        piston.generateRules(piston.primitives_str.at(i));
+    }
+    piston.computeSentence();
+
+    qDebug() << "PHRASE FINALE : " << piston.sentence;
+
+    Parser parser(piston.sentence);
+    parser.reader();
+
+    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
+
+    prepareMechaParts();
 }

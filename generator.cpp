@@ -7,8 +7,9 @@ void Generator::initRules() {
     rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub", "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
     rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
     rules.insert("Pipe", {"ClassicCyl"});
+
     rules.insert("Box", {"BoiteCube", "BoiteRelief"});
-    rules.insert("Piston", {"Box+Pipe+Screw+Screw"});
+    rules.insert("Piston", {"HeadCyl-HeadIntersect+BodyCuboid+EndCyl-EndIntersect"});
 
     rules.insert("Engine", {"EngineAxis+SeparatorPistons"/*+GroupPistons+SeparatorPistons"*/});
     rules.insert("EngineAxis", {"CylHeadEngine+CylMainAxe+CylExtEngine", "CubHeadEngine+CylMainAxe+CubExtEngine"});

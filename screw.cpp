@@ -99,6 +99,3 @@ void Screw::generateRules(QString screw_part) {
         createLeafRulesSingle("cyl", screw_part, QVector<float>({inter_cyl_radius, inter_cyl_length, (float)inter_cyl_precision}), centerInterCyl, rotation);
     }
 }
-
-
-

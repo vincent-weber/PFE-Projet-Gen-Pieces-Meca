@@ -249,3 +249,4 @@ void Box::generateRules(QString box_part) {
         rules.insert(box_part, {rule});
     }
 }
+

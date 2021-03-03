@@ -44,6 +44,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="gen_piston_button">
+          <property name="text">
+           <string>Gen Piston</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>

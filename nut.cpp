@@ -43,3 +43,4 @@ void Nut::generateRules(QString nut_part) {
         createLeafRulesSingle("cyl", nut_part, QVector<float>({intersect_cyl_radius, main_cyl_length, (float)precision_intersect_cyl}), center, rotation);
     }
 }
+
