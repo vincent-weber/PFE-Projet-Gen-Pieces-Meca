@@ -10,10 +10,16 @@
 #include "anchorpoint.h"
 
 enum AnchorPointType {
-    BOX_GRID_3X3,
+    BOX_GRID_3X3_SYMMETRIC,
     BOX_GRID_4X4,
     BOX_GRID_3X3_RANDOM,
+
     PIPE_ENDS,
+
+    ENGINE_ALL,
+    ENGINE_RANDOM,
+    ENGINE_RANDOM_N,
+
     NO_ANCHOR_POINTS
 };
 

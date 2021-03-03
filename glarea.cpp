@@ -481,8 +481,6 @@ void GLArea::run_gen_box(){
 
 
                 for (int k = 0 ; k < object->primitives_str.size() ; ++k) {
-                    //appeler set_rotation dans generateRules ? (semble bcp plus logique ?)
-                    //object->set_rotation(object->primitives_str.at(k));
                     object->generateRules(object->primitives_str.at(k));
                 }
                 object->set_anchor_points();
