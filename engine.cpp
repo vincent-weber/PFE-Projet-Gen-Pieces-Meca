@@ -23,7 +23,6 @@ void Engine::generateParams(QString engine_part) {
 
     else if (engine_part == "AlignedPistons4" || engine_part == "AlternatedPistons4") {
 
-
     }
 
     else if (engine_part == "CylSeparators" || engine_part == "CubSeparators") {
@@ -81,6 +80,7 @@ void Engine::generateRules(QString engine_part) {
         createLeafRulesSingle("cyl", engine_part, QVector<float>({head_width, head_length, precision}), center_cyl_head, rotation);
     }
     else if (engine_part == "CylMainAxe") {
+        //pour un axe plus réaliste, il n'y a qu'ici qu'il faut faire des changements normalement
         createLeafRulesSingle("cyl", engine_part, QVector<float>({pipe_width, pipe_length, precision}), center, rotation);
     }
     else if (engine_part == "CubExtEngine") {
@@ -93,7 +93,7 @@ void Engine::generateRules(QString engine_part) {
     }
 
     else if (engine_part == "AlignedPistons4" || engine_part == "AlternatedPistons4") {
-
+        //Creer un piston et ses leaf rules puis faire rules.insert(engine_part, regle+regle+regle+regle)
     }
 
     else if (engine_part == "CylSeparators") {
