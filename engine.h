@@ -2,6 +2,7 @@
 #define ENGINE_H
 
 #include "generator.h"
+#include "piston.h"
 
 class Engine : public Generator
 {
@@ -19,6 +20,8 @@ private :
     float pistons_gap = -1;
 
     float precision = 16;
+
+    Piston piston;
 
 public:
     Engine();

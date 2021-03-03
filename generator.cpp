@@ -11,9 +11,9 @@ void Generator::initRules() {
     rules.insert("Box", {"BoiteCube", "BoiteRelief"});
     rules.insert("Piston", {"HeadCyl-HeadIntersect+BodyCuboid+EndCyl-EndIntersect"});
 
-    rules.insert("Engine", {"EngineAxis+SeparatorPistons"/*+GroupPistons+SeparatorPistons"*/});
+    rules.insert("Engine", {"EngineAxis+GroupPistons+SeparatorPistons"/*+SeparatorPistons"*/});
     rules.insert("EngineAxis", {"CylHeadEngine+CylMainAxe+CylExtEngine", "CubHeadEngine+CylMainAxe+CubExtEngine"});
-    rules.insert("GroupPistons", {"AlignedPistons4", "AlternatedPistons4"});
+    rules.insert("GroupPistons", {"AlignedPistons4"/*, "AlternatedPistons4"*/});
     rules.insert("SeparatorPistons", {"CylSeparators", /*"CubSeparators"*/});
     base_rules = rules;
 }

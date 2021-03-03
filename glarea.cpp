@@ -469,13 +469,17 @@ void GLArea::run_gen_box(){
                     object = new Screw();
                     object->anch_type = NO_ANCHOR_POINTS;
                 }
-                //object = new Engine();
-                object = new Piston();
+                object = new Engine();
+                //object = new Piston();
 
                 object->set_prev_anchor_point(&chosen_anchor_point);
                 object->createParams();
 
+
                 object->set_center();
+                object->set_anchor_points();
+
+
                 for (int k = 0 ; k < object->primitives_str.size() ; ++k) {
                     //appeler set_rotation dans generateRules ? (semble bcp plus logique ?)
                     //object->set_rotation(object->primitives_str.at(k));
@@ -494,7 +498,6 @@ void GLArea::run_gen_box(){
                 new_parts.push_back(new_part);
 
                 new_objects.push_back(object);
-                break;
             }
         }
 

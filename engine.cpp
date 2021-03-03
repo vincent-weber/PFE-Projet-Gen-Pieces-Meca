@@ -13,23 +13,24 @@ void Engine::generateParams(QString engine_part) {
         head_length = computeParameter(head_length, rd, head_width / 2, head_width);
     }
     else if (engine_part == "CylMainAxe") {
-        pipe_width = computeParameter(pipe_width, rd, head_width / 4, head_width * 0.75f);
+        pipe_width = computeParameter(pipe_width, rd, head_width * 0.25f, head_width * 0.75f);
         pipe_length = computeParameter(pipe_length, rd, 3.0f, 6.0f);
     }
     else if (engine_part == "CubExtEngine" || engine_part == "CylExtEngine") {
-        end_width = computeParameter(end_width, rd, pipe_width / 2, pipe_width * 0.75f);
+        end_width = computeParameter(end_width, rd, pipe_width * 0.5f, pipe_width * 0.75f);
         end_length = computeParameter(end_length, rd, pipe_length / 10, pipe_length / 5);
     }
 
     else if (engine_part == "AlignedPistons4" || engine_part == "AlternatedPistons4") {
+        nb_pistons = 4;
+        pistons_gap = pipe_length * (1.0f/((nb_pistons+1)+nb_pistons*2));
 
     }
 
     else if (engine_part == "CylSeparators" || engine_part == "CubSeparators") {
-        nb_pistons = 4;
-        pistons_gap = pipe_length * (1.0f/((nb_pistons+1)+nb_pistons*2));
+        /*nb_pistons = 4;
+        pistons_gap = pipe_length * (1.0f/((nb_pistons+1)+nb_pistons*2));*/
         sep_width = computeParameter(sep_width, rd, (pipe_width + head_width) / 2, head_width);
-        //sep_length = (pipe_length - (nb_pistons*2+1) * pistons_gap) / nb_pistons * 2;
         sep_length = pistons_gap / 2;
     }
 
@@ -93,7 +94,24 @@ void Engine::generateRules(QString engine_part) {
     }
 
     else if (engine_part == "AlignedPistons4" || engine_part == "AlternatedPistons4") {
-        //Creer un piston et ses leaf rules puis faire rules.insert(engine_part, regle+regle+regle+regle)
+
+        QString rule = "";
+        for (int i = 0 ; i < nb_pistons ; ++i) {
+            piston.sentence = piston.base_sentence;
+            piston.set_prev_anchor_point(&anchor_points[0][i]);
+            piston.set_center();
+
+            for (int k = 0 ; k < piston.primitives_str.size() ; ++k) {
+                piston.generateRules(piston.primitives_str.at(k));
+            }
+            piston.computeSentence();
+            rule += piston.sentence;
+            if (i != nb_pistons-1) {
+                rule += "+";
+            }
+        }
+        rules.insert(engine_part, {rule});
+        qDebug() << "RULE PISTONS ALIGNED : " << rule;
     }
 
     else if (engine_part == "CylSeparators") {
@@ -131,7 +149,32 @@ void Engine::generateRules(QString engine_part) {
 }
 
 void Engine::set_anchor_points() {
+    piston.set_end_cyl_intersect_width(pipe_width);
+    piston.set_end_cyl_width((pipe_width*1.5f));
+    piston.createParams();
 
+    QVector3D center_cyl_head = center - direction * (pipe_length/2 + head_length/2);
+    QVector<AnchorPoint> anch_points;
+    QVector3D coords(center_cyl_head + direction * (head_length/2 + pistons_gap * 1.5f + sep_length));
+    QVector3D dir_anch_p;
+    if (direction[0] == 1) {
+        dir_anch_p = QVector3D(0,1,0);
+    }
+    else if (direction[1] == 1) {
+        dir_anch_p = QVector3D(0,0,1);
+    }
+    else if (direction[2] == 1) {
+        dir_anch_p = QVector3D(1,0,0);
+    }
+
+    float offset = pistons_gap * 2 + sep_length * 2;
+    for (int i = 0 ; i < nb_pistons ; ++i) {
+        AnchorPoint anch_p(coords, dir_anch_p, pipe_width);
+        coords = QVector3D(coords[0] + direction[0] * offset, coords[1] + direction[1] * offset, coords[2] + direction[2] * offset);
+        anch_points.push_back(anch_p);
+    }
+
+    anchor_points.push_back(anch_points);
 }
 
 QVector<AnchorPoint> Engine::choose_anchor_points() {

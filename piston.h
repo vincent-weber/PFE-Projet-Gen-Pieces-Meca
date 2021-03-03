@@ -26,6 +26,8 @@ private:
 
     float endCyl_inter_width = -1;
 
+    QVector3D head_intersect_rot;
+
 public:
     Piston();
     std::random_device rd;
@@ -36,6 +38,12 @@ public:
     void set_anchor_points() override;
     QVector<AnchorPoint> choose_anchor_points() override;
 
+    void set_end_cyl_intersect_width(float val) {
+        endCyl_inter_width = val;
+    }
+    void set_end_cyl_width(float val) {
+        endCyl_width = val;
+    }
 
 };
 
