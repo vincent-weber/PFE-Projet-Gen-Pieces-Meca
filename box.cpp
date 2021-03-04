@@ -69,7 +69,7 @@ void Box::set_anchor_points() {
     //TODO : check la distance avec le point d'ancrage précédent pour ne pas l'ajouter à cet objet
     //génération de points d'ancrage par grille de 3x3, peut etre faire une autre méthode (aléatoire)
 
-    if (anch_type == BOX_GRID_3X3 || anch_type == BOX_GRID_3X3_RANDOM) {
+    if (anch_type == BOX_GRID_3X3_SYMMETRIC || anch_type == BOX_GRID_3X3_RANDOM) {
         //haut et bas de la boite
         float offset_x = box_length/4;
         float offset_z = box_width/4;
@@ -153,11 +153,44 @@ void Box::set_anchor_points() {
         anchor_points.push_back(anchor_face5);
         anchor_points.push_back(anchor_face6);
     }
+
+    //Place des points d'encrage a chaque. //x : length, y = height, z = width;
+    if (anch_type == BOX_ANGLES){
+        //haut et bas de la boite
+        float y = center.y() + box_height/2; //FIXE
+        float x = center.x() + box_length/2;
+        float z = center.z() + box_width/2;
+
+        float x_offset = box_length/6;
+        float z_offset = box_width/6;
+
+        float max_accepted_size_anchor_point = min(box_length/6, box_width/6);
+        QVector<AnchorPoint> anchor_face1;
+        QVector<AnchorPoint> anchor_face2;
+        for (int i = 0 ; i < 2 ; ++i) {
+            x_offset = -x_offset; z_offset = -z_offset;
+            for (int j = 0 ; j < 2 ; ++j) {
+                QVector3D coords(x,y,z);
+                qDebug() << "Coordonnée du point d'ancrage :" << i << j << coords;
+                QVector3D coords2(x,y-box_height,z);
+                QVector3D direction(0,1,0);
+                AnchorPoint anch(coords, direction, max_accepted_size_anchor_point);
+                anch.owner_object = this;
+                AnchorPoint anch2(coords2, -direction, max_accepted_size_anchor_point);
+                anchor_face1.push_back(anch);
+                anchor_face2.push_back(anch2);
+                x = -x;
+            }
+            z = -z;
+        }
+        anchor_points.push_back(anchor_face1);
+        anchor_points.push_back(anchor_face2);
+    }
 }
 
 QVector<AnchorPoint> Box::choose_anchor_points() {
     QVector<AnchorPoint> res;
-    if (anch_type == BOX_GRID_3X3) {
+    if (anch_type == BOX_GRID_3X3_SYMMETRIC) {
         QVector<int> pattern;
         int val0 = std::uniform_int_distribution<int>{0, 1}(rd);
         int val1 = std::uniform_int_distribution<int>{0, 1}(rd);
@@ -198,6 +231,9 @@ QVector<AnchorPoint> Box::choose_anchor_points() {
             AnchorPoint chosen_anchor_point = anchor_points[i][ind_anchor];
             res.push_back(chosen_anchor_point);
         }
+    }
+    else if (anch_type == BOX_ANGLES){
+        // Pas besoin ?
     }
     else {
         qDebug() << "ERROR BOX ANCH TYPE INVALID";

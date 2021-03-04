@@ -6,8 +6,10 @@ Nut::Nut()
 }
 
 void Nut::generateParams(QString nut_part) {
+    float max_value = get_max_possible_size();
+
     if (nut_part == "NutMainCyl") {
-        main_cyl_radius = computeParameter(main_cyl_radius, rd, 1.0f, 3.0f);
+        main_cyl_radius = computeParameter(main_cyl_radius, rd, 1.0f, max_value);
         precision_main_cyl = computeParameter(precision_main_cyl, rd, 7, 12);
         if (precision_main_cyl % 2 == 1) ++precision_main_cyl;
         main_cyl_length = computeParameter(main_cyl_length, rd, main_cyl_radius/2, main_cyl_radius);
@@ -20,11 +22,25 @@ void Nut::generateParams(QString nut_part) {
 }
 
 void Nut::set_center() {
-
+    QVector3D offset = - anchor_point_prev_lvl->direction*0.001;
+    center = QVector3D(anchor_point_prev_lvl->coords - anchor_point_prev_lvl->direction*(main_cyl_length) + offset);
 }
 
 void Nut::set_rotation(QString screw_part) {
-    rotation = QVector3D(0, PI/2, PI/2);
+    QVector3D vec_un(1,1,1);
+    QVector3D vec_base;
+
+    if (screw_part == "NutMainCyl") {
+        vec_base= QVector3D(0,0,1);
+    }
+    else if (screw_part == "NutIntersectCyl") {
+        vec_base= QVector3D(0,0,1);
+    }
+
+    if(vec_base == direction || vec_base == -direction) {
+        rotation = QVector3D(0,0,0);
+    }
+    else rotation = (vec_un - (vec_base + direction)) * PI/2;
 }
 
 void Nut::set_anchor_points() {

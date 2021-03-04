@@ -13,6 +13,7 @@ enum AnchorPointType {
     BOX_GRID_3X3_SYMMETRIC,
     BOX_GRID_4X4,
     BOX_GRID_3X3_RANDOM,
+    BOX_ANGLES,
 
     PIPE_ENDS,
 
