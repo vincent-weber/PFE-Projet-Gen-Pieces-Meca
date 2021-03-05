@@ -27,6 +27,7 @@ private:
     float endCyl_inter_width = -1;
 
     QVector3D head_intersect_rot;
+    QVector3D head_rot;
 
 public:
     Piston();

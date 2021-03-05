@@ -69,7 +69,7 @@ void Box::set_anchor_points() {
     //TODO : check la distance avec le point d'ancrage précédent pour ne pas l'ajouter à cet objet
     //génération de points d'ancrage par grille de 3x3, peut etre faire une autre méthode (aléatoire)
 
-    if (anch_type == BOX_GRID_3X3 || anch_type == BOX_GRID_3X3_RANDOM) {
+    if (anch_type == BOX_GRID_3X3_SYMMETRIC || anch_type == BOX_GRID_3X3_RANDOM) {
         //haut et bas de la boite
         float offset_x = box_length/4;
         float offset_z = box_width/4;
@@ -157,7 +157,7 @@ void Box::set_anchor_points() {
 
 QVector<AnchorPoint> Box::choose_anchor_points() {
     QVector<AnchorPoint> res;
-    if (anch_type == BOX_GRID_3X3) {
+    if (anch_type == BOX_GRID_3X3_SYMMETRIC) {
         QVector<int> pattern;
         int val0 = std::uniform_int_distribution<int>{0, 1}(rd);
         int val1 = std::uniform_int_distribution<int>{0, 1}(rd);

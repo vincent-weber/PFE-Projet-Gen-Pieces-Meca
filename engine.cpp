@@ -28,8 +28,6 @@ void Engine::generateParams(QString engine_part) {
     }
 
     else if (engine_part == "CylSeparators" || engine_part == "CubSeparators") {
-        /*nb_pistons = 4;
-        pistons_gap = pipe_length * (1.0f/((nb_pistons+1)+nb_pistons*2));*/
         sep_width = computeParameter(sep_width, rd, (pipe_width + head_width) / 2, head_width);
         sep_length = pistons_gap / 2;
     }
@@ -160,11 +158,20 @@ void Engine::set_anchor_points() {
     if (direction[0] == 1) {
         dir_anch_p = QVector3D(0,1,0);
     }
+    else if (direction[0] == -1) {
+        dir_anch_p = QVector3D(0,-1,0);
+    }
     else if (direction[1] == 1) {
         dir_anch_p = QVector3D(0,0,1);
     }
+    else if (direction[1] == -1) {
+        dir_anch_p = QVector3D(0,0,-1);
+    }
     else if (direction[2] == 1) {
         dir_anch_p = QVector3D(1,0,0);
+    }
+    else if (direction[2] == -1) {
+        dir_anch_p = QVector3D(-1,0,0);
     }
 
     float offset = pistons_gap * 2 + sep_length * 2;
