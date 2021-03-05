@@ -7,6 +7,7 @@ Nut::Nut()
 
 void Nut::generateParams(QString nut_part) {
     float max_value = get_max_possible_size();
+    qDebug() << max_value << "LA VALEUR MAX";
 
     if (nut_part == "NutMainCyl") {
         main_cyl_radius = computeParameter(main_cyl_radius, rd, 1.0f, max_value);
@@ -44,11 +45,14 @@ void Nut::set_rotation(QString screw_part) {
 }
 
 void Nut::set_anchor_points() {
-
+    //Juste celui au centre de l'ecrou.
+    QVector<AnchorPoint> anchor;
+    AnchorPoint anch(center, -direction, intersect_cyl_radius);
+    anchor.push_back(anch);
+    anchor_points.push_back(anchor);
 }
 
 QVector<AnchorPoint> Nut::choose_anchor_points() {
-
 }
 
 void Nut::generateRules(QString nut_part) {

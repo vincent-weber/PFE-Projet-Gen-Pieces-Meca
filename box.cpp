@@ -161,19 +161,15 @@ void Box::set_anchor_points() {
         float x = center.x() + box_length/2;
         float z = center.z() + box_width/2;
 
-        float x_offset = box_length/6;
-        float z_offset = box_width/6;
-
         float max_accepted_size_anchor_point = min(box_length/6, box_width/6);
         QVector<AnchorPoint> anchor_face1;
         QVector<AnchorPoint> anchor_face2;
         for (int i = 0 ; i < 2 ; ++i) {
-            x_offset = -x_offset; z_offset = -z_offset;
             for (int j = 0 ; j < 2 ; ++j) {
                 QVector3D coords(x,y,z);
                 qDebug() << "Coordonnée du point d'ancrage :" << i << j << coords;
                 QVector3D coords2(x,y-box_height,z);
-                QVector3D direction(0,1,0);
+                QVector3D direction(0,0,1);
                 AnchorPoint anch(coords, direction, max_accepted_size_anchor_point);
                 anch.owner_object = this;
                 AnchorPoint anch2(coords2, -direction, max_accepted_size_anchor_point);

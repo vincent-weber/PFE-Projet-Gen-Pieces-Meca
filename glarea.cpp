@@ -521,7 +521,6 @@ void GLArea::run_gen_box_angles(){
 
     box.set_anchor_points();
 
-
     box.computeSentence();
     Parser parser_box(box.sentence);
     qDebug() << "BOX SENTENCE : " << box.sentence;
@@ -540,25 +539,47 @@ void GLArea::run_gen_box_angles(){
 
             AnchorPoint anchor_point = box.anchor_points[i][j];
 
-            Generator *screw = new Nut();
-            screw->anch_type = NO_ANCHOR_POINTS;
-            screw->set_prev_anchor_point(&anchor_point);
-            screw->createParams();
-            screw->set_center();
+            Generator *nut = new Nut();
+            nut->set_prev_anchor_point(&anchor_point);
+            nut->createParams();
+            nut->set_center();
 
-            for (int k = 0 ; k < screw->primitives_str.size() ; ++k) {
-                screw->generateRules(screw->primitives_str.at(k));
+            for (int k = 0 ; k < nut->primitives_str.size() ; ++k) {
+                nut->generateRules(nut->primitives_str.at(k));
             }
+            nut->set_anchor_points();
+//            AnchorPoint nutAnchorPoint = nut->anchor_points[0][0];
 
-            screw->sentence = screw->base_sentence;
-            screw->computeSentence();
-            Parser parser_screw(screw->sentence);
-            parser_screw.reader();
+            nut->anch_type = NO_ANCHOR_POINTS;
+            nut->sentence = nut->base_sentence;
+            nut->computeSentence();
+            Parser parser_nut(nut->sentence);
+            parser_nut.reader();
 
-            MechanicalPart new_screw(parser_screw.shapes, parser_screw.ops);
-            mecha_parts.push_back(new_screw);
-            new_parts.push_back(new_screw);
-            new_objects.push_back(screw);
+            MechanicalPart new_nut(parser_nut.shapes, parser_nut.ops);
+            mecha_parts.push_back(new_nut);
+            new_parts.push_back(new_nut);
+            new_objects.push_back(nut);
+
+//            Generator *screw = new Screw();
+//            screw->anch_type = NO_ANCHOR_POINTS;
+//            screw->set_prev_anchor_point(&nutAnchorPoint);
+//            screw->createParams();
+//            screw->set_center();
+
+//            for (int k = 0 ; k < screw->primitives_str.size() ; ++k) {
+//                screw->generateRules(screw->primitives_str.at(k));
+//            }
+//            screw->sentence = screw->base_sentence;
+//            screw->computeSentence();
+//            Parser parser_screw(screw->sentence);
+//            parser_screw.reader();
+
+//            MechanicalPart new_screw(parser_screw.shapes, parser_screw.ops);
+//            mecha_parts.push_back(new_screw);
+//            new_parts.push_back(new_screw);
+//            new_objects.push_back(screw);
+
         }
     }
     prepareMechaParts();
