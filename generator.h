@@ -16,9 +16,10 @@ enum AnchorPointType {
 
     PIPE_ENDS,
 
-    ENGINE_ALL,
-    ENGINE_RANDOM,
-    ENGINE_RANDOM_N,
+    ENGINE_ALIGNED_ALL,
+    ENGINE_ALTERNATED_ALL,
+    ENGINE_ALIGNED_RANDOM,
+    ENGINE_ALTERNATED_RANDOM,
 
     NO_ANCHOR_POINTS
 };
@@ -38,7 +39,7 @@ public:
     virtual void set_center() = 0;
     virtual void set_anchor_points() = 0;
     void set_prev_anchor_point(AnchorPoint* anchor_point);
-    virtual QVector<AnchorPoint> choose_anchor_points() = 0;
+    virtual QVector<AnchorPoint*> choose_anchor_points() = 0;
     float get_max_possible_size();
 
     std::random_device rd_gen;

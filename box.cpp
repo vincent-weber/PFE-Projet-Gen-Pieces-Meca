@@ -155,8 +155,8 @@ void Box::set_anchor_points() {
     }
 }
 
-QVector<AnchorPoint> Box::choose_anchor_points() {
-    QVector<AnchorPoint> res;
+QVector<AnchorPoint*> Box::choose_anchor_points() {
+    QVector<AnchorPoint*> res;
     if (anch_type == BOX_GRID_3X3_SYMMETRIC) {
         QVector<int> pattern;
         int val0 = std::uniform_int_distribution<int>{0, 1}(rd);
@@ -183,7 +183,7 @@ QVector<AnchorPoint> Box::choose_anchor_points() {
 
         for (int i = 0 ; i < anchor_points.size() ; ++i) {
             for (int j = 0 ; j < pattern.size() ; ++j) {
-                res.push_back(anchor_points[i][pattern[j]]);
+                res.push_back(&anchor_points[i][pattern[j]]);
             }
         }
     }
@@ -195,8 +195,7 @@ QVector<AnchorPoint> Box::choose_anchor_points() {
             if (anchor_points[i].size() == 0) continue;
             std::random_device rd;
             int ind_anchor = std::uniform_int_distribution<int>{0, anchor_points[i].size()-1}(rd);
-            AnchorPoint chosen_anchor_point = anchor_points[i][ind_anchor];
-            res.push_back(chosen_anchor_point);
+            res.push_back(&anchor_points[i][ind_anchor]);
         }
     }
     else {

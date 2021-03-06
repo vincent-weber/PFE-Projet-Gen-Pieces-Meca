@@ -84,7 +84,7 @@ void Piston::set_anchor_points(){
 
 }
 
-QVector<AnchorPoint> Piston::choose_anchor_points() {
+QVector<AnchorPoint*> Piston::choose_anchor_points() {
     return {};
 }
 

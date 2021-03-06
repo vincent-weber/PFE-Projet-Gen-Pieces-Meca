@@ -21,7 +21,7 @@ public:
     void set_rotation(QString screw_part) override;
     void set_center() override;
     void set_anchor_points() override;
-    QVector<AnchorPoint> choose_anchor_points() override;
+    QVector<AnchorPoint*> choose_anchor_points() override;
 
     void set_body_height(float body_height) {
         this->body_height = body_height;

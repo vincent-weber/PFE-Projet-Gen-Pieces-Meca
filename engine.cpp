@@ -14,17 +14,44 @@ void Engine::generateParams(QString engine_part) {
     }
     else if (engine_part == "CylMainAxe") {
         pipe_width = computeParameter(pipe_width, rd, head_width * 0.25f, head_width * 0.75f);
-        pipe_length = computeParameter(pipe_length, rd, 3.0f, 6.0f);
+        pipe_length = computeParameter(pipe_length, rd, pipe_length_min, pipe_length_max);
     }
     else if (engine_part == "CubExtEngine" || engine_part == "CylExtEngine") {
         end_width = computeParameter(end_width, rd, pipe_width * 0.5f, pipe_width * 0.75f);
         end_length = computeParameter(end_length, rd, pipe_length / 10, pipe_length / 5);
     }
 
-    else if (engine_part == "AlignedPistons4" || engine_part == "AlternatedPistons4") {
+    else if (engine_part == "Aligned4All" || engine_part == "Aligned4Rand" || engine_part == "Alternated4All" || engine_part == "Alternated4Rand") {
         nb_pistons = 4;
         pistons_gap = pipe_length * (1.0f/((nb_pistons+1)+nb_pistons*2));
-
+        if (engine_part == "Aligned4All") {
+            anch_type = ENGINE_ALIGNED_ALL;
+        }
+        else if (engine_part == "Aligned4Rand") {
+            anch_type = ENGINE_ALIGNED_RANDOM;
+        }
+        else if (engine_part == "Alternated4All") {
+            anch_type = ENGINE_ALTERNATED_ALL;
+        }
+        else if (engine_part == "Alternated4Rand") {
+            anch_type = ENGINE_ALTERNATED_RANDOM;
+        }
+    }
+    else if (engine_part == "AlignedNRand" || engine_part == "AlternatedNRand" || engine_part == "AlignedNAll" || engine_part == "AlternatedNAll") {
+        nb_pistons = (pipe_length / pipe_length_min) * 4;
+        pistons_gap = pipe_length * (1.0f/((nb_pistons+1)+nb_pistons*2));
+        if (engine_part == "AlignedNRand") {
+            anch_type = ENGINE_ALIGNED_RANDOM;
+        }
+        else if (engine_part == "AlternatedNRand") {
+            anch_type = ENGINE_ALTERNATED_RANDOM;
+        }
+        else if (engine_part == "AlignedNAll") {
+            anch_type = ENGINE_ALIGNED_ALL;
+        }
+        else if (engine_part == "AlternatedNAll") {
+            anch_type = ENGINE_ALTERNATED_ALL;
+        }
     }
 
     else if (engine_part == "CylSeparators" || engine_part == "CubSeparators") {
@@ -91,12 +118,15 @@ void Engine::generateRules(QString engine_part) {
         createLeafRulesSingle("cyl", engine_part, QVector<float>({end_width, end_length, precision}), center_cyl_ext, rotation);
     }
 
-    else if (engine_part == "AlignedPistons4" || engine_part == "AlternatedPistons4") {
+    //"Aligned4All", "Aligned4Rand", "Alternated4All", "Alternated4Rand"/*, "AlignedNRand", "AlternatedNRand, "AlignedNAll", "AlternatedNAll"*/
+    else if (engine_part == "Aligned4All" || engine_part == "Aligned4Rand" || engine_part == "Alternated4All" || engine_part == "Alternated4Rand"
+             || engine_part == "AlignedNRand" || engine_part == "AlternatedNRand" || engine_part == "AlignedNAll" || engine_part == "AlternatedNAll") {
 
         QString rule = "";
-        for (int i = 0 ; i < nb_pistons ; ++i) {
+        QVector<AnchorPoint*> anch_p = choose_anchor_points();
+        for (int i = 0 ; i < anch_p.size() ; ++i) {
             piston.sentence = piston.base_sentence;
-            piston.set_prev_anchor_point(&anchor_points[0][i]);
+            piston.set_prev_anchor_point(anch_p[i]);
             piston.set_center();
 
             for (int k = 0 ; k < piston.primitives_str.size() ; ++k) {
@@ -109,7 +139,6 @@ void Engine::generateRules(QString engine_part) {
             }
         }
         rules.insert(engine_part, {rule});
-        qDebug() << "RULE PISTONS ALIGNED : " << rule;
     }
 
     else if (engine_part == "CylSeparators") {
@@ -176,6 +205,9 @@ void Engine::set_anchor_points() {
 
     float offset = pistons_gap * 2 + sep_length * 2;
     for (int i = 0 ; i < nb_pistons ; ++i) {
+        if (anch_type == ENGINE_ALTERNATED_ALL || anch_type == ENGINE_ALTERNATED_RANDOM) {
+            dir_anch_p = -dir_anch_p;
+        }
         AnchorPoint anch_p(coords, dir_anch_p, pipe_width);
         coords = QVector3D(coords[0] + direction[0] * offset, coords[1] + direction[1] * offset, coords[2] + direction[2] * offset);
         anch_points.push_back(anch_p);
@@ -184,6 +216,20 @@ void Engine::set_anchor_points() {
     anchor_points.push_back(anch_points);
 }
 
-QVector<AnchorPoint> Engine::choose_anchor_points() {
-    return {};
+QVector<AnchorPoint*> Engine::choose_anchor_points() {
+    QVector<AnchorPoint*> res;
+    if (anch_type == ENGINE_ALIGNED_ALL || anch_type == ENGINE_ALTERNATED_ALL) {
+        for (int i = 0 ; i < anchor_points[0].size() ; ++i) {
+            res.push_back(&anchor_points[0][i]);
+        }
+    }
+    else if (anch_type == ENGINE_ALIGNED_RANDOM || anch_type == ENGINE_ALTERNATED_RANDOM) {
+        for (int i = 0 ; i < anchor_points[0].size() ; ++i) {
+            int rand = std::uniform_int_distribution<int>{0,1}(rd);
+            if (rand == 0) {
+                res.push_back(&anchor_points[0][i]);
+            }
+        }
+    }
+    return res;
 }

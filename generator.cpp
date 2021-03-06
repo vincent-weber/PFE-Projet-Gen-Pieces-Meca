@@ -13,7 +13,7 @@ void Generator::initRules() {
 
     rules.insert("Engine", {"EngineAxis+GroupPistons+SeparatorPistons"});
     rules.insert("EngineAxis", {"CylHeadEngine+CylMainAxe+CylExtEngine", "CubHeadEngine+CylMainAxe+CubExtEngine"});
-    rules.insert("GroupPistons", {"AlignedPistons4"/*, "AlternatedPistons4"*/});
+    rules.insert("GroupPistons", {"Aligned4All", "Aligned4Rand", "Alternated4All", "Alternated4Rand", "AlignedNRand", "AlternatedNRand", "AlignedNAll", "AlternatedNAll"});
     rules.insert("SeparatorPistons", {"CylSeparators", /*"CubSeparators"*/});
     base_rules = rules;
 }

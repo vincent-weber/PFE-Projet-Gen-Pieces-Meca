@@ -429,7 +429,7 @@ void GLArea::run_gen_box(){
 
     QVector<MechanicalPart> new_parts;
 
-    int level_max = 2;
+    int level_max = 1;
     QVector<Generator*> current_lvl_objects;
     QVector<Generator*> new_objects;
     current_lvl_objects.push_back(&box);
@@ -447,9 +447,9 @@ void GLArea::run_gen_box(){
 
             Generator* prev_object = current_lvl_objects[ind_obj];
             //Appel à une fonction dans object qui renvoie le vecteur des anchor points à parcourir selon une stratégie (aléatoire ou symétrique par ex)
-            QVector<AnchorPoint> chosen_anchor_points = prev_object->choose_anchor_points();
+            QVector<AnchorPoint*> chosen_anchor_points = prev_object->choose_anchor_points();
             for (int i = 0 ; i < chosen_anchor_points.size() ; ++i) {
-                AnchorPoint chosen_anchor_point = chosen_anchor_points[i];
+                AnchorPoint* chosen_anchor_point = chosen_anchor_points[i];
 
                 std::random_device rd;
                 Generator* object;
@@ -472,18 +472,16 @@ void GLArea::run_gen_box(){
                 object = new Engine();
                 //object = new Piston();
 
-                object->set_prev_anchor_point(&chosen_anchor_point);
+                object->set_prev_anchor_point(chosen_anchor_point);
                 object->createParams();
-
 
                 object->set_center();
                 object->set_anchor_points();
 
-
                 for (int k = 0 ; k < object->primitives_str.size() ; ++k) {
                     object->generateRules(object->primitives_str.at(k));
                 }
-                object->set_anchor_points();
+                //object->set_anchor_points();
 
                 object->sentence = object->base_sentence;
                 qDebug() << "ENGINE SETNENCE : " << object->sentence;
@@ -496,6 +494,8 @@ void GLArea::run_gen_box(){
                 new_parts.push_back(new_part);
 
                 new_objects.push_back(object);
+                //break pour avoir qu'un objet
+                //break;
             }
         }
 

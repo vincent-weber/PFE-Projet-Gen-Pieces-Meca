@@ -31,8 +31,8 @@ void Nut::set_anchor_points() {
 
 }
 
-QVector<AnchorPoint> Nut::choose_anchor_points() {
-
+QVector<AnchorPoint*> Nut::choose_anchor_points() {
+    return {};
 }
 
 void Nut::generateRules(QString nut_part) {

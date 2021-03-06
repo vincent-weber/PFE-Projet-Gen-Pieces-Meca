@@ -70,7 +70,7 @@ void Screw::set_anchor_points() {
 
 }
 
-QVector<AnchorPoint> Screw::choose_anchor_points() {
+QVector<AnchorPoint*> Screw::choose_anchor_points() {
     return {};
 }
 

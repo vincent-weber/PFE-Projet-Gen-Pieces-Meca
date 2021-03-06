@@ -68,12 +68,12 @@ void Pipe::set_anchor_points() {
     }
 }
 
-QVector<AnchorPoint> Pipe::choose_anchor_points() {
-    QVector<AnchorPoint> res;
+QVector<AnchorPoint*> Pipe::choose_anchor_points() {
+    QVector<AnchorPoint*> res;
     if (anch_type == PIPE_ENDS) {
         for (int i = 0 ; i < anchor_points.size() ; ++i) {
             for (int j = 0 ; j < anchor_points[i].size() ; ++j) {
-                res.push_back(anchor_points[i][j]);
+                res.push_back(&anchor_points[i][j]);
             }
         }
     }
