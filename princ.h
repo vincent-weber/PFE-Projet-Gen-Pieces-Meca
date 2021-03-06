@@ -17,12 +17,14 @@ private slots:
     void on_gen_nut_button_clicked();
     void on_gen_box_button_clicked();
     void on_gen_piston_button_clicked();
+    void on_gen_engines_button_clicked();
 
 signals:
     void run_gen_screw_button();
     void run_gen_nut_button();
     void run_gen_box_button();
     void run_gen_piston_button();
+    void run_gen_engines_button();
 };
 
 #endif // PRINC_H

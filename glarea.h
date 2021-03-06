@@ -43,6 +43,7 @@ protected slots:
     void run_gen_nut();
     void run_gen_box();
     void run_gen_piston();
+    void run_gen_engines();
 
 protected:
     void initializeGL() override;

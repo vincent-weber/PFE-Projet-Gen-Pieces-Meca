@@ -507,26 +507,22 @@ void GLArea::run_gen_box(){
     //prepareMachinery();
 }
 
-void GLArea::run_gen_piston(){
-    qDebug() << __FUNCTION__;
+void GLArea::run_gen_piston() {}
+
+void GLArea::run_gen_engines() {
     mecha_parts.clear();
     vbos_mecha_parts.clear();
+    Box box;
 
-    Piston piston;
-    piston.createParams();
-
-    for (int i = 0 ; i < piston.primitives_str.size() ; ++i) {
-        piston.set_rotation(piston.primitives_str.at(i));
-        piston.generateRules(piston.primitives_str.at(i));
+    box.createParams();
+    for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
+        box.generateRules(box.primitives_str.at(k));
     }
-    piston.computeSentence();
 
-    qDebug() << "PHRASE FINALE : " << piston.sentence;
-
-    Parser parser(piston.sentence);
-    parser.reader();
-
-    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
-
-    prepareMechaParts();
+    box.set_anchor_points();
+    box.computeSentence();
+    Parser parser_box(box.sentence);
+    parser_box.reader();
+    MechanicalPart base(parser_box.shapes, parser_box.ops);
+    mecha_parts.push_back(base);
 }
