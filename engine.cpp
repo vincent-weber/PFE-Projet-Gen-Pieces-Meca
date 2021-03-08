@@ -4,12 +4,17 @@ Engine::Engine()
 {
     generator_name = "Engine";
     max_size = 0.6f;
+    min_size = 0.1f;
 }
 
 void Engine::generateParams(QString engine_part) {
     float max_value = get_max_possible_size();
+    float min_value = min_size;
+    if (max_value < min_value) {
+        max_value = min_value;
+    }
     if (engine_part == "CubHeadEngine" || engine_part == "CylHeadEngine") {
-        head_width = computeParameter(head_width, rd, 0.1f, max_value);
+        head_width = computeParameter(head_width, rd, min_value, max_value);
         head_length = computeParameter(head_length, rd, head_width / 2, head_width);
     }
     else if (engine_part == "CylMainAxe") {
@@ -55,7 +60,8 @@ void Engine::generateParams(QString engine_part) {
     }
 
     else if (engine_part == "CylSeparators" || engine_part == "CubSeparators") {
-        sep_width = computeParameter(sep_width, rd, (pipe_width + head_width) / 2, head_width);
+        //sep_width = computeParameter(sep_width, rd, (pipe_width + head_width) / 2, head_width);
+        sep_width = head_width;
         sep_length = pistons_gap / 2;
     }
 
@@ -107,7 +113,36 @@ void Engine::generateRules(QString engine_part) {
     }
     else if (engine_part == "CylMainAxe") {
         //pour un axe plus réaliste, il n'y a qu'ici qu'il faut faire des changements normalement
-        createLeafRulesSingle("cyl", engine_part, QVector<float>({pipe_width, pipe_length, precision}), center, rotation);
+        float pipe_piece_length = pistons_gap;
+        QVector<QString> primitives(nb_pistons*2+1, "cyl");
+        QString op_bools(nb_pistons*2, '+');
+        QVector<QVector<float>> params(nb_pistons*2+1, {pipe_width, pipe_piece_length, precision});
+        QVector<QVector3D> rots(nb_pistons*2+1, rotation);
+        QVector<QVector3D> centers;
+
+        qDebug() << primitives;
+        qDebug() << op_bools;
+        qDebug() << rots;
+
+        QVector3D center_cyl_head = center - direction * (pipe_length/2 + head_length/2);
+        QVector3D center(center_cyl_head + direction * (head_length/2 + pistons_gap/2));
+
+        for (int i = 0 ; i < nb_pistons+1 ; ++i) {
+            centers.push_back(center);
+            center += direction * (pistons_gap * 2 + sep_length * 2);
+        }
+
+        //nécessite de créer tous les points d'ancrage au préalable
+        for (int i = 0 ; i < anchor_points[0].size() ; ++i) {
+            centers.push_back(anchor_points[0][i].coords);
+        }
+
+        qDebug() << "NB ATTENDU : " << nb_pistons*2+1;
+        qDebug() << "NB : " << nb_pistons+1 << " + " << anchor_points[0].size();
+
+        QString rule = createLeafRulesMultiple(primitives, op_bools, params, centers, rots);
+        rules.insert(engine_part, {rule});
+        //createLeafRulesSingle("cyl", engine_part, QVector<float>({pipe_width, pipe_length, precision}), center, rotation);
     }
     else if (engine_part == "CubExtEngine") {
         QVector3D center_cyl_ext = center + direction * (pipe_length/2 + end_length/2);
@@ -118,7 +153,7 @@ void Engine::generateRules(QString engine_part) {
         createLeafRulesSingle("cyl", engine_part, QVector<float>({end_width, end_length, precision}), center_cyl_ext, rotation);
     }
 
-    //"Aligned4All", "Aligned4Rand", "Alternated4All", "Alternated4Rand"/*, "AlignedNRand", "AlternatedNRand, "AlignedNAll", "AlternatedNAll"*/
+
     else if (engine_part == "Aligned4All" || engine_part == "Aligned4Rand" || engine_part == "Alternated4All" || engine_part == "Alternated4Rand"
              || engine_part == "AlignedNRand" || engine_part == "AlternatedNRand" || engine_part == "AlignedNAll" || engine_part == "AlternatedNAll") {
 
@@ -164,7 +199,6 @@ void Engine::generateRules(QString engine_part) {
             primitives.push_back("cyl");
             op_bools += "+";
         }
-        qDebug() << "CENTERS : " << centers;
 
         QString rule = createLeafRulesMultiple(primitives, op_bools, params, centers, rots);
         rules.insert(engine_part, {rule});
@@ -176,13 +210,12 @@ void Engine::generateRules(QString engine_part) {
 }
 
 void Engine::set_anchor_points() {
-    piston.set_end_cyl_intersect_width(pipe_width);
+    piston.set_end_cyl_intersect_width(pipe_width * 0.998f);
     piston.set_end_cyl_width((pipe_width*1.5f));
     piston.createParams();
 
     QVector3D center_cyl_head = center - direction * (pipe_length/2 + head_length/2);
     QVector<AnchorPoint> anch_points;
-    QVector3D coords(center_cyl_head + direction * (head_length/2 + pistons_gap * 1.5f + sep_length));
     QVector3D dir_anch_p;
     if (direction[0] == 1) {
         dir_anch_p = QVector3D(0,1,0);
@@ -203,13 +236,16 @@ void Engine::set_anchor_points() {
         dir_anch_p = QVector3D(-1,0,0);
     }
 
-    float offset = pistons_gap * 2 + sep_length * 2;
+    QVector3D coords(center_cyl_head + direction * (head_length/2 + pistons_gap * 1.5f + sep_length));
+
+    float offset_other_direction = sep_width - pipe_width;
+    float offset_piston = pistons_gap * 2 + sep_length * 2;
     for (int i = 0 ; i < nb_pistons ; ++i) {
         if (anch_type == ENGINE_ALTERNATED_ALL || anch_type == ENGINE_ALTERNATED_RANDOM) {
             dir_anch_p = -dir_anch_p;
         }
-        AnchorPoint anch_p(coords, dir_anch_p, pipe_width);
-        coords = QVector3D(coords[0] + direction[0] * offset, coords[1] + direction[1] * offset, coords[2] + direction[2] * offset);
+        AnchorPoint anch_p(coords + dir_anch_p * offset_other_direction, dir_anch_p, pipe_width);
+        coords = QVector3D(coords[0] + direction[0] * offset_piston, coords[1] + direction[1] * offset_piston, coords[2] + direction[2] * offset_piston);
         anch_points.push_back(anch_p);
     }
 

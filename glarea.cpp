@@ -268,10 +268,10 @@ void GLArea::paintGL()
 
     //Rendu des pièces mécaniques
     for (unsigned i = 0 ; i < mecha_parts.size() ; ++i) {
-        render_shape_color(vbos_mecha_parts[i], projectionMatrix, viewMatrix, mecha_parts[i].nb_vertices_gl_faces, mecha_parts[i].nb_vertices_gl_lines);
+        //render_shape_color(vbos_mecha_parts[i], projectionMatrix, viewMatrix, mecha_parts[i].nb_vertices_gl_faces, mecha_parts[i].nb_vertices_gl_lines);
     }
 
-    //render_shape_color(vbo_machinery, projectionMatrix, viewMatrix, machinery.nb_vertices_gl_faces, machinery.nb_vertices_gl_lines);
+    render_shape_color(vbo_machinery, projectionMatrix, viewMatrix, machinery.nb_vertices_gl_faces, machinery.nb_vertices_gl_lines);
 
 }
 
@@ -364,6 +364,22 @@ void GLArea::onTimeout()
     update();
 }
 
+bool GLArea::save_mesh_cgal(Mesh_CGAL& mesh,std::string filename)
+{
+    // write mesh to output.obj
+    try
+    {
+        std::ofstream output(filename);
+        output << mesh;
+    }
+    catch( std::exception& x )
+    {
+        qDebug() << "Exception: " << x.what() << endl;
+        return false;
+    }
+    return true;
+}
+
 
 void GLArea::run_gen_screw(){
     mecha_parts.clear();
@@ -412,9 +428,7 @@ void GLArea::run_gen_box(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
     Box box;
-    //box.anch_type = BOX_GRID_3X3;
-    box.anch_type = BOX_GRID_3X3_RANDOM;
-    box.createParams();
+
     for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
         box.generateRules(box.primitives_str.at(k));
     }
@@ -513,16 +527,51 @@ void GLArea::run_gen_engines() {
     mecha_parts.clear();
     vbos_mecha_parts.clear();
     Box box;
+    box.base_sentence = "LongOneFace";
+    box.sentence = box.base_sentence;
+    box.primitives_str = box.sentence.split(QRegExp("\\-|\\+|\\*"));
+    box.generateParams("LongOneFace");
+    box.set_anchor_points();
 
-    box.createParams();
     for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
         box.generateRules(box.primitives_str.at(k));
     }
 
-    box.set_anchor_points();
     box.computeSentence();
     Parser parser_box(box.sentence);
     parser_box.reader();
     MechanicalPart base(parser_box.shapes, parser_box.ops);
     mecha_parts.push_back(base);
+    QVector<MechanicalPart> new_parts;
+
+    QVector<AnchorPoint*> chosen_anchor_points = box.choose_anchor_points();
+    for (int i = 0 ; i < chosen_anchor_points.size() ; ++i) {
+        AnchorPoint* chosen_anchor_point = chosen_anchor_points[i];
+
+        Generator* engine = new Engine();
+
+        engine->set_prev_anchor_point(chosen_anchor_point);
+        engine->createParams();
+        engine->set_center();
+        engine->set_anchor_points();
+
+        for (int k = 0 ; k < engine->primitives_str.size() ; ++k) {
+            engine->generateRules(engine->primitives_str.at(k));
+        }
+
+        engine->sentence = engine->base_sentence;
+        engine->computeSentence();
+        Parser parser(engine->sentence);
+        parser.reader();
+        MechanicalPart new_part(parser.shapes, parser.ops);
+        mecha_parts.push_back(new_part);
+        new_parts.push_back(new_part);
+    }
+
+    machinery = Machinery(base, new_parts);
+    qDebug() << "IS VALID : " << machinery.mesh.is_valid();
+    save_mesh_cgal(machinery.mesh, "output.off");
+    //prepareMechaParts();
+
+    prepareMachinery();
 }

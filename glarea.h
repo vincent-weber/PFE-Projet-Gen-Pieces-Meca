@@ -69,7 +69,6 @@ private:
     QOpenGLShaderProgram *program_texture;
     QOpenGLBuffer vbo_axes;
     QOpenGLBuffer vbo_sol;
-    //QOpenGLBuffer vbo_screw;
     QOpenGLTexture *textures[1];
 
     std::vector<QOpenGLBuffer> vbos;
@@ -81,6 +80,8 @@ private:
 
     Machinery machinery;
     QOpenGLBuffer vbo_machinery;
+
+    bool save_mesh_cgal(Mesh_CGAL& mesh,std::string filename);
 
     void makeGLObjects();
     void prepareMechaParts();

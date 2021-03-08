@@ -22,7 +22,8 @@ enum AnchorPointType {
     ENGINE_ALIGNED_RANDOM,
     ENGINE_ALTERNATED_RANDOM,
 
-    NO_ANCHOR_POINTS
+    NO_ANCHOR_POINTS,
+    UNDEFINED
 };
 
 class Generator
@@ -46,7 +47,7 @@ public:
     std::random_device rd_gen;
     QVector<QVector<AnchorPoint>> anchor_points;
     AnchorPoint* anchor_point_prev_lvl = nullptr;
-    AnchorPointType anch_type;
+    AnchorPointType anch_type = UNDEFINED;
 
     QString base_sentence;
     QString sentence;

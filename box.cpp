@@ -20,14 +20,8 @@ void Box::generateParams(QString box_part) {
         box_height = computeParameter(box_height, rd, min_value, max_value);
         box_width = computeParameter(box_width, rd, min_value, max_value);
         box_length = computeParameter(box_length, rd, min_value, max_value);
-
-        if (box_part == "Simple3x3Rand") {
-            anch_type = BOX_GRID_3X3_RANDOM;
-        }
-        else if (box_part == "Simple3x3Sym") {
-            anch_type = BOX_GRID_3X3_SYMMETRIC;
-        }
     }
+
     else if (box_part == "Relief3x3Rand" || box_part == "Relief3x3Sym") {
         float max_value = get_max_possible_size();
         float min_value = min_size;
@@ -40,13 +34,6 @@ void Box::generateParams(QString box_part) {
         min_param = min(min_param, box_length);
 
         box_thickness = min_param / 16;
-
-        if (box_part == "Relief3x3Rand") {
-            anch_type = BOX_GRID_3X3_RANDOM;
-        }
-        else if (box_part == "Relief3x3Sym") {
-            anch_type = BOX_GRID_3X3_SYMMETRIC;
-        }
     }
 
     else if (box_part == "LongOneFace") {
@@ -54,8 +41,18 @@ void Box::generateParams(QString box_part) {
         box_width = computeParameter(box_width, rd, box_length * 0.075, box_length * 0.15f);
         box_height = computeParameter(box_height, rd, box_length * 0.075, box_length * 0.15f);
 
-        anch_type = BOX_ONE_FACE_ALIGNED;
+    }
 
+    if (anch_type == UNDEFINED) {
+        if (box_part == "Simple3x3Rand" || box_part == "Relief3x3Rand") {
+            anch_type = BOX_GRID_3X3_RANDOM;
+        }
+        else if (box_part == "Simple3x3Sym" || box_part == "Relief3x3Sym") {
+            anch_type = BOX_GRID_3X3_SYMMETRIC;
+        }
+        else if (box_part == "LongOneFace") {
+            anch_type = BOX_ONE_FACE_ALIGNED;
+        }
     }
 }
 
@@ -152,11 +149,11 @@ void Box::set_anchor_points() {
         float nb_anch_points = box_length / 2.0f - 1;
         float offset = box_length / (nb_anch_points + 1);
         QVector3D coords (center[0] - box_length/2.0f + 2.0f, center[1], center[2] + box_width/2.0f);
-        QVector3D direction(0,0,1);
+        QVector3D direction_anch_p(0,0,1);
 
         for (int i = 0 ; i < nb_anch_points ; ++i) {
-            AnchorPoint anch_p(coords, direction, offset);
-            coords = QVector3D(coords[0] + direction[0] * offset, coords[1] + direction[1] * offset, coords[2] + direction[2] * offset);
+            AnchorPoint anch_p(coords, direction_anch_p, offset);
+            coords = QVector3D(coords[0] + offset, coords[1], coords[2]);
             anch_points.push_back(anch_p);
         }
         anchor_points.push_back(anch_points);
