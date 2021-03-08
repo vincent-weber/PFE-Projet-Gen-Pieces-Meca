@@ -523,7 +523,6 @@ void GLArea::run_gen_box_angles(){
 
     box.computeSentence();
     Parser parser_box(box.sentence);
-    qDebug() << "BOX SENTENCE : " << box.sentence;
     parser_box.reader();
     MechanicalPart base(parser_box.shapes, parser_box.ops);
     mecha_parts.push_back(base);
@@ -533,7 +532,7 @@ void GLArea::run_gen_box_angles(){
     QVector<Generator*> new_objects;
     current_lvl_objects.push_back(&box);
 
-    //Ajouter les vis sur chacun des points d'ancrage.
+    //Ajouter les vis sur chacun des points d'ancrage./*
     for(int i = 0; i < box.anchor_points.size(); i++){
         for(int j = 0; j < box.anchor_points[i].size(); j++){
 
@@ -545,10 +544,11 @@ void GLArea::run_gen_box_angles(){
             nut->set_center();
 
             for (int k = 0 ; k < nut->primitives_str.size() ; ++k) {
+                nut->set_rotation(nut->primitives_str.at(k));
                 nut->generateRules(nut->primitives_str.at(k));
             }
             nut->set_anchor_points();
-//            AnchorPoint nutAnchorPoint = nut->anchor_points[0][0];
+            AnchorPoint nutAnchorPoint = nut->anchor_points[0][0];
 
             nut->anch_type = NO_ANCHOR_POINTS;
             nut->sentence = nut->base_sentence;
@@ -561,25 +561,24 @@ void GLArea::run_gen_box_angles(){
             new_parts.push_back(new_nut);
             new_objects.push_back(nut);
 
-//            Generator *screw = new Screw();
-//            screw->anch_type = NO_ANCHOR_POINTS;
-//            screw->set_prev_anchor_point(&nutAnchorPoint);
-//            screw->createParams();
-//            screw->set_center();
+            Generator *screw = new Screw();
+            screw->set_prev_anchor_point(&nutAnchorPoint);
+            screw->createParams();
+            screw->set_center();
 
-//            for (int k = 0 ; k < screw->primitives_str.size() ; ++k) {
-//                screw->generateRules(screw->primitives_str.at(k));
-//            }
-//            screw->sentence = screw->base_sentence;
-//            screw->computeSentence();
-//            Parser parser_screw(screw->sentence);
-//            parser_screw.reader();
+            for (int k = 0 ; k < screw->primitives_str.size() ; ++k) {
+                screw->set_rotation(screw->primitives_str.at(k));
+                screw->generateRules(screw->primitives_str.at(k));
+            }
+            screw->sentence = screw->base_sentence;
+            screw->computeSentence();
+            Parser parser_screw(screw->sentence);
+            parser_screw.reader();
 
-//            MechanicalPart new_screw(parser_screw.shapes, parser_screw.ops);
-//            mecha_parts.push_back(new_screw);
-//            new_parts.push_back(new_screw);
-//            new_objects.push_back(screw);
-
+            MechanicalPart new_screw(parser_screw.shapes, parser_screw.ops);
+            mecha_parts.push_back(new_screw);
+            new_parts.push_back(new_screw);
+            new_objects.push_back(screw);
         }
     }
     prepareMechaParts();

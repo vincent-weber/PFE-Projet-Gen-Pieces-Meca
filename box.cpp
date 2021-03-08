@@ -161,23 +161,24 @@ void Box::set_anchor_points() {
         float x = center.x() + box_length/2;
         float z = center.z() + box_width/2;
 
-        float max_accepted_size_anchor_point = min(box_length/6, box_width/6);
+        float x_offset = box_length/8;
+        float z_offset = box_width/8;
+
+        float max_accepted_size_anchor_point = min(box_length/15, box_width/15);
         QVector<AnchorPoint> anchor_face1;
         QVector<AnchorPoint> anchor_face2;
         for (int i = 0 ; i < 2 ; ++i) {
             for (int j = 0 ; j < 2 ; ++j) {
-                QVector3D coords(x,y,z);
-                qDebug() << "Coordonnée du point d'ancrage :" << i << j << coords;
-                QVector3D coords2(x,y-box_height,z);
-                QVector3D direction(0,0,1);
+                QVector3D coords(x-x_offset,y,z-z_offset);
+                QVector3D coords2(x-x_offset,y-box_height,z-z_offset);
+                QVector3D direction(0,1,0);
                 AnchorPoint anch(coords, direction, max_accepted_size_anchor_point);
-                anch.owner_object = this;
                 AnchorPoint anch2(coords2, -direction, max_accepted_size_anchor_point);
                 anchor_face1.push_back(anch);
                 anchor_face2.push_back(anch2);
-                x = -x;
+                x = -x; x_offset = -x_offset;
             }
-            z = -z;
+            z = -z; z_offset = -z_offset;
         }
         anchor_points.push_back(anchor_face1);
         anchor_points.push_back(anchor_face2);
