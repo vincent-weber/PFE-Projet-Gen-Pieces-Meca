@@ -10,8 +10,8 @@ Princ::Princ(QWidget *parent) : QMainWindow(parent)
     connect(this, SIGNAL(run_gen_screw_button()), glarea, SLOT(run_gen_screw()));
     connect(this, SIGNAL(run_gen_nut_button()), glarea, SLOT(run_gen_nut()));
     connect(this, SIGNAL(run_gen_box_button()), glarea, SLOT(run_gen_box()));
-    connect(this, SIGNAL(run_gen_piston_button()), glarea, SLOT(run_gen_piston()));
     connect(this, SIGNAL(run_gen_engines_button()), glarea, SLOT(run_gen_engines()));
+    connect(this, SIGNAL(run_gen_box_angles_button()), glarea, SLOT(run_gen_box_angles()));
 }
 
 void Princ::on_gen_screw_button_clicked()
@@ -29,8 +29,8 @@ void Princ::on_gen_box_button_clicked()
     emit run_gen_box_button();
 }
 
-void Princ::on_gen_piston_button_clicked(){
-    emit run_gen_piston_button();
+void Princ::on_gen_box_angles_button_clicked(){
+    emit run_gen_box_angles_button();
 }
 
 void Princ::on_gen_engines_button_clicked() {

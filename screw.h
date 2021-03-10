@@ -16,6 +16,8 @@ private:
 public:
     Screw();
     std::random_device rd;
+    bool is_inNut = false;
+
     void generateParams(QString screw_part) override;
     void generateRules(QString screw_part) override;
     void set_rotation(QString screw_part) override;

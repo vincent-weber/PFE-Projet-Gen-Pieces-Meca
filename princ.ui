@@ -44,9 +44,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="gen_piston_button">
+         <widget class="QPushButton" name="gen_box_angles_button">
           <property name="text">
-           <string>Gen Piston</string>
+           <string>Gen Boite Angles</string>
           </property>
          </widget>
         </item>
