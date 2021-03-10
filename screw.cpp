@@ -33,7 +33,7 @@ void Screw::generateParams(QString screw_part) {
             head_height = computeParameter(head_height, rd, 0.1f, head_width);
         }
         else if (screw_part == "ScrewHeadCub") {
-            head_width = computeParameter(head_width, rd, body_width*1.5f+0.1f, body_width*2.5f+0.1f);
+            head_width = computeParameter(head_width, rd, body_width*2.5f+0.1f, body_width*3.5f+0.1f);
             head_height = computeParameter(head_height, rd, 0.1f, head_width/2);
         }
         else if (screw_part == "ScrewInterCyl6") {

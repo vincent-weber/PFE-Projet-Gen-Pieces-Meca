@@ -183,6 +183,33 @@ void Box::set_anchor_points() {
         anchor_points.push_back(anchor_face1);
         anchor_points.push_back(anchor_face2);
     }
+
+    if(anch_type == BOX_EDGE){
+        float z = center.z() + box_width/2; //FIXE
+        float x = center.x() + box_length/2; //FIXE SI i = 1
+        float y = center.y() + box_height/2;
+
+        float y_offset = box_height/7;
+        float x_offset = box_length/7;
+
+        float max_accepted_size_anchor_point = min(box_length/15, box_height/15);
+
+        QVector<AnchorPoint> anchor_face;
+//        QVector<AnchorPoint> anchor_face4;
+        for (int i = 0 ; i < 1 ; ++i) {
+            for (int j = 0 ; j < 6 ; ++j) {
+                QVector3D coords(x-x_offset,y-y_offset,z);
+//                QVector3D coords2(x,y,z-box_width);
+                QVector3D direction(0,0,1);
+                AnchorPoint anch(coords, direction, max_accepted_size_anchor_point);
+//                AnchorPoint anch2(coords2, -direction, max_accepted_size_anchor_point);
+                anchor_face.push_back(anch);
+//                anchor_face4.push_back(anch2);
+                y -= y_offset;
+            }
+        }
+        anchor_points.push_back(anchor_face);
+    }
 }
 
 QVector<AnchorPoint> Box::choose_anchor_points() {

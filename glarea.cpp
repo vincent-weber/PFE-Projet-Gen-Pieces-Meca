@@ -514,6 +514,7 @@ void GLArea::run_gen_box_angles(){
 
     Box box;
     box.anch_type = BOX_ANGLES;
+//    box.anch_type = BOX_EDGE;
     box.createParams();
     for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
         box.generateRules(box.primitives_str.at(k));
