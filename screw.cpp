@@ -9,62 +9,31 @@ Screw::Screw()
 }
 
 void Screw::generateParams(QString screw_part) {
-    if(anchor_point_prev_lvl->owner_object->generator_name == "Nut"){
-        is_inNut = true;
-    } else is_inNut = false;
 
-    if(!is_inNut){
-        float max_value = get_max_possible_size();
+    float max_value = get_max_possible_size();
 
-        if (screw_part == "ScrewBodyCyl") {
-            body_width = computeParameter(body_width, rd, 0.1f, max_value);
-            body_precision = computeParameter(body_precision, rd, 10, 20);
-            if (body_precision % 2 == 1) ++body_precision;
-            body_height = computeParameter(body_height, rd, body_width*1.5,body_width*2.5);
-        }
-        else if (screw_part == "ScrewHeadCyl") {
-            head_width = computeParameter(head_width, rd, body_width+0.1f, body_width*2+0.1f);
-            head_precision = computeParameter(head_precision, rd, 7,12);
-            if (head_precision % 2 == 1) ++head_precision;
-            head_height = computeParameter(head_height, rd, 0.1f, head_width);
-        }
-        else if (screw_part == "ScrewHeadCyl6") {
-            head_width = computeParameter(head_width, rd, body_width+0.1f, body_width*2+0.1f);
-            head_height = computeParameter(head_height, rd, 0.1f, head_width);
-        }
-        else if (screw_part == "ScrewHeadCub") {
-            head_width = computeParameter(head_width, rd, body_width*2.5f+0.1f, body_width*3.5f+0.1f);
-            head_height = computeParameter(head_height, rd, 0.1f, head_width/2);
-        }
-        else if (screw_part == "ScrewInterCyl6") {
+    if (screw_part == "ScrewBodyCyl") {
+        body_width = computeParameter(body_width, rd, 0.1f, max_value);
+        body_precision = computeParameter(body_precision, rd, 10, 20);
+        if (body_precision % 2 == 1) ++body_precision;
+        body_height = computeParameter(body_height, rd, body_width*1.5,body_width*2.5);
+    }
+    else if (screw_part == "ScrewHeadCyl") {
+        head_width = computeParameter(head_width, rd, body_width+0.1f, body_width*2+0.1f);
+        head_precision = computeParameter(head_precision, rd, 7,12);
+        if (head_precision % 2 == 1) ++head_precision;
+        head_height = computeParameter(head_height, rd, 0.1f, head_width);
+    }
+    else if (screw_part == "ScrewHeadCyl6") {
+        head_width = computeParameter(head_width, rd, body_width+0.1f, body_width*2+0.1f);
+        head_height = computeParameter(head_height, rd, 0.1f, head_width);
+    }
+    else if (screw_part == "ScrewHeadCub") {
+        head_width = computeParameter(head_width, rd, body_width*2.5f+0.1f, body_width*3.5f+0.1f);
+        head_height = computeParameter(head_height, rd, 0.1f, head_width/2);
+    }
+    else if (screw_part == "ScrewInterCyl6") {
 
-        }
-    } else {
-        float max_value = anchor_point_prev_lvl->max_accepted_size;
-
-        if (screw_part == "ScrewBodyCyl") {
-            body_width = max_value;
-            body_precision = computeParameter(body_precision, rd, 10, 20);
-            if (body_precision % 2 == 1) ++body_precision;
-            body_height = computeParameter(body_height, rd, body_width*1.5,body_width*2.5);
-        }
-        else if (screw_part == "ScrewHeadCyl") {
-            head_width = computeParameter(head_width, rd, body_width+0.1f, body_width*1.5+0.1f);
-            head_precision = computeParameter(head_precision, rd, 7,12);
-            if (head_precision % 2 == 1) ++head_precision;
-            head_height = computeParameter(head_height, rd, 0.1f, head_width/2);
-        }
-        else if (screw_part == "ScrewHeadCyl6") {
-            head_width = computeParameter(head_width, rd, body_width+0.1f, body_width*1.5+0.1f);
-            head_height = computeParameter(head_height, rd, 0.1f, head_width/2);
-        }
-        else if (screw_part == "ScrewHeadCub") {
-            head_width = computeParameter(head_width, rd, body_width*1.5f+0.1f, body_width*1.5f+0.1f);
-            head_height = computeParameter(head_height, rd, 0.1f, head_width/2);
-        }
-        else if (screw_part == "ScrewInterCyl6") {
-
-        }
     }
 }
 

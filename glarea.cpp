@@ -539,7 +539,7 @@ void GLArea::run_gen_box_angles(){
 
             AnchorPoint anchor_point = box.anchor_points[i][j];
 
-            Generator *nut = new Nut();
+            Nut *nut = new Nut();
             nut->set_prev_anchor_point(&anchor_point);
             nut->createParams();
             nut->set_center();
@@ -562,7 +562,8 @@ void GLArea::run_gen_box_angles(){
             new_parts.push_back(new_nut);
             new_objects.push_back(nut);
 
-            Generator *screw = new Screw();
+            Screw *screw = new Screw();
+            screw->set_body_width(nutAnchorPoint.max_accepted_size+0.03f);
             screw->set_prev_anchor_point(&nutAnchorPoint);
             screw->createParams();
             screw->set_center();
