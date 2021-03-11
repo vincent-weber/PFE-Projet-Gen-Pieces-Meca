@@ -364,6 +364,22 @@ void GLArea::onTimeout()
     update();
 }
 
+bool GLArea::save_mesh_cgal(Mesh_CGAL& mesh,std::string filename)
+{
+    // write mesh to output.obj
+    try
+    {
+        std::ofstream output(filename);
+        output << mesh;
+    }
+    catch( std::exception& x )
+    {
+        qDebug() << "Exception: " << x.what() << endl;
+        return false;
+    }
+    return true;
+}
+
 
 void GLArea::run_gen_screw(){
     mecha_parts.clear();
@@ -412,14 +428,13 @@ void GLArea::run_gen_box(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
     Box box;
-    //box.anch_type = BOX_GRID_3X3;
-    box.anch_type = BOX_GRID_3X3_RANDOM;
+
     box.createParams();
+    box.set_anchor_points();
     for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
         box.generateRules(box.primitives_str.at(k));
     }
 
-    box.set_anchor_points();
     box.computeSentence();
     Parser parser_box(box.sentence);
     qDebug() << "BOX SENTENCE : " << box.sentence;
@@ -429,7 +444,7 @@ void GLArea::run_gen_box(){
 
     QVector<MechanicalPart> new_parts;
 
-    int level_max = 2;
+    int level_max = 1;
     QVector<Generator*> current_lvl_objects;
     QVector<Generator*> new_objects;
     current_lvl_objects.push_back(&box);
@@ -447,9 +462,9 @@ void GLArea::run_gen_box(){
 
             Generator* prev_object = current_lvl_objects[ind_obj];
             //Appel à une fonction dans object qui renvoie le vecteur des anchor points à parcourir selon une stratégie (aléatoire ou symétrique par ex)
-            QVector<AnchorPoint> chosen_anchor_points = prev_object->choose_anchor_points();
+            QVector<AnchorPoint*> chosen_anchor_points = prev_object->choose_anchor_points();
             for (int i = 0 ; i < chosen_anchor_points.size() ; ++i) {
-                AnchorPoint chosen_anchor_point = chosen_anchor_points[i];
+                AnchorPoint* chosen_anchor_point = chosen_anchor_points[i];
 
                 std::random_device rd;
                 Generator* object;
@@ -469,21 +484,19 @@ void GLArea::run_gen_box(){
                     object = new Screw();
                     object->anch_type = NO_ANCHOR_POINTS;
                 }
-//                object = new Engine();
+                object = new Engine();
                 //object = new Piston();
 
-                object->set_prev_anchor_point(&chosen_anchor_point);
+                object->set_prev_anchor_point(chosen_anchor_point);
                 object->createParams();
-
 
                 object->set_center();
                 object->set_anchor_points();
 
-
                 for (int k = 0 ; k < object->primitives_str.size() ; ++k) {
                     object->generateRules(object->primitives_str.at(k));
                 }
-                object->set_anchor_points();
+                //object->set_anchor_points();
 
                 object->sentence = object->base_sentence;
                 qDebug() << "ENGINE SETNENCE : " << object->sentence;
@@ -496,6 +509,8 @@ void GLArea::run_gen_box(){
                 new_parts.push_back(new_part);
 
                 new_objects.push_back(object);
+                //break pour avoir qu'un objet
+                //break;
             }
         }
 
@@ -503,23 +518,69 @@ void GLArea::run_gen_box(){
         new_objects.clear();
     }
 
-    prepareMechaParts();
-    //prepareMachinery();
+    //prepareMechaParts();
+    prepareMachinery();
 }
 
-void GLArea::run_gen_box_angles(){
-    qDebug() << __FUNCTION__;
+void GLArea::run_gen_engines() {
     mecha_parts.clear();
     vbos_mecha_parts.clear();
-
     Box box;
-    box.anch_type = BOX_ANGLES;
-//    box.anch_type = BOX_EDGE;
-    box.createParams();
+    box.base_sentence = "LongOneFace";
+    box.sentence = box.base_sentence;
+    box.primitives_str = box.sentence.split(QRegExp("\\-|\\+|\\*"));
+    box.generateParams("LongOneFace");
+    box.set_anchor_points();
     for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
         box.generateRules(box.primitives_str.at(k));
     }
 
+    box.computeSentence();
+    Parser parser_box(box.sentence);
+    parser_box.reader();
+    MechanicalPart base(parser_box.shapes, parser_box.ops);
+    mecha_parts.push_back(base);
+    QVector<MechanicalPart> new_parts;
+
+    QVector<AnchorPoint*> chosen_anchor_points = box.choose_anchor_points();
+    for (int i = 0 ; i < chosen_anchor_points.size() ; ++i) {
+        AnchorPoint* chosen_anchor_point = chosen_anchor_points[i];
+
+        Generator* engine = new Engine();
+
+        engine->set_prev_anchor_point(chosen_anchor_point);
+        engine->createParams();
+        engine->set_center();
+        engine->set_anchor_points();
+
+        for (int k = 0 ; k < engine->primitives_str.size() ; ++k) {
+            engine->generateRules(engine->primitives_str.at(k));
+        }
+
+        engine->sentence = engine->base_sentence;
+        engine->computeSentence();
+        Parser parser(engine->sentence);
+        parser.reader();
+        MechanicalPart new_part(parser.shapes, parser.ops);
+        mecha_parts.push_back(new_part);
+        new_parts.push_back(new_part);
+    }
+
+    machinery = Machinery(base, new_parts);
+    qDebug() << "IS VALID : " << machinery.mesh.is_valid();
+    save_mesh_cgal(machinery.mesh, "output.off");
+    //prepareMechaParts();
+
+    prepareMachinery();
+}
+
+void GLArea::run_gen_box_angles(){
+    mecha_parts.clear();
+    vbos_mecha_parts.clear();
+    Box box;
+    box.anch_type = BOX_ANGLES;
+    //    box.anch_type = BOX_EDGE;
+        box.createParams();
     box.set_anchor_points();
 
     box.computeSentence();
@@ -582,5 +643,26 @@ void GLArea::run_gen_box_angles(){
             new_objects.push_back(screw);
         }
     }
+    prepareMechaParts();
+}
+
+void GLArea::run_gen_hinge() {
+    mecha_parts.clear();
+    vbos_mecha_parts.clear();
+
+    Hinge hinge;
+    hinge.createParams();
+    hinge.set_center();
+    for (int i = 0 ; i < hinge.primitives_str.size() ; ++i) {
+        hinge.set_rotation(hinge.primitives_str[i]);
+        hinge.generateRules(hinge.primitives_str[i]);
+    }
+
+    hinge.computeSentence();
+    qDebug() << "HINGE SENTENCE : " << hinge.sentence;
+    Parser parser_hinge(hinge.sentence);
+    parser_hinge.reader();
+    MechanicalPart base(parser_hinge.shapes, parser_hinge.ops);
+    mecha_parts.push_back(base);
     prepareMechaParts();
 }

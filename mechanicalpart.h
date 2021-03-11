@@ -23,6 +23,7 @@ public:
     bool is_unique;
 
     MechanicalPart();
+    void compute_mesh(std::vector<Mesh_CGAL>& meshes, std::vector<Bool_op>& op_bools);
     MechanicalPart(std::vector<Primitive*> shapes, std::vector<Bool_op> op_bool, bool is_unique = true);
     void render();
     void copy_mesh(QVector3D center, QVector3D rotation);

@@ -25,7 +25,7 @@ public:
     void set_rotation(QString screw_part) override;
     void set_center() override;
     void set_anchor_points() override;
-    QVector<AnchorPoint> choose_anchor_points() override;
+    QVector<AnchorPoint*> choose_anchor_points() override;
 };
 
 #endif // BOX_H

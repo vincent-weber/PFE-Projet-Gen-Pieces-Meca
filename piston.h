@@ -27,6 +27,7 @@ private:
     float endCyl_inter_width = -1;
 
     QVector3D head_intersect_rot;
+    QVector3D head_rot;
 
 public:
     Piston();
@@ -36,7 +37,7 @@ public:
     void set_rotation(QString screw_part) override;
     void set_center() override;
     void set_anchor_points() override;
-    QVector<AnchorPoint> choose_anchor_points() override;
+    QVector<AnchorPoint*> choose_anchor_points() override;
 
     void set_end_cyl_intersect_width(float val) {
         endCyl_inter_width = val;

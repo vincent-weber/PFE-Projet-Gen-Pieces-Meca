@@ -29,6 +29,11 @@ void Machinery::add_new_parts(QVector<MechanicalPart> new_parts) {
 }
 
 void Machinery::render() {
+
+    qDebug() << "NB FACES : " << mesh.num_faces();
+    qDebug() << "NB EDGES : " << mesh.num_edges();
+    qDebug() << "NB VERTICES : " << mesh.num_vertices();
+
     std::random_device rd;
     float c1 = std::uniform_real_distribution<float>{0, 255}(rd);
     float c2 = std::uniform_real_distribution<float>{0, 255}(rd);

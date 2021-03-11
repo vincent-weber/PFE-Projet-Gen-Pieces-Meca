@@ -7,6 +7,9 @@
 class Engine : public Generator
 {
 private :
+    const float pipe_length_min = 3.0f;
+    const float pipe_length_max = 12.0f;
+
     float head_width = -1;
     float head_length = -1;
     float pipe_width = -1;
@@ -31,7 +34,7 @@ public:
     void set_center() override;
     void generateRules(QString screw_part) override;
     void set_anchor_points() override;
-    QVector<AnchorPoint> choose_anchor_points() override;
+    QVector<AnchorPoint*> choose_anchor_points() override;
 };
 
 #endif // ENGINE_H

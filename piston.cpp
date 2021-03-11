@@ -44,7 +44,17 @@ void Piston::set_rotation(QString part){
         vec_base= QVector3D(0,0,1);
     }
     else if(part == "HeadIntersect"){
-        vec_base= QVector3D(0,0,1);
+        if (direction [0] == 1 || direction[0] == -1) {
+            rotation = head_rot + QVector3D(0,PI/2,0);
+        }
+        else if (direction [1] == 1 || direction[1] == -1) {
+            rotation = head_rot + QVector3D(0,0,PI/2);
+        }
+        else if (direction [2] == 1 || direction[2] == -1) {
+            rotation = head_rot + QVector3D(PI/2,0,0);
+        }
+        head_intersect_rot = rotation;
+        return;
     }
     else if(part == "BodyCuboid"){
         vec_base= QVector3D(0,1,0);
@@ -59,9 +69,8 @@ void Piston::set_rotation(QString part){
     }
     else rotation = (vec_un - (vec_base + direction)) * PI/2;
 
-    if (part == "HeadIntersect") {
-        rotation = rotation + QVector3D(PI/2,PI/2,0);
-        head_intersect_rot = rotation;
+    if (part == "HeadCyl") {
+        head_rot = rotation;
     }
 }
 
@@ -75,7 +84,7 @@ void Piston::set_anchor_points(){
 
 }
 
-QVector<AnchorPoint> Piston::choose_anchor_points() {
+QVector<AnchorPoint*> Piston::choose_anchor_points() {
     return {};
 }
 

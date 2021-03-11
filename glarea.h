@@ -27,6 +27,7 @@
 #include "pipe.h"
 #include "engine.h"
 #include "piston.h"
+#include "hinge.h"
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions
@@ -42,7 +43,9 @@ protected slots:
     void run_gen_screw();
     void run_gen_nut();
     void run_gen_box();
+    void run_gen_engines();
     void run_gen_box_angles();
+    void run_gen_hinge();
 
 protected:
     void initializeGL() override;
@@ -68,7 +71,6 @@ private:
     QOpenGLShaderProgram *program_texture;
     QOpenGLBuffer vbo_axes;
     QOpenGLBuffer vbo_sol;
-    //QOpenGLBuffer vbo_screw;
     QOpenGLTexture *textures[1];
 
     std::vector<QOpenGLBuffer> vbos;
@@ -80,6 +82,8 @@ private:
 
     Machinery machinery;
     QOpenGLBuffer vbo_machinery;
+
+    bool save_mesh_cgal(Mesh_CGAL& mesh,std::string filename);
 
     void makeGLObjects();
     void prepareMechaParts();

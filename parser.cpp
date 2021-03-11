@@ -48,6 +48,9 @@ void Parser::reader(){
         if (sentence.at(i) == '-'){
             ops.push_back(DIFFERENCE);
         }
+        if (sentence.at(i) == '/') {
+            ops.push_back(INTERSECTION);
+        }
         i++;
     }
 }

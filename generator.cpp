@@ -8,13 +8,19 @@ void Generator::initRules() {
     rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
     rules.insert("Pipe", {"ClassicCyl"});
 
-    rules.insert("Box", {"BoiteCube", "BoiteRelief"});
+    rules.insert("Box", {"Simple3x3Rand", "Simple3x3Sym" "Relief3x3Rand", "Relief3x3Sym", "LongOneFace"});
     rules.insert("Piston", {"HeadCyl-HeadIntersect+BodyCuboid+EndCyl-EndIntersect"});
 
-    rules.insert("Engine", {"EngineAxis+GroupPistons+SeparatorPistons"/*+SeparatorPistons"*/});
+    rules.insert("Engine", {"EngineAxis+GroupPistons+SeparatorPistons"});
     rules.insert("EngineAxis", {"CylHeadEngine+CylMainAxe+CylExtEngine", "CubHeadEngine+CylMainAxe+CubExtEngine"});
-    rules.insert("GroupPistons", {"AlignedPistons4"/*, "AlternatedPistons4"*/});
+    rules.insert("GroupPistons", {"Aligned4All", "Aligned4Rand", "Alternated4All", "Alternated4Rand", "AlignedNRand", "AlternatedNRand", "AlignedNAll", "AlternatedNAll"});
     rules.insert("SeparatorPistons", {"CylSeparators", /*"CubSeparators"*/});
+
+    rules.insert("Hinge", {"HingeMiddleCyl+HingeWings"/*+HingeHolePattern"*/});
+    rules.insert("HingeWings", {"AlignedSquared", "AlignedRounded", /*"PerpendicularSquared", "PerpendicularRounded"*/});
+    //rules.insert("HingeHolePattern", {"Random4", "RandomN", "Angles", "3x3Grid"});
+
+    //cyl+cub/cyl+cub/cyl-cyl-cyl-cyl...
     base_rules = rules;
 }
 

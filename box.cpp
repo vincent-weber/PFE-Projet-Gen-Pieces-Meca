@@ -9,9 +9,10 @@ Box::Box()
     rotation = QVector3D(0,0,0);
 }
 
-//TODO : stocker les 4 centres des 4 cylindres pour les vis
+//"Simple3x3Rand", "Simple3x3Sym" "Relief3x3Rand", "Relief3x3Sym", "LongOneFace"
+
 void Box::generateParams(QString box_part) {
-    if (box_part == "BoiteCube") {
+    if (box_part == "Simple3x3Rand" || box_part == "Simple3x3Sym") {
         float max_value = get_max_possible_size();
         float min_value = min_size;
         if (max_value < min_value) min_value = max_value;
@@ -19,11 +20,9 @@ void Box::generateParams(QString box_part) {
         box_height = computeParameter(box_height, rd, min_value, max_value);
         box_width = computeParameter(box_width, rd, min_value, max_value);
         box_length = computeParameter(box_length, rd, min_value, max_value);
-
-        QVector<float> params({box_length, box_height, box_width});
-        createLeafRulesSingle("cub", box_part, params, center, rotation);
     }
-    else if (box_part == "BoiteRelief") {
+
+    else if (box_part == "Relief3x3Rand" || box_part == "Relief3x3Sym") {
         float max_value = get_max_possible_size();
         float min_value = min_size;
         if (max_value < min_value) min_value = max_value;
@@ -35,33 +34,25 @@ void Box::generateParams(QString box_part) {
         min_param = min(min_param, box_length);
 
         box_thickness = min_param / 16;
+    }
+
+    else if (box_part == "LongOneFace") {
+        box_length = computeParameter(box_length, rd, 7.5f, 30.0f);
+        box_width = computeParameter(box_width, rd, box_length * 0.075, box_length * 0.15f);
+        box_height = computeParameter(box_height, rd, box_length * 0.075, box_length * 0.15f);
 
     }
 
-    else if (box_part == "VisAnglesBoiteCub") {
-        screw_spot_thickness = computeParameter(screw_spot_thickness, rd, 0.3f, 1.0f);
-        screws_width = computeParameter(screws_width, rd, box_length/16, box_length/8);
-        screws_precision = computeParameter(screws_precision, rd, 10, 20);
-
-        QVector<QVector3D> centers({{box_length - screw_spot_thickness - screws_width + box_thickness/2, box_thickness/2 - 0.01f, box_width - screw_spot_thickness - screws_width + box_thickness/2},
-                                    {box_length - screw_spot_thickness - screws_width + box_thickness/2, box_thickness/2  - 0.01f, -(box_width - screw_spot_thickness - screws_width) - box_thickness/2},
-                                    {-(box_length - screw_spot_thickness - screws_width) - box_thickness/2, box_thickness/2  - 0.01f, -(box_width - screw_spot_thickness - screws_width) - box_thickness/2},
-                                    {-(box_length - screw_spot_thickness - screws_width) - box_thickness/2, box_thickness/2  - 0.01f, box_width - screw_spot_thickness - screws_width + box_thickness/2}});
-
-        QString rule = "";
-        for (int i = 0 ; i < 4 ; ++i) {
-            QVector<QString> primitives({"cyl", "cyl"});
-            QString op_bools ("-");
-            QVector<QVector<float>> params({{screws_width + screw_spot_thickness, (box_height + box_thickness*1.5f)*2, (float)screws_precision}, {screws_width, (box_height + box_thickness*1.5f)*2, (float)screws_precision}});
-            QVector<QVector3D> c({centers[i], centers[i]});
-
-            QVector<QVector3D> rots({{PI/2,PI/2,0},{PI/2,PI/2,0}});
-            rule += createLeafRulesMultiple(primitives, op_bools, params, c, rots);
-            if (i != 3) {
-                rule += "+";
-            }
+    if (anch_type == UNDEFINED) {
+        if (box_part == "Simple3x3Rand" || box_part == "Relief3x3Rand") {
+            anch_type = BOX_GRID_3X3_RANDOM;
         }
-        rules.insert(box_part, {rule});
+        else if (box_part == "Simple3x3Sym" || box_part == "Relief3x3Sym") {
+            anch_type = BOX_GRID_3X3_SYMMETRIC;
+        }
+        else if (box_part == "LongOneFace") {
+            anch_type = BOX_ONE_FACE_ALIGNED;
+        }
     }
 }
 
@@ -153,9 +144,22 @@ void Box::set_anchor_points() {
         anchor_points.push_back(anchor_face5);
         anchor_points.push_back(anchor_face6);
     }
+    else if (anch_type == BOX_ONE_FACE_ALIGNED) {
+        QVector<AnchorPoint> anch_points;
+        float nb_anch_points = box_length / 2.0f - 1;
+        float offset = box_length / (nb_anch_points + 1);
+        QVector3D coords (center[0] - box_length/2.0f + 2.0f, center[1], center[2] + box_width/2.0f);
+        QVector3D direction_anch_p(0,0,1);
 
-    //Place des points d'encrage a chaque. //x : length, y = height, z = width;
-    if (anch_type == BOX_ANGLES){
+        for (int i = 0 ; i < nb_anch_points ; ++i) {
+            AnchorPoint anch_p(coords, direction_anch_p, offset);
+            coords = QVector3D(coords[0] + offset, coords[1], coords[2]);
+            anch_points.push_back(anch_p);
+        }
+        anchor_points.push_back(anch_points);
+    }
+    else if (anch_type == BOX_ANGLES){
+        //Place des points d'encrage a chaque. //x : length, y = height, z = width;
         //haut et bas de la boite
         float y = center.y() + box_height/2; //FIXE
         float x = center.x() + box_length/2;
@@ -184,7 +188,7 @@ void Box::set_anchor_points() {
         anchor_points.push_back(anchor_face2);
     }
 
-    if(anch_type == BOX_EDGE){
+    else if(anch_type == BOX_EDGE){
         float z = center.z() + box_width/2; //FIXE
         float x = center.x() + box_length/2; //FIXE SI i = 1
         float y = center.y() + box_height/2;
@@ -195,16 +199,16 @@ void Box::set_anchor_points() {
         float max_accepted_size_anchor_point = min(box_length/15, box_height/15);
 
         QVector<AnchorPoint> anchor_face;
-//        QVector<AnchorPoint> anchor_face4;
+        //        QVector<AnchorPoint> anchor_face4;
         for (int i = 0 ; i < 1 ; ++i) {
             for (int j = 0 ; j < 6 ; ++j) {
                 QVector3D coords(x-x_offset,y-y_offset,z);
-//                QVector3D coords2(x,y,z-box_width);
+                //                QVector3D coords2(x,y,z-box_width);
                 QVector3D direction(0,0,1);
                 AnchorPoint anch(coords, direction, max_accepted_size_anchor_point);
-//                AnchorPoint anch2(coords2, -direction, max_accepted_size_anchor_point);
+                //                AnchorPoint anch2(coords2, -direction, max_accepted_size_anchor_point);
                 anchor_face.push_back(anch);
-//                anchor_face4.push_back(anch2);
+                //                anchor_face4.push_back(anch2);
                 y -= y_offset;
             }
         }
@@ -212,8 +216,8 @@ void Box::set_anchor_points() {
     }
 }
 
-QVector<AnchorPoint> Box::choose_anchor_points() {
-    QVector<AnchorPoint> res;
+QVector<AnchorPoint*> Box::choose_anchor_points() {
+    QVector<AnchorPoint*> res;
     if (anch_type == BOX_GRID_3X3_SYMMETRIC) {
         QVector<int> pattern;
         int val0 = std::uniform_int_distribution<int>{0, 1}(rd);
@@ -240,7 +244,7 @@ QVector<AnchorPoint> Box::choose_anchor_points() {
 
         for (int i = 0 ; i < anchor_points.size() ; ++i) {
             for (int j = 0 ; j < pattern.size() ; ++j) {
-                res.push_back(anchor_points[i][pattern[j]]);
+                res.push_back(&anchor_points[i][pattern[j]]);
             }
         }
     }
@@ -252,12 +256,13 @@ QVector<AnchorPoint> Box::choose_anchor_points() {
             if (anchor_points[i].size() == 0) continue;
             std::random_device rd;
             int ind_anchor = std::uniform_int_distribution<int>{0, anchor_points[i].size()-1}(rd);
-            AnchorPoint chosen_anchor_point = anchor_points[i][ind_anchor];
-            res.push_back(chosen_anchor_point);
+            res.push_back(&anchor_points[i][ind_anchor]);
         }
     }
-    else if (anch_type == BOX_ANGLES){
-        // Pas besoin ?
+    else if (anch_type == BOX_ONE_FACE_ALIGNED) {
+        for (int i = 0 ; i < anchor_points[0].size() ; ++i) {
+            res.push_back(&anchor_points[0][i]);
+        }
     }
     else {
         qDebug() << "ERROR BOX ANCH TYPE INVALID";
@@ -283,10 +288,10 @@ void Box::set_rotation(QString box_part) {
 
 void Box::generateRules(QString box_part) {
     set_rotation(box_part);
-    if (box_part == "BoiteCube") {
+    if (box_part == "Simple3x3Rand" || box_part == "Simple3x3Sym" || box_part == "LongOneFace") {
         createLeafRulesSingle("cub", box_part, {box_length, box_height, box_width}, center, rotation);
     }
-    else if (box_part == "BoiteRelief") {
+    else if (box_part == "Relief3x3Rand" || box_part == "Relief3x3Sym") {
         QVector<QString> primitives({"cub", "cub", "cub", "cub", "cub", "cub", "cub"});
         QString op_bools ("------");
         QVector<float> params_main_cube({box_length + box_thickness*2, box_height + box_thickness*2, box_width + box_thickness*2});
