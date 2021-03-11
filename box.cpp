@@ -12,7 +12,7 @@ Box::Box()
 //"Simple3x3Rand", "Simple3x3Sym" "Relief3x3Rand", "Relief3x3Sym", "LongOneFace"
 
 void Box::generateParams(QString box_part) {
-    if (box_part == "Simple3x3Rand" || box_part == "Simple3x3Sym") {
+    if (box_part == "Simple3x3Rand" || box_part == "Simple3x3Sym" || box_part == "SimpleAngles") {
         float max_value = get_max_possible_size();
         float min_value = min_size;
         if (max_value < min_value) min_value = max_value;
@@ -22,7 +22,7 @@ void Box::generateParams(QString box_part) {
         box_length = computeParameter(box_length, rd, min_value, max_value);
     }
 
-    else if (box_part == "Relief3x3Rand" || box_part == "Relief3x3Sym") {
+    else if (box_part == "Relief3x3Rand" || box_part == "Relief3x3Sym" || box_part == "ReliefAngles") {
         float max_value = get_max_possible_size();
         float min_value = min_size;
         if (max_value < min_value) min_value = max_value;
@@ -52,6 +52,9 @@ void Box::generateParams(QString box_part) {
         }
         else if (box_part == "LongOneFace") {
             anch_type = BOX_ONE_FACE_ALIGNED;
+        }
+        else if(box_part == "SimpleAngles" || box_part == "ReliefAngles"){
+            anch_type = BOX_ANGLES;
         }
     }
 }
@@ -165,10 +168,10 @@ void Box::set_anchor_points() {
         float x = center.x() + box_length/2;
         float z = center.z() + box_width/2;
 
-        float x_offset = box_length/8;
-        float z_offset = box_width/8;
+        float max_accepted_size_anchor_point = min(box_length/8, box_width/8);
 
-        float max_accepted_size_anchor_point = min(box_length/15, box_width/15);
+        float x_offset = max_accepted_size_anchor_point;
+        float z_offset = max_accepted_size_anchor_point;
         QVector<AnchorPoint> anchor_face1;
         QVector<AnchorPoint> anchor_face2;
         for (int i = 0 ; i < 2 ; ++i) {
@@ -177,6 +180,7 @@ void Box::set_anchor_points() {
                 QVector3D coords2(x-x_offset,y-box_height,z-z_offset);
                 QVector3D direction(0,1,0);
                 AnchorPoint anch(coords, direction, max_accepted_size_anchor_point);
+                anch.owner_object = this;
                 AnchorPoint anch2(coords2, -direction, max_accepted_size_anchor_point);
                 anchor_face1.push_back(anch);
                 anchor_face2.push_back(anch2);
@@ -288,10 +292,10 @@ void Box::set_rotation(QString box_part) {
 
 void Box::generateRules(QString box_part) {
     set_rotation(box_part);
-    if (box_part == "Simple3x3Rand" || box_part == "Simple3x3Sym" || box_part == "LongOneFace") {
+    if (box_part == "Simple3x3Rand" || box_part == "Simple3x3Sym" || box_part == "LongOneFace" || box_part == "SimpleAngles") {
         createLeafRulesSingle("cub", box_part, {box_length, box_height, box_width}, center, rotation);
     }
-    else if (box_part == "Relief3x3Rand" || box_part == "Relief3x3Sym") {
+    else if (box_part == "Relief3x3Rand" || box_part == "Relief3x3Sym" || box_part == "ReliefAngles") {
         QVector<QString> primitives({"cub", "cub", "cub", "cub", "cub", "cub", "cub"});
         QString op_bools ("------");
         QVector<float> params_main_cube({box_length + box_thickness*2, box_height + box_thickness*2, box_width + box_thickness*2});
