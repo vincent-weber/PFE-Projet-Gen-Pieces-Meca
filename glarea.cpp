@@ -429,11 +429,12 @@ void GLArea::run_gen_box(){
     vbos_mecha_parts.clear();
     Box box;
 
+    box.createParams();
+    box.set_anchor_points();
     for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
         box.generateRules(box.primitives_str.at(k));
     }
 
-    box.set_anchor_points();
     box.computeSentence();
     Parser parser_box(box.sentence);
     qDebug() << "BOX SENTENCE : " << box.sentence;
@@ -483,7 +484,7 @@ void GLArea::run_gen_box(){
                     object = new Screw();
                     object->anch_type = NO_ANCHOR_POINTS;
                 }
-//                object = new Engine();
+                object = new Engine();
                 //object = new Piston();
 
                 object->set_prev_anchor_point(chosen_anchor_point);
@@ -517,8 +518,8 @@ void GLArea::run_gen_box(){
         new_objects.clear();
     }
 
-    prepareMechaParts();
-    //prepareMachinery();
+    //prepareMechaParts();
+    prepareMachinery();
 }
 
 void GLArea::run_gen_engines() {

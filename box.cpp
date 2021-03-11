@@ -270,6 +270,18 @@ QVector<AnchorPoint*> Box::choose_anchor_points() {
     return res;
 }
 
+void Box::set_center() {
+    if (anchor_point_prev_lvl == nullptr) {
+        center = QVector3D(0,0,0);
+    }
+    else {
+        QVector3D vec({anchor_point_prev_lvl->direction[0] * box_length/2,
+                       anchor_point_prev_lvl->direction[1] * box_height/2,
+                       anchor_point_prev_lvl->direction[2] * box_width/2});
+        center = QVector3D(anchor_point_prev_lvl->coords + vec);
+    }
+}
+
 void Box::set_rotation(QString box_part) {
 
 }
