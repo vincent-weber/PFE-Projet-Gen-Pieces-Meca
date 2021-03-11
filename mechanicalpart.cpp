@@ -4,7 +4,7 @@ MechanicalPart::MechanicalPart() {}
 
 void MechanicalPart::compute_mesh(std::vector<Mesh_CGAL>& meshes, std::vector<Bool_op>& op_bools) {
     mesh = meshes[0];
-    for (unsigned i = 1 ; i < shapes.size() ; ++i) {
+    for (unsigned i = 1 ; i < meshes.size() ; ++i) {
         bool res = compute_boolean_operation(&mesh, &meshes[i], &mesh, op_bools[i-1]);
         qDebug() << op_bools[i-1];
         if (res) {
@@ -42,7 +42,9 @@ MechanicalPart::MechanicalPart(std::vector<Primitive*> shapes, std::vector<Bool_
 
         for (unsigned i = 0 ; i < op_bool.size() ; ++i) {
             if (op_bool[i] != INTERSECTION) {
-                meshes.push_back(shapes[i]->mesh);
+                if (i == 0 || (i > 0 && op_bool[i-1] != INTERSECTION)) {
+                    meshes.push_back(shapes[i]->mesh);
+                }
                 final_ops.push_back(op_bool[i]);
                 if (i == op_bool.size() - 1) {
                     meshes.push_back(shapes[i+1]->mesh);

@@ -268,10 +268,10 @@ void GLArea::paintGL()
 
     //Rendu des pièces mécaniques
     for (unsigned i = 0 ; i < mecha_parts.size() ; ++i) {
-        //render_shape_color(vbos_mecha_parts[i], projectionMatrix, viewMatrix, mecha_parts[i].nb_vertices_gl_faces, mecha_parts[i].nb_vertices_gl_lines);
+        render_shape_color(vbos_mecha_parts[i], projectionMatrix, viewMatrix, mecha_parts[i].nb_vertices_gl_faces, mecha_parts[i].nb_vertices_gl_lines);
     }
 
-    render_shape_color(vbo_machinery, projectionMatrix, viewMatrix, machinery.nb_vertices_gl_faces, machinery.nb_vertices_gl_lines);
+    //render_shape_color(vbo_machinery, projectionMatrix, viewMatrix, machinery.nb_vertices_gl_faces, machinery.nb_vertices_gl_lines);
 
 }
 
@@ -644,5 +644,26 @@ void GLArea::run_gen_box_angles(){
             new_objects.push_back(screw);
         }
     }
+    prepareMechaParts();
+}
+
+void GLArea::run_gen_hinge() {
+    mecha_parts.clear();
+    vbos_mecha_parts.clear();
+
+    Hinge hinge;
+    hinge.createParams();
+    hinge.set_center();
+    for (int i = 0 ; i < hinge.primitives_str.size() ; ++i) {
+        hinge.set_rotation(hinge.primitives_str[i]);
+        hinge.generateRules(hinge.primitives_str[i]);
+    }
+
+    hinge.computeSentence();
+    qDebug() << "HINGE SENTENCE : " << hinge.sentence;
+    Parser parser_hinge(hinge.sentence);
+    parser_hinge.reader();
+    MechanicalPart base(parser_hinge.shapes, parser_hinge.ops);
+    mecha_parts.push_back(base);
     prepareMechaParts();
 }

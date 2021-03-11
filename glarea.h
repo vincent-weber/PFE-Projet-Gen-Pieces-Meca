@@ -27,6 +27,7 @@
 #include "pipe.h"
 #include "engine.h"
 #include "piston.h"
+#include "hinge.h"
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions
@@ -44,6 +45,7 @@ protected slots:
     void run_gen_box();
     void run_gen_engines();
     void run_gen_box_angles();
+    void run_gen_hinge();
 
 protected:
     void initializeGL() override;

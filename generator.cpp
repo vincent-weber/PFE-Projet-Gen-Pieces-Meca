@@ -16,9 +16,9 @@ void Generator::initRules() {
     rules.insert("GroupPistons", {"Aligned4All", "Aligned4Rand", "Alternated4All", "Alternated4Rand", "AlignedNRand", "AlternatedNRand", "AlignedNAll", "AlternatedNAll"});
     rules.insert("SeparatorPistons", {"CylSeparators", /*"CubSeparators"*/});
 
-    rules.insert("Hinge", {"HingeMiddleCyl+HingeWings+HingeHolePattern"});
-    rules.insert("HingeWings", {"AlignedSquared", "AlignedRounded", "PerpendicularSquared", "PerpendicularRounded"});
-    rules.insert("HingeHolePattern", {"Random4", "RandomN", "Angles", "3x3Grid"});
+    rules.insert("Hinge", {"HingeMiddleCyl+HingeWings"/*+HingeHolePattern"*/});
+    rules.insert("HingeWings", {"AlignedSquared", "AlignedRounded", /*"PerpendicularSquared", "PerpendicularRounded"*/});
+    //rules.insert("HingeHolePattern", {"Random4", "RandomN", "Angles", "3x3Grid"});
 
     //cyl+cub/cyl+cub/cyl-cyl-cyl-cyl...
     base_rules = rules;

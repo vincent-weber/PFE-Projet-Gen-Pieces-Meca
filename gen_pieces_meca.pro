@@ -25,6 +25,7 @@ SOURCES += main.cpp\
         cylinder.cpp \
         engine.cpp \
         generator.cpp \
+        hinge.cpp \
         machinery.cpp \
         mechanicalpart.cpp \
         nut.cpp \
@@ -48,6 +49,7 @@ HEADERS  += princ.h \
         engine.h \
         generator.h \
         glarea.h \
+        hinge.h \
         machinery.h \
         mechanicalpart.h \
         nut.h \
