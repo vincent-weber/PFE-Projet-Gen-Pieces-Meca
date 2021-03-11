@@ -551,7 +551,6 @@ void GLArea::run_gen_box_angles(){
             nut->set_anchor_points();
             AnchorPoint nutAnchorPoint = nut->anchor_points[0][0];
 
-            nut->anch_type = NO_ANCHOR_POINTS;
             nut->sentence = nut->base_sentence;
             nut->computeSentence();
             Parser parser_nut(nut->sentence);
