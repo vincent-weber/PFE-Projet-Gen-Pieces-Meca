@@ -667,3 +667,23 @@ void GLArea::run_gen_hinge() {
     mecha_parts.push_back(base);
     prepareMechaParts();
 }
+
+void GLArea::run_gen_planks() {
+    mecha_parts.clear();
+    vbos_mecha_parts.clear();
+
+    Planks planks;
+    planks.createParams();
+    planks.set_center();
+    for (int i = 0 ; i < planks.primitives_str.size() ; ++i) {
+        planks.set_rotation(planks.primitives_str[i]);
+        planks.generateRules(planks.primitives_str[i]);
+    }
+    planks.computeSentence();
+    qDebug() << "PLANKS SENTENCE : " << planks.sentence;
+    Parser parser_planks(planks.sentence);
+    parser_planks.reader();
+    MechanicalPart base(parser_planks.shapes, parser_planks.ops);
+    mecha_parts.push_back(base);
+    prepareMechaParts();
+}

@@ -74,7 +74,7 @@ void Hinge::generateRules(QString hinge_part) {
         QVector<QString> primitives({"cub", "cyl", "cub", "cyl"});
         QVector<QVector3D> centers({center_cub_1, center_cyl_1, center_cub_2, center_cyl_2});
         QVector<QVector3D> rots({rotation, QVector3D(PI/2,0,0), rotation, QVector3D(PI/2,0,0)});
-        QVector<QVector<float>> params{{wing_length, wing_height, wing_width}, {wing_length, wing_height*2, 32}, {wing_length, wing_height, wing_width}, {wing_length, wing_height*2, 32}};
+        QVector<QVector<float>> params{{wing_length, wing_height, wing_width}, {wing_width*0.6f, wing_height*2, 32}, {wing_length, wing_height, wing_width}, {wing_width*0.6f, wing_height*2, 32}};
         QString rule = createLeafRulesMultiple(primitives, "/+/", params, centers, rots);
         rules.insert(hinge_part, {rule});
     }

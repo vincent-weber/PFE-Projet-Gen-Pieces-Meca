@@ -20,6 +20,8 @@ void Generator::initRules() {
     rules.insert("HingeWings", {"AlignedSquared", "AlignedRounded", /*"PerpendicularSquared", "PerpendicularRounded"*/});
     //rules.insert("HingeHolePattern", {"Random4", "RandomN", "Angles", "3x3Grid"});
 
+    rules.insert("Planks", {"5PlanksFlat"});
+
     //cyl+cub/cyl+cub/cyl-cyl-cyl-cyl...
     base_rules = rules;
 }
