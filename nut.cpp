@@ -8,7 +8,6 @@ Nut::Nut()
 
 void Nut::generateParams(QString nut_part) {
     float max_value = get_max_possible_size();
-    qDebug() << "VALEUR MAX NUUUUUUT" << max_value;
 
     if (nut_part == "NutMainCyl") {
         main_cyl_radius = computeParameter(main_cyl_radius, rd, 1.0f, max_value);

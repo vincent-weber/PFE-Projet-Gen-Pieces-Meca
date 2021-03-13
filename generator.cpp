@@ -84,7 +84,6 @@ void Generator::set_prev_anchor_point(AnchorPoint* anchor_point) {
 float Generator::get_max_possible_size() {
     float max_value = max_size;
     if (anchor_point_prev_lvl != nullptr) {
-        qDebug() << "MAX ACCEPTED SIZE NUT" << anchor_point_prev_lvl->max_accepted_size;
         float max_accepted_size = anchor_point_prev_lvl->max_accepted_size;
         if (max_accepted_size < max_value) {
             max_value = max_accepted_size;

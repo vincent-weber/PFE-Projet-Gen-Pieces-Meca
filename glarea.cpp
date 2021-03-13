@@ -578,10 +578,10 @@ void GLArea::run_gen_box_angles(){
     mecha_parts.clear();
     vbos_mecha_parts.clear();
     Box box;
-    box.base_sentence = "SimpleAngles";
+    box.base_sentence = "ReliefEdge";
     box.sentence = box.base_sentence;
     box.primitives_str = box.sentence.split(QRegExp("\\-|\\+|\\*"));
-    box.generateParams("SimpleAngles");
+    box.generateParams("ReliefEdge");
     box.set_anchor_points();
     for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
         box.generateRules(box.primitives_str.at(k));
@@ -608,6 +608,7 @@ void GLArea::run_gen_box_angles(){
 
                 Nut *nut = new Nut();
                 nut->set_prev_anchor_point(&anchor_point);
+                nut->set_main_cyl_radius(anchor_point.max_accepted_size);
                 nut->createParams();
                 nut->set_center();
 

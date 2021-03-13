@@ -12,7 +12,7 @@ Box::Box()
 //"Simple3x3Rand", "Simple3x3Sym" "Relief3x3Rand", "Relief3x3Sym", "LongOneFace"
 
 void Box::generateParams(QString box_part) {
-    if (box_part == "Simple3x3Rand" || box_part == "Simple3x3Sym" || box_part == "SimpleAngles") {
+    if (box_part == "Simple3x3Rand" || box_part == "Simple3x3Sym" || box_part == "SimpleAngles" || box_part == "SimpleEdge") {
         float max_value = get_max_possible_size();
         float min_value = min_size;
         if (max_value < min_value) min_value = max_value;
@@ -22,7 +22,7 @@ void Box::generateParams(QString box_part) {
         box_length = computeParameter(box_length, rd, min_value, max_value);
     }
 
-    else if (box_part == "Relief3x3Rand" || box_part == "Relief3x3Sym" || box_part == "ReliefAngles") {
+    else if (box_part == "Relief3x3Rand" || box_part == "Relief3x3Sym" || box_part == "ReliefAngles" || box_part == "ReliefEdge") {
         float max_value = get_max_possible_size();
         float min_value = min_size;
         if (max_value < min_value) min_value = max_value;
@@ -55,6 +55,9 @@ void Box::generateParams(QString box_part) {
         }
         else if(box_part == "SimpleAngles" || box_part == "ReliefAngles"){
             anch_type = BOX_ANGLES;
+        }
+        else if(box_part == "SimpleEdge" || box_part == "ReliefEdge"){
+            anch_type = BOX_EDGE;
         }
     }
 }
@@ -197,15 +200,19 @@ void Box::set_anchor_points() {
         float x = center.x() + box_length/2; //FIXE SI i = 1
         float y = center.y() + box_height/2;
 
-        float y_offset = box_height/7;
-        float x_offset = box_length/7;
+
 
         float max_accepted_size_anchor_point = min(box_length/15, box_height/15);
+        float y_offset = max_accepted_size_anchor_point*4;
+        float x_offset = max_accepted_size_anchor_point;
+
+        int screwNum = box_height/y_offset;
+        qDebug() << "Nombre de vis" << screwNum;
 
         QVector<AnchorPoint> anchor_face;
         //        QVector<AnchorPoint> anchor_face4;
         for (int i = 0 ; i < 1 ; ++i) {
-            for (int j = 0 ; j < 6 ; ++j) {
+            for (int j = 0 ; j < screwNum ; ++j) {
                 QVector3D coords(x-x_offset,y-y_offset,z);
                 //                QVector3D coords2(x,y,z-box_width);
                 QVector3D direction(0,0,1);
@@ -292,10 +299,10 @@ void Box::set_rotation(QString box_part) {
 
 void Box::generateRules(QString box_part) {
     set_rotation(box_part);
-    if (box_part == "Simple3x3Rand" || box_part == "Simple3x3Sym" || box_part == "LongOneFace" || box_part == "SimpleAngles") {
+    if (box_part == "Simple3x3Rand" || box_part == "Simple3x3Sym" || box_part == "LongOneFace" || box_part == "SimpleAngles" || box_part == "SimpleEdge") {
         createLeafRulesSingle("cub", box_part, {box_length, box_height, box_width}, center, rotation);
     }
-    else if (box_part == "Relief3x3Rand" || box_part == "Relief3x3Sym" || box_part == "ReliefAngles") {
+    else if (box_part == "Relief3x3Rand" || box_part == "Relief3x3Sym" || box_part == "ReliefAngles" || box_part == "ReliefEdge") {
         QVector<QString> primitives({"cub", "cub", "cub", "cub", "cub", "cub", "cub"});
         QString op_bools ("------");
         QVector<float> params_main_cube({box_length + box_thickness*2, box_height + box_thickness*2, box_width + box_thickness*2});
