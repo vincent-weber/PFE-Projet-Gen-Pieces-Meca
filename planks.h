@@ -2,6 +2,7 @@
 #define PLANKS_H
 
 #include "generator.h"
+#include "hinge.h"
 
 class Planks : public Generator
 {
@@ -10,6 +11,14 @@ private:
     float planks_length = -1;
     float planks_height = -1;
     float planks_width = -1;
+
+    float min_dist_between_hinges = 2.0f;
+
+    int nb_anch_points_length = -1;
+    int nb_anch_points_width = -1;
+    float hinge_wing_height = -1;
+
+    Hinge hinge;
 
 public:
     Planks();

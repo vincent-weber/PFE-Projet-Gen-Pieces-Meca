@@ -653,7 +653,6 @@ void GLArea::run_gen_hinge() {
 
     Hinge hinge;
     hinge.createParams();
-    hinge.set_center();
     for (int i = 0 ; i < hinge.primitives_str.size() ; ++i) {
         hinge.set_rotation(hinge.primitives_str[i]);
         hinge.generateRules(hinge.primitives_str[i]);
@@ -675,6 +674,7 @@ void GLArea::run_gen_planks() {
     Planks planks;
     planks.createParams();
     planks.set_center();
+    planks.set_anchor_points();
     for (int i = 0 ; i < planks.primitives_str.size() ; ++i) {
         planks.set_rotation(planks.primitives_str[i]);
         planks.generateRules(planks.primitives_str[i]);

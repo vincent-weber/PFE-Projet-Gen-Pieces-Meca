@@ -16,6 +16,7 @@ enum AnchorPointType {
     BOX_ONE_FACE_ALIGNED,
     BOX_ANGLES,
     BOX_EDGE,
+    BOX_OUTLINE,
 
     PIPE_ENDS,
 
@@ -27,6 +28,9 @@ enum AnchorPointType {
     HINGE_ANGLES_4,
     HINGE_GRID_3X3,
     HINGE_RANDOM,
+
+    PLANKS_ALL_HINGES,
+    PLANKS_RANDOM_HINGES,
 
     NO_ANCHOR_POINTS,
     UNDEFINED

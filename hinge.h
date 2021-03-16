@@ -22,6 +22,14 @@ public:
     void set_anchor_points() override;
     QVector<AnchorPoint*> choose_anchor_points() override;
     void generateRules(QString screw_part) override;
+
+    void set_middle_cyl_width(float val) {
+        middle_cyl_width = val;
+    }
+
+    void set_wing_height(float val) {
+        wing_height = val;
+    }
 };
 
 #endif // HINGE_H

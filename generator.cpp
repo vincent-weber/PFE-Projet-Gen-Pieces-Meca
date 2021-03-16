@@ -8,7 +8,7 @@ void Generator::initRules() {
     rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
     rules.insert("Pipe", {"ClassicCyl"});
 
-    rules.insert("Box", {"Simple3x3Rand", "Simple3x3Sym" "Relief3x3Rand", "Relief3x3Sym", "LongOneFace"});
+    rules.insert("Box", {"Simple3x3Rand", "Simple3x3Sym" "Relief3x3Rand", "Relief3x3Sym", "LongOneFace", "SimpleOutlineOneFace"});
     rules.insert("Piston", {"HeadCyl-HeadIntersect+BodyCuboid+EndCyl-EndIntersect"});
 
     rules.insert("Engine", {"EngineAxis+GroupPistons+SeparatorPistons"});
@@ -20,7 +20,11 @@ void Generator::initRules() {
     rules.insert("HingeWings", {"AlignedSquared", "AlignedRounded", /*"PerpendicularSquared", "PerpendicularRounded"*/});
     //rules.insert("HingeHolePattern", {"Random4", "RandomN", "Angles", "3x3Grid"});
 
-    rules.insert("Planks", {"5PlanksFlat"});
+    //rules.insert("Planks", {"5PlanksFlatAllHinges", "5PlanksFlatRandHinges"});
+
+    rules.insert("Planks", {"PlanksLayout+HingesLayout"});
+    rules.insert("PlanksLayout", {"FlatLayout"/*, "PerpendicularLayout"*/});
+    rules.insert("HingesLayout", {"AllHinges", "RandomHinges"});
 
     //cyl+cub/cyl+cub/cyl-cyl-cyl-cyl...
     base_rules = rules;
@@ -80,6 +84,7 @@ int Generator::computeParameter(int param, std::random_device& rd, int min, int 
 
 void Generator::set_prev_anchor_point(AnchorPoint* anchor_point) {
     anchor_point_prev_lvl = anchor_point;
+    anchor_point->is_active = true;
     direction = anchor_point->direction;
 }
 
