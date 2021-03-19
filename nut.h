@@ -29,6 +29,10 @@ public:
         this->main_cyl_length = main_cyl_length;
     }
 
+    void set_inter_cyl_radius(float inter_cyl_radius){
+        this->intersect_cyl_radius = inter_cyl_radius;
+    }
+
 };
 
 #endif // NUT_H

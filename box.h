@@ -3,6 +3,7 @@
 
 #include "generator.h"
 #include "screw.h"
+#include "nut.h"
 #include "parser.h"
 #include "mechanicalpart.h"
 
@@ -26,6 +27,9 @@ public:
     void set_center() override;
     void set_anchor_points() override;
     QVector<AnchorPoint*> choose_anchor_points() override;
+
+    Nut nut;
+    Screw screw;
 };
 
 #endif // BOX_H

@@ -8,7 +8,7 @@ void Generator::initRules() {
     rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
     rules.insert("Pipe", {"ClassicCyl"});
 
-    rules.insert("Box", {"Simple3x3Rand", "Simple3x3Sym" "Relief3x3Rand", "Relief3x3Sym", "LongOneFace", "SimpleAngles", "ReliefAngles"});
+    rules.insert("Box", {"Simple3x3Rand", "Simple3x3Sym" "Relief3x3Rand", "Relief3x3Sym", "LongOneFace", "SimpleAngles", "ReliefAngles", "SimpleEdge", "ReliefEdge"});
     rules.insert("Piston", {"HeadCyl-HeadIntersect+BodyCuboid+EndCyl-EndIntersect"});
 
     rules.insert("Engine", {"EngineAxis+GroupPistons+SeparatorPistons"});

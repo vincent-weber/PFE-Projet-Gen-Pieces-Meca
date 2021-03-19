@@ -299,8 +299,53 @@ void Box::set_rotation(QString box_part) {
 
 void Box::generateRules(QString box_part) {
     set_rotation(box_part);
-    if (box_part == "Simple3x3Rand" || box_part == "Simple3x3Sym" || box_part == "LongOneFace" || box_part == "SimpleAngles" || box_part == "SimpleEdge") {
+    if (box_part == "Simple3x3Rand" || box_part == "Simple3x3Sym" || box_part == "LongOneFace" || box_part == "SimpleEdge") {
         createLeafRulesSingle("cub", box_part, {box_length, box_height, box_width}, center, rotation);
+    } else if(box_part == "SimpleAngles"){
+        createLeafRulesSingle("cub", box_part, {box_length, box_height, box_width}, center, rotation);
+
+        nut.set_main_cyl_radius(anchor_points[0][0].max_accepted_size);
+        nut.set_main_cyl_length(anchor_points[0][0].max_accepted_size/3);
+        nut.set_inter_cyl_radius(anchor_points[0][0].max_accepted_size/2);
+        nut.createParams();
+
+        QString rule = "";
+        int nb_nut = anchor_points.size()*2;
+
+        for(int j = 0; j < anchor_points.size(); j++){
+            for (int i = 0 ; i < anchor_points[j].size() ; ++i) {
+                nut.sentence = nut.base_sentence;
+                nut.set_prev_anchor_point(&anchor_points[j][i]);
+                nut.set_center();
+                for (int k = 0 ; k < nut.primitives_str.size() ; ++k) {
+                    nut.set_rotation(nut.primitives_str.at(k));
+                    nut.generateRules(nut.primitives_str.at(k));
+                }
+                nut.set_anchor_points();
+                AnchorPoint nutAnchorPoint = nut.anchor_points[0][0];
+
+                nut.computeSentence();
+                rule += nut.sentence;
+
+                screw.set_body_width(nutAnchorPoint.max_accepted_size+0.03f);
+                screw.set_prev_anchor_point(&nutAnchorPoint);
+                screw.createParams();
+                screw.set_center();
+                for (int k = 0 ; k < screw.primitives_str.size() ; ++k) {
+                    screw.set_rotation(screw.primitives_str.at(k));
+                    screw.generateRules(screw.primitives_str.at(k));
+                }
+
+                rule += "+";
+                screw.computeSentence();
+                rule += screw.sentence;
+
+                if (i != nb_nut-1) {
+                    rule += "+";
+                }
+            }
+            rules.insert(box_part, {rule});
+        }
     }
     else if (box_part == "Relief3x3Rand" || box_part == "Relief3x3Sym" || box_part == "ReliefAngles" || box_part == "ReliefEdge") {
         QVector<QString> primitives({"cub", "cub", "cub", "cub", "cub", "cub", "cub"});
