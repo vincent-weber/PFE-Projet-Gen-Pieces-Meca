@@ -77,7 +77,7 @@ QVector<AnchorPoint*> Screw::choose_anchor_points() {
 }
 
 void Screw::generateRules(QString screw_part) {
-
+    set_rotation(screw_part);
     QVector3D centerBody(center[0], center[1], center[2]);
     QVector3D centerHead(center[0] + body_height/2 * direction[0], center[1] + body_height/2 * direction[1], center[2] + body_height/2 *direction[2]);
     QVector3D centerInterCyl(center[0] + (body_height/2 - head_height/2) * direction[0], center[1] + (body_height/2 - head_height/2) * direction[1], center[2] + (body_height/2 - head_height/2) *direction[2]);

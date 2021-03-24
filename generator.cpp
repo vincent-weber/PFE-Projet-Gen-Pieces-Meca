@@ -14,19 +14,19 @@ void Generator::initRules() {
     rules.insert("Engine", {"EngineAxis+GroupPistons+SeparatorPistons"});
     rules.insert("EngineAxis", {"CylHeadEngine+CylMainAxe+CylExtEngine", "CubHeadEngine+CylMainAxe+CubExtEngine"});
     rules.insert("GroupPistons", {"Aligned4All", "Aligned4Rand", "Alternated4All", "Alternated4Rand", "AlignedNRand", "AlternatedNRand", "AlignedNAll", "AlternatedNAll"});
+    //rules.insert("GroupPistons", {"AlternatedNRand"});
     rules.insert("SeparatorPistons", {"CylSeparators", /*"CubSeparators"*/});
 
-    rules.insert("Hinge", {"HingeMiddleCyl+HingeWings"/*+HingeHolePattern"*/});
+    rules.insert("Hinge", {"HingeMiddleCyl+HingeWings-HingeHolePattern"});
     rules.insert("HingeWings", {"AlignedSquared", "AlignedRounded", /*"PerpendicularSquared", "PerpendicularRounded"*/});
-    //rules.insert("HingeHolePattern", {"Random4", "RandomN", "Angles", "3x3Grid"});
+    rules.insert("HingeHolePattern", {"Random4Max"/*, "RandomN", "Angles", "3x3Grid"*/});
 
     //rules.insert("Planks", {"5PlanksFlatAllHinges", "5PlanksFlatRandHinges"});
 
     rules.insert("Planks", {"PlanksLayout+HingesLayout"});
     rules.insert("PlanksLayout", {"FlatLayout"/*, "PerpendicularLayout"*/});
-    rules.insert("HingesLayout", {"AllHinges", "RandomHinges"});
+    rules.insert("HingesLayout", {/*"AllHinges", */"RandomHinges"});
 
-    //cyl+cub/cyl+cub/cyl-cyl-cyl-cyl...
     base_rules = rules;
 }
 
@@ -54,9 +54,7 @@ void Generator::createParams() {
     int nb_part_possibilities = rules.find(generator_name)->count();
     unsigned index = std::uniform_int_distribution<int>{0,nb_part_possibilities-1}(rd_gen);
     base_sentence = rules.find(generator_name)->at(index);
-    qDebug() << "BASE SENTENCE AVANT : " << base_sentence;
     base_sentence = recurs(base_sentence);
-    qDebug() << "BASE SENTENCE APRES : " << base_sentence;
     sentence = base_sentence;
     primitives_str = sentence.split(QRegExp("\\-|\\+|\\*"));
     for (int i = 0 ; i < primitives_str.size() ; ++i) {
@@ -91,7 +89,6 @@ void Generator::set_prev_anchor_point(AnchorPoint* anchor_point) {
 float Generator::get_max_possible_size() {
     float max_value = max_size;
     if (anchor_point_prev_lvl != nullptr) {
-        qDebug() << "MAX ACCEPTED SIZE NUT" << anchor_point_prev_lvl->max_accepted_size;
         float max_accepted_size = anchor_point_prev_lvl->max_accepted_size;
         if (max_accepted_size < max_value) {
             max_value = max_accepted_size;
@@ -158,9 +155,7 @@ void Generator::createLeafRulesSingle(QString primitive_type, QString in, QVecto
     out += ")";
     out += "]";
 
-//    qDebug() << "RULES AVANT : " << rules[in];
     rules.insert(in, {out});
-//    qDebug() << "RULES APRES : " << rules[in];
 }
 
 void Generator::computeSentence() {

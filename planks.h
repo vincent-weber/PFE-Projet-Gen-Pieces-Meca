@@ -3,6 +3,9 @@
 
 #include "generator.h"
 #include "hinge.h"
+#include "screw.h"
+#include "mechanicalpart.h"
+#include "parser.h"
 
 class Planks : public Generator
 {
@@ -19,6 +22,10 @@ private:
     float hinge_wing_height = -1;
 
     Hinge hinge;
+    Screw screw;
+
+    MechanicalPart base;
+    QVector<MechanicalPart> parts;
 
 public:
     Planks();
@@ -29,6 +36,14 @@ public:
     void set_anchor_points() override;
     QVector<AnchorPoint*> choose_anchor_points() override;
     void generateRules(QString screw_part) override;
+
+    MechanicalPart get_base() {
+        return base;
+    }
+
+    QVector<MechanicalPart> get_parts() {
+        return parts;
+    }
 };
 
 #endif // PLANKS_H

@@ -21,6 +21,9 @@ void Planks::generateParams(QString planks_part) {
         hinge.set_wing_height(hinge_wing_height);
         hinge.createParams();
 
+        screw.set_body_width(hinge.get_hole_radius());
+        screw.createParams();
+
         if (planks_part == "AllHinges") {
             anch_type = PLANKS_ALL_HINGES;
         }
@@ -94,6 +97,9 @@ void Planks::generateRules(QString planks_part) {
         QString rule = createLeafRulesMultiple(primitives, op_bool, params, centers, rots);
 
         rules.insert(planks_part, {rule});
+        Parser parser(rule);
+        parser.reader();
+        base = MechanicalPart(parser.shapes, parser.ops);
     }
 
     else if (planks_part == "AllHinges" || planks_part == "RandomHinges") {
@@ -101,10 +107,13 @@ void Planks::generateRules(QString planks_part) {
 
         QString rule = "";
         for (int i = 0 ; i < anch_points_chosen.size() ; ++i) {
+            QString hinge_string = "";
             AnchorPoint* anch_point = anch_points_chosen[i];
             hinge.sentence = hinge.base_sentence;
             hinge.set_prev_anchor_point(anch_point);
+            hinge.set_dir_wings();
             hinge.set_center();
+            hinge.set_anchor_points();
 
             for (int k = 0 ; k < hinge.primitives_str.size() ; ++k) {
                 hinge.set_rotation(hinge.primitives_str.at(k));
@@ -112,9 +121,36 @@ void Planks::generateRules(QString planks_part) {
             }
             hinge.computeSentence();
             rule += hinge.sentence;
+            hinge_string += hinge.sentence;
+
+            QVector<AnchorPoint*> anch_points_hinge = hinge.choose_anchor_points();
+            for (int j = 0 ; j < anch_points_hinge.size() ; ++j) {
+                AnchorPoint* anch_p = anch_points_hinge[j];
+                screw.sentence = screw.base_sentence;
+                screw.set_prev_anchor_point(anch_p);
+                screw.set_center();
+
+                for (int k = 0;  k < screw.primitives_str.size() ; ++k) {
+                    screw.set_rotation(screw.primitives_str.at(k));
+                    screw.generateRules(screw.primitives_str.at(k));
+                }
+                screw.computeSentence();
+                rule += screw.sentence;
+                hinge_string += screw.sentence;
+                if (i != anch_points_chosen.size()-1) {
+                    rule += "+";
+                    hinge_string += "+";
+                }
+            }
+
             if (i != anch_points_chosen.size()-1) {
                 rule += "+";
+                hinge_string += "+";
             }
+
+            Parser parser(hinge_string);
+            parser.reader();
+            parts.push_back(MechanicalPart(parser.shapes, parser.ops));
         }
         rules.insert(planks_part, {rule});
     }

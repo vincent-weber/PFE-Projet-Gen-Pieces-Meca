@@ -12,6 +12,7 @@
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+#include <chrono>
 
 #include "cylinder.h"
 #include "sphere.h"

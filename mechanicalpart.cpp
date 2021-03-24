@@ -6,7 +6,7 @@ void MechanicalPart::compute_mesh(std::vector<Mesh_CGAL>& meshes, std::vector<Bo
     mesh = meshes[0];
     for (unsigned i = 1 ; i < meshes.size() ; ++i) {
         bool res = compute_boolean_operation(&mesh, &meshes[i], &mesh, op_bools[i-1]);
-        qDebug() << op_bools[i-1];
+        qDebug() << "OP CODE : " << op_bools[i-1];
         if (res) {
             qDebug() << "Op OK";
         }
