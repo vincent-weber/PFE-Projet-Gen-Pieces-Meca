@@ -47,7 +47,7 @@ void Engine::generateParams(QString engine_part) {
     }
     else if (engine_part == "AlignedNRand" || engine_part == "AlternatedNRand" || engine_part == "AlignedNAll" || engine_part == "AlternatedNAll") {
         //* 4 = 16 pistons max, *2 = 8 pistons max
-        nb_pistons = (pipe_length / pipe_length_min) * 4;
+        nb_pistons = (pipe_length / pipe_length_min) * 2;
         pistons_gap = pipe_length * (1.0f/((nb_pistons+1)+nb_pistons*2));
         if (engine_part == "AlignedNRand") {
             anch_type = ENGINE_ALIGNED_RANDOM;

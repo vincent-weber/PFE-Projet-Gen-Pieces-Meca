@@ -249,9 +249,6 @@ QVector<AnchorPoint*> Box::choose_anchor_points() {
             }
         }
     }
-    else if (anch_type == BOX_GRID_4X4) {
-
-    }
     else if (anch_type == BOX_GRID_3X3_RANDOM) {
         for (int i = 0 ; i < anchor_points.size() ; ++i) {
             if (anchor_points[i].size() == 0) continue;

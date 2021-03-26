@@ -34,8 +34,6 @@ void Hinge::generateParams(QString hinge_part) {
             rounding_cyl_height = wing_height*2;
             rounding_cyl_precision = 32;
         }
-
-
     }
 
     //rules.insert("HingeHolePattern", {"Random4Max", "RandomN", "Angles", "3x3Grid"});

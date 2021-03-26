@@ -110,6 +110,7 @@ void Planks::generateRules(QString planks_part) {
             QString hinge_string = "";
             AnchorPoint* anch_point = anch_points_chosen[i];
             hinge.sentence = hinge.base_sentence;
+            hinge.anchor_points.clear();
             hinge.set_prev_anchor_point(anch_point);
             hinge.set_dir_wings();
             hinge.set_center();
@@ -123,7 +124,7 @@ void Planks::generateRules(QString planks_part) {
             rule += hinge.sentence;
             hinge_string += hinge.sentence;
 
-            QVector<AnchorPoint*> anch_points_hinge = hinge.choose_anchor_points();
+            /*QVector<AnchorPoint*> anch_points_hinge = hinge.choose_anchor_points();
             for (int j = 0 ; j < anch_points_hinge.size() ; ++j) {
                 AnchorPoint* anch_p = anch_points_hinge[j];
                 screw.sentence = screw.base_sentence;
@@ -146,13 +147,14 @@ void Planks::generateRules(QString planks_part) {
             if (i != anch_points_chosen.size()-1) {
                 rule += "+";
                 hinge_string += "+";
-            }
+            }*/
 
             Parser parser(hinge_string);
             parser.reader();
             parts.push_back(MechanicalPart(parser.shapes, parser.ops));
         }
         rules.insert(planks_part, {rule});
+        qDebug() << hinge.base_sentence;
     }
 }
 

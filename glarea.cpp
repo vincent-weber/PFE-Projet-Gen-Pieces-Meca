@@ -432,7 +432,12 @@ void GLArea::run_gen_box(){
     vbos_mecha_parts.clear();
     Box box;
 
-    box.createParams();
+    box.base_sentence = "Simple3x3Rand";
+    box.sentence = box.base_sentence;
+    box.primitives_str = box.sentence.split(QRegExp("\\-|\\+|\\*"));
+    box.generateParams("Simple3x3Rand");
+
+    //box.createParams();
     box.set_anchor_points();
     for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
         box.generateRules(box.primitives_str.at(k));
@@ -521,6 +526,7 @@ void GLArea::run_gen_box(){
         new_objects.clear();
     }
 
+    save_mesh_cgal(machinery.mesh, "box.off");
     //prepareMechaParts();
     prepareMachinery();
 }
@@ -683,6 +689,7 @@ void GLArea::run_gen_hinge() {
     Hinge hinge;
     hinge.direction = QVector3D(0,0,1);
     hinge.createParams();
+    hinge.set_dir_wings();
     hinge.set_anchor_points();
 
     for (int i = 0 ; i < hinge.primitives_str.size() ; ++i) {
@@ -696,6 +703,7 @@ void GLArea::run_gen_hinge() {
     parser_hinge.reader();
     MechanicalPart base(parser_hinge.shapes, parser_hinge.ops);
     mecha_parts.push_back(base);
+    save_mesh_cgal(base.mesh, "hinge.off");
     prepareMechaParts();
 }
 
