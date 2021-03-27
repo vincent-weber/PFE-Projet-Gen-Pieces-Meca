@@ -25,11 +25,14 @@
 
    BOX_ONE_FACE_ALIGNED :
    set_anchor_points : génère des points d'ancrage tous alignés sur une seule face de la boîte (toujours la même)
+
    BOX_ANGLES :
    set_anchor_points : génère des points d'ancrage dans les angles des faces haut et bas de la boîte
    choose_anchor_points : non implémenté
 
-   BOX_EDGE : THOMAS REMPLIS CA STP¨
+   BOX_EDGE :
+   set_anchor_points = génère des points d'ancrage sur une bordure de la boite.
+   choose_anchor_points : non implémenté
 
    Center : le centre de la boîte, pour le moment la boîte n'a pas vraiment été concue pour être attachée à d'autres objets,
    c'est pourquoi son centre est en 0,0,0 de base.

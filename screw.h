@@ -34,15 +34,19 @@ public:
     void set_body_height(float body_height) {
         this->body_height = body_height;
     }
+
     void set_body_width(float body_width) {
         this->body_width = body_width;
     }
+
     void set_head_height(float head_height) {
         this->head_height = head_height;
     }
+
     void set_head_width(float head_width) {
         this->head_width = head_width;
     }
+
     void set_body_precision(int body_precision) {
         this->body_precision = body_precision;
     }
@@ -50,6 +54,8 @@ public:
     float get_body_height() {
         return body_height;
     }
+
+
     float get_head_height(){
         return head_height;
     }

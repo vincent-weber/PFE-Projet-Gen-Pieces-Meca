@@ -3,10 +3,16 @@
 
 #include "primitive.h"
 
+/**
+ * @brief The Cylinder class, cette classe permet de généner un cylindre.
+ */
 class Sphere : public Primitive
 {
 public:
 
+    /**
+     * @brief radius, stack_count, sector_count, indices les parametres nécessaire à la création de la sphère.
+     */
     float radius;
     int stack_count;
     int sector_count;
