@@ -266,12 +266,16 @@ void GLArea::paintGL()
         render_shape_color(vbos[i], projectionMatrix, viewMatrix, shapes[i]->nb_vertices_gl_faces, shapes[i]->nb_vertices_gl_lines);
     }
 
-    //Rendu des pièces mécaniques
-    for (unsigned i = 0 ; i < mecha_parts.size() ; ++i) {
-        //render_shape_color(vbos_mecha_parts[i], projectionMatrix, viewMatrix, mecha_parts[i].nb_vertices_gl_faces, mecha_parts[i].nb_vertices_gl_lines);
+    if (!render_use_machinery) {
+        //Rendu des pièces mécaniques
+        for (unsigned i = 0 ; i < mecha_parts.size() ; ++i) {
+            render_shape_color(vbos_mecha_parts[i], projectionMatrix, viewMatrix, mecha_parts[i].nb_vertices_gl_faces, mecha_parts[i].nb_vertices_gl_lines);
+        }
     }
 
-    render_shape_color(vbo_machinery, projectionMatrix, viewMatrix, machinery.nb_vertices_gl_faces, machinery.nb_vertices_gl_lines);
+    else {
+        render_shape_color(vbo_machinery, projectionMatrix, viewMatrix, machinery.nb_vertices_gl_faces, machinery.nb_vertices_gl_lines);
+    }
 
 }
 
@@ -402,6 +406,7 @@ void GLArea::run_gen_screw(){
     mecha_parts.push_back(mecha_screw);
     save_mesh_cgal(mecha_screw.mesh, "screw.off");
 
+    render_use_machinery = false;
     prepareMechaParts();
 }
 
@@ -412,7 +417,6 @@ void GLArea::run_gen_nut(){
     nut_gen.set_main_cyl_radius(2.5f);
     nut_gen.createParams();
     for (int i = 0 ; i < nut_gen.primitives_str.size() ; ++i) {
-        nut_gen.set_rotation("JFLKSDJF");
         nut_gen.generateRules(nut_gen.primitives_str.at(i));
     }
     nut_gen.computeSentence();
@@ -422,8 +426,12 @@ void GLArea::run_gen_nut(){
     Parser parser(nut_gen.sentence);
     parser.reader();
 
-    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
+    MechanicalPart mecha_nut(parser.shapes, parser.ops);
+    mecha_parts.push_back(mecha_nut);
+    save_mesh_cgal(mecha_nut.mesh, "screw.off");
 
+
+    render_use_machinery = false;
     prepareMechaParts();
 }
 
@@ -527,10 +535,11 @@ void GLArea::run_gen_box(){
     }
 
     save_mesh_cgal(machinery.mesh, "box.off");
-    //prepareMechaParts();
+    render_use_machinery = true;
     prepareMachinery();
 }
 
+//genération de moteurs. Utilisé pour timer le temps d'exécution du programme.
 void GLArea::run_gen_engines() {
     mecha_parts.clear();
     vbos_mecha_parts.clear();
@@ -604,8 +613,8 @@ void GLArea::run_gen_engines() {
 
     qDebug() << "IS VALID : " << machinery.mesh.is_valid();
     save_mesh_cgal(machinery.mesh, "engines.off");
-    //prepareMechaParts();
 
+    render_use_machinery = true;
     prepareMachinery();
 }
 
@@ -704,6 +713,7 @@ void GLArea::run_gen_hinge() {
     MechanicalPart base(parser_hinge.shapes, parser_hinge.ops);
     mecha_parts.push_back(base);
     save_mesh_cgal(base.mesh, "hinge.off");
+    render_use_machinery = false;
     prepareMechaParts();
 }
 
@@ -731,6 +741,6 @@ void GLArea::run_gen_planks() {
     new_parts.push_back(base);*/
     qDebug() << "IS VALID : " << machinery.mesh.is_valid();
     save_mesh_cgal(machinery.mesh, "planks.off");
-    //prepareMechaParts();
+    render_use_machinery = true;
     prepareMachinery();
 }

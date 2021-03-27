@@ -7,6 +7,17 @@
 #include "box.h"
 #include "screw.h"
 
+
+/**
+ * @brief The Piston class Représente un piston, utilisé par la classe Engine pour attacher des pistons au moteur.
+ * Cette pièce ne peut pas contenir de points d'ancrage, elle peut seulement être attachée.
+ *
+ * max_size et min_size non utilisés.
+ *
+ * rules.insert("Piston", {"HeadCyl-HeadIntersect+BodyCuboid+EndCyl-EndIntersect"});
+ *
+ *
+ */
 class Piston : public Generator
 {
 private:

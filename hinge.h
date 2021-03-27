@@ -3,6 +3,29 @@
 
 #include "generator.h"
 
+/**
+ * @brief The Hinge class Une charnière sur laquelle on peut insérer des vis.
+ * Composé d'un axe central (HingeMiddleCyl), de 2 côtés (HingeWings) et de trous pour vis (HingeHolePattern)
+ *
+ * max_size : longueur maximale de l'axe central
+ * min_size : longueur minimale de l'axe central
+ *
+ * rules.insert("Hinge", {"HingeMiddleCyl+HingeWings-HingeHolePattern"});
+   rules.insert("HingeWings", {"AlignedSquared", "AlignedRounded", "PerpendicularSquared", "PerpendicularRounded"});
+   rules.insert("HingeHolePattern", {"Random4Max", "RandomN", "Angles", "3x3Grid"});
+
+   AlignedSquared et AlignedRounded correspondent à des charnières dont les 2 côtés (wings) sont dans la même direction.
+   PerpendicularSquared et PerpendicularRounded ne sont pas implémentés, ce seraient des charnières telles que les 2 côtés sont perpendiculaires entre eux.
+
+   Dans l'implémentation actuelle, les charnières alignées ne peuvent pas être tournées dans tous les sens (que les 2 directions utilisées dans la classe Planks).
+
+   Points d'ancrage :
+
+   HINGE_ANGLES_4 : non implémenté
+   HINGE_GRID_3X3 : non implémenté, points d'ancrage en forme de grille 3x3 sur chaque côté = 18 trous en tout par charnière
+   HINGE_RANDOM_4_MAX : le seul implémenté, créé 4 points d'ancrage maximale de manière aléatoire sur un côté et sur l'autre de manière symétrique.
+   L'implémentation pourrait mieux fonctionner, surtout pour les charnières arrondies.
+ */
 class Hinge : public Generator
 {
 private:
@@ -44,6 +67,10 @@ public:
 
     float get_hole_radius() {
         return hole_radius;
+    }
+
+    float get_middle_cyl_height() {
+        return middle_cyl_length;
     }
 };
 

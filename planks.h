@@ -7,6 +7,26 @@
 #include "mechanicalpart.h"
 #include "parser.h"
 
+/**
+ * @brief The Planks class Représente des planches légèrement espacées pouvant être reliées par des charnières (Hinge).
+ * Pour l'instant, une seule implémentation, 5 planches en forme de croix avec une planche centrale, reliées par des charnières.
+ * Il manque aussi l'ajout de vis aux emplacements des trous des charnières.
+ *
+ * max_size et min_size non utilisés.
+ *
+ * rules.insert("Planks", {"PlanksLayout+HingesLayout"});
+   rules.insert("PlanksLayout", {"FlatLayout", "PerpendicularLayout"});
+   rules.insert("HingesLayout", {"AllHinges", "RandomHinges"});
+
+   PlanksLayout définit la façon dont sont agencées les planches. Seul FlatLayout est implémenté. PerpendicularLayout serait des planches
+   perpendiculaires les unes par rapport aux autres, et utiliserait les charnières perpendiculaires (qui ne sont pas non plus implémentées).
+   HingesLayout définit la manière dont les points d'ancrage seront sélectionnés (la création est pour le moment toujours la même).
+
+   Points d'ancrage :
+
+   PLANKS_ALL_HINGES : tous les points d'ancrage seront sélectionnés, donc toutes les charnières possibles seront présentes.
+   PLANKS_RANDOM_HINGES : chaque point d'ancrage a une chance sur 2 d'être sélectionné.
+ */
 class Planks : public Generator
 {
 private:
@@ -15,7 +35,9 @@ private:
     float planks_height = -1;
     float planks_width = -1;
 
-    float min_dist_between_hinges = 2.0f;
+    float dist_between_hinges_length = -1;
+    float dist_between_hinges_width = -1;
+    float starting_offset = -1;
 
     int nb_anch_points_length = -1;
     int nb_anch_points_width = -1;

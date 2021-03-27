@@ -83,6 +83,7 @@ private:
     std::vector<QOpenGLBuffer> vbos_mecha_parts;
     std::vector<bool> display_mecha_part;
 
+    bool render_use_machinery = false;
     Machinery machinery;
     QOpenGLBuffer vbo_machinery;
 

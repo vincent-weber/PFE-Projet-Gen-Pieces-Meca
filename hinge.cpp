@@ -25,7 +25,7 @@ void Hinge::generateParams(QString hinge_part) {
     }
     else if (hinge_part == "AlignedSquared" || hinge_part == "AlignedRounded" || hinge_part == "PerpendicularSquared" || hinge_part == "PerpendicularRounded") {
         wing_height = computeParameter(wing_height, rd, middle_cyl_width*0.2f, middle_cyl_width*0.75f);
-        wing_length = computeParameter(wing_length, rd, middle_cyl_width*4, middle_cyl_width*6);
+        wing_length = computeParameter(wing_length, rd, middle_cyl_width*2.5f, middle_cyl_width*4.5f);
         wing_width = computeParameter(wing_width, rd, middle_cyl_length*0.95f, middle_cyl_length);
 
         if (hinge_part == "AlignedRounded" || hinge_part == "PerpendicularRounded") {
@@ -42,7 +42,7 @@ void Hinge::generateParams(QString hinge_part) {
         hole_radius = computeParameter(hole_radius, rd, min_dim / 20, min_dim / 10);
         if (hinge_part == "Random4Max") {
             nb_holes = 4;
-            anch_type = HINGE_RANDOM;
+            anch_type = HINGE_RANDOM_4_MAX;
         }
     }
 }
@@ -52,13 +52,13 @@ void Hinge::set_dir_wings() {
         dir_wings = QVector3D(0,0,1);
     }
     else if (direction == QVector3D(-1,0,0)) {
-        dir_wings = QVector3D(0,0,-1);
+        dir_wings = QVector3D(0,0,1);
     }
     else if (direction == QVector3D(0,0,1)) {
         dir_wings = QVector3D(1,0,0);
     }
     else if (direction == QVector3D(0,0,-1)) {
-        dir_wings = QVector3D(-1,0,0);
+        dir_wings = QVector3D(1,0,0);
     }
 }
 
@@ -91,7 +91,7 @@ void Hinge::set_rotation(QString hinge_part) {
 }
 
 void Hinge::set_anchor_points() {
-    if (anch_type == HINGE_RANDOM) {
+    if (anch_type == HINGE_RANDOM_4_MAX) {
         QVector<AnchorPoint>  anch_p;
         float max_x = 0, min_x = 0, max_z = 0, min_z = 0;
         if (dir_wings == QVector3D(0,0,1)) {
@@ -118,30 +118,6 @@ void Hinge::set_anchor_points() {
             max_z = center[2] - (wing_width/2 - hole_radius);
             min_z = center[2] - (-wing_width/2 + hole_radius);
         }
-            /*if (dir_wings == QVector3D(0,0,1)) {
-                max_z = center[2] + middle_cyl_width + wing_length - hole_radius - rounding_cyl_width;
-                min_z = center[2] + middle_cyl_width + hole_radius;
-                max_x = center[0] + wing_width/2 - hole_radius;
-                min_x = center[0] - wing_width/2 + hole_radius;
-            }
-            else if (dir_wings == QVector3D(0,0,-1)) {
-                max_z = center[2] - (middle_cyl_width + wing_length - hole_radius - rounding_cyl_width);
-                min_z = center[2] - (middle_cyl_width + hole_radius);
-                max_x = center[0] - (wing_width/2 - hole_radius);
-                min_x = center[0] - (-wing_width/2 + hole_radius);
-            }
-            else if (dir_wings == QVector3D(1,0,0)) {
-                max_x = center[0] + middle_cyl_width + wing_length - hole_radius - rounding_cyl_width;
-                min_x = center[0] + middle_cyl_width + hole_radius;
-                max_z = center[2] + wing_width/2 - hole_radius;
-                min_z = center[2] - wing_width/2 + hole_radius;
-            }
-            else if (dir_wings == QVector3D(-1,0,0)) {
-                max_x = center[0] - (middle_cyl_width + wing_length - hole_radius - rounding_cyl_width);
-                min_x = center[0] - (middle_cyl_width + hole_radius);
-                max_z = center[2] - (wing_width/2 - hole_radius);
-                min_z = center[2] - (-wing_width/2 + hole_radius);
-            }*/
         if (min_x > max_x) min_x = max_x;
         if (min_z > max_z) min_z = max_z;
         QVector<QVector3D> holes;
@@ -157,12 +133,6 @@ void Hinge::set_anchor_points() {
                     limit_reached = true;
                     break;
                 }
-
-                qDebug() << "HOLE COUNT : " << holes.size();
-                qDebug() << "MIN X : " << min_x;
-                qDebug() << "MAX X : " << max_x;
-                qDebug() << "MIN Z : " << min_z;
-                qDebug() << "MAX Z : " << max_z;
                 float x = std::uniform_real_distribution<float>{min_x, max_x}(rd);
                 float z = std::uniform_real_distribution<float>{min_z, max_z}(rd);
                 coords = QVector3D(x, center[1], z);
@@ -208,7 +178,7 @@ void Hinge::set_anchor_points() {
 
 QVector<AnchorPoint*> Hinge::choose_anchor_points() {
     QVector<AnchorPoint*> res;
-    if (anch_type == HINGE_RANDOM) {
+    if (anch_type == HINGE_RANDOM_4_MAX) {
         for (int i = 0 ; i < anchor_points[0].size() ; ++i) {
             res.push_back(&anchor_points[0][i]);
         }

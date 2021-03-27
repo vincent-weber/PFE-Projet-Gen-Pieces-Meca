@@ -12,6 +12,10 @@
  * min_size : valeur minimale pour les 3 dimensions de la boîte
  * max_size : valeur maximale pour les 3 dimensions de la boîte
  *
+ * 2 types de boîte :
+ * - Boite représentée par un simple cuboide (Simple3x3Rand, Simple3x3Sym, LongOneFace)
+ * - Boîte avec du relief sur les contours (Relief3x3Rand, Relief3x3Sym)
+ *
  * Points d'ancrage possibles :
  *
  * BOX_GRID_3X3_SYMMETRIC :
@@ -28,7 +32,7 @@
    set_anchor_points : génère des points d'ancrage dans les angles des faces haut et bas de la boîte
    choose_anchor_points : non implémenté
 
-   BOX_EDGE : THOMAS REMPLIS CA STP¨
+   BOX_EDGE : THOMAS REMPLIS CA STP
 
    Center : le centre de la boîte, pour le moment la boîte n'a pas vraiment été concue pour être attachée à d'autres objets,
    c'est pourquoi son centre est en 0,0,0 de base.

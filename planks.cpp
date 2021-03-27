@@ -13,13 +13,25 @@ void Planks::generateParams(QString planks_part) {
         planks_height = computeParameter(planks_height, rd, 0.6f, 1.2f);
     }
     else if (planks_part == "AllHinges" || planks_part == "RandomHinges") {
-        nb_anch_points_length = planks_length / min_dist_between_hinges;
-        nb_anch_points_width = planks_width / min_dist_between_hinges;
         hinge_wing_height = computeParameter(hinge_wing_height, rd, planks_height / 6, planks_height / 4);
-
         hinge.set_middle_cyl_width(dist_between_planks / 2);
         hinge.set_wing_height(hinge_wing_height);
         hinge.createParams();
+
+        float hinge_length = hinge.get_middle_cyl_height();
+        starting_offset = computeParameter(starting_offset, rd, hinge_length*1.5f, hinge_length*2.0f);
+        float remaining_space_length = planks_length - starting_offset*2;
+        float remaining_space_width = planks_width - starting_offset*2;
+
+        nb_anch_points_length = remaining_space_length / (hinge_length*2.0f);
+        float space_for_hinges_length = (nb_anch_points_length-1) * hinge_length;
+        float space_for_dist_between_hinges_length = remaining_space_length - space_for_hinges_length;
+        dist_between_hinges_length = space_for_dist_between_hinges_length / (nb_anch_points_length-1);
+
+        nb_anch_points_width = remaining_space_width / (hinge_length*2.0f);
+        float space_for_hinges_width = (nb_anch_points_width-1) * hinge_length;
+        float space_for_dist_between_hinges_width = remaining_space_width - space_for_hinges_width;
+        dist_between_hinges_width = space_for_dist_between_hinges_width / (nb_anch_points_width-1);
 
         screw.set_body_width(hinge.get_hole_radius());
         screw.createParams();
@@ -47,30 +59,30 @@ void Planks::set_rotation(QString planks_part) {
 void Planks::set_anchor_points() {
     if (anch_type == PLANKS_ALL_HINGES || anch_type == PLANKS_RANDOM_HINGES) {
 
-        QVector3D coords_anch_point(center[0] + planks_length / 2 - min_dist_between_hinges / 2, center[1] + planks_height / 2 + hinge_wing_height / 2 - 0.003f, center[2] + planks_width / 2 + dist_between_planks / 2);
+        QVector3D coords_anch_point(center[0] + planks_length / 2 - starting_offset, center[1] + planks_height / 2 + hinge_wing_height / 2 - 0.003f, center[2] + planks_width / 2 + dist_between_planks / 2);
 
         QVector<AnchorPoint> anchor_points_z_pos;
         QVector<AnchorPoint> anchor_points_z_neg;
         QVector3D direction_length(1,0,0);
         for (int i = 0 ; i < nb_anch_points_length ; ++i) {
-            AnchorPoint anch_point_z_pos(coords_anch_point, direction_length, min_dist_between_hinges);
+            AnchorPoint anch_point_z_pos(coords_anch_point, direction_length, dist_between_hinges_length);
             anchor_points_z_pos.push_back(anch_point_z_pos);
-            AnchorPoint anch_point_z_neg(QVector3D(coords_anch_point[0], coords_anch_point[1], coords_anch_point[2] - dist_between_planks - planks_width), -direction_length, min_dist_between_hinges);
+            AnchorPoint anch_point_z_neg(QVector3D(coords_anch_point[0], coords_anch_point[1], coords_anch_point[2] - dist_between_planks - planks_width), -direction_length, dist_between_hinges_length);
             anchor_points_z_neg.push_back(anch_point_z_neg);
-            coords_anch_point = QVector3D(coords_anch_point[0] - min_dist_between_hinges, coords_anch_point[1], coords_anch_point[2]);
+            coords_anch_point = QVector3D(coords_anch_point[0] - (dist_between_hinges_length + hinge.get_middle_cyl_height()), coords_anch_point[1], coords_anch_point[2]);
         }
 
-        coords_anch_point = QVector3D(center[0] + planks_length / 2 + dist_between_planks / 2, center[1] + planks_height / 2 + hinge_wing_height / 2 - 0.003f, center[2] + planks_width / 2 - min_dist_between_hinges / 2);
+        coords_anch_point = QVector3D(center[0] + planks_length / 2 + dist_between_planks / 2, center[1] + planks_height / 2 + hinge_wing_height / 2 - 0.003f, center[2] + planks_width / 2 - starting_offset);
 
         QVector<AnchorPoint> anchor_points_x_pos;
         QVector<AnchorPoint> anchor_points_x_neg;
         QVector3D direction_width(0,0,-1);
         for (int i = 0 ; i < nb_anch_points_width ; ++i) {
-            AnchorPoint anch_point_x_pos(coords_anch_point, direction_width, min_dist_between_hinges);
+            AnchorPoint anch_point_x_pos(coords_anch_point, direction_width, dist_between_hinges_width);
             anchor_points_x_pos.push_back(anch_point_x_pos);
-            AnchorPoint anch_point_x_neg(QVector3D(coords_anch_point[0] - dist_between_planks - planks_length, coords_anch_point[1], coords_anch_point[2]), -direction_width, min_dist_between_hinges);
+            AnchorPoint anch_point_x_neg(QVector3D(coords_anch_point[0] - dist_between_planks - planks_length, coords_anch_point[1], coords_anch_point[2]), -direction_width, dist_between_hinges_width);
             anchor_points_z_neg.push_back(anch_point_x_neg);
-            coords_anch_point = QVector3D(coords_anch_point[0], coords_anch_point[1], coords_anch_point[2] - min_dist_between_hinges);
+            coords_anch_point = QVector3D(coords_anch_point[0], coords_anch_point[1], coords_anch_point[2] - (dist_between_hinges_width + hinge.get_middle_cyl_height()));
         }
 
         anchor_points.push_back(anchor_points_z_pos);
