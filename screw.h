@@ -3,9 +3,16 @@
 
 #include "generator.h"
 
+/**
+ * @brief The Screw class, représente les vis que l'on peut attacher sur les points d'ancrage. Cette pièce ne contient aucun point
+ * d'ancrage, on ne peut rien attacher dessus.
+ */
 class Screw : public Generator
 {
 private:
+    /**
+     * @brief Tous les paramètres de la vis
+     */
     float body_height = -1;
     float body_width = -1;
     float head_height = -1;
@@ -16,7 +23,6 @@ private:
 public:
     Screw();
     std::random_device rd;
-    bool is_inNut = false;
 
     void generateParams(QString screw_part) override;
     void generateRules(QString screw_part) override;
@@ -44,7 +50,6 @@ public:
     float get_body_height() {
         return body_height;
     }
-
     float get_head_height(){
         return head_height;
     }

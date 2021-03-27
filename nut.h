@@ -33,6 +33,8 @@ public:
         this->intersect_cyl_radius = inter_cyl_radius;
     }
 
+    float get_inter_cyl_rad() {return intersect_cyl_radius;}
+
 };
 
 #endif // NUT_H

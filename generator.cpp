@@ -4,18 +4,31 @@ QHash<QString, QVector<QString>> Generator::rules;
 QHash<QString, QVector<QString>> Generator::base_rules;
 
 void Generator::initRules() {
-    rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub", "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
+
+    rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub",
+                           "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
+
+
     rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
     rules.insert("Pipe", {"ClassicCyl"});
 
-    rules.insert("Box", {"Simple3x3Rand", "Simple3x3Sym" "Relief3x3Rand", "Relief3x3Sym", "LongOneFace", "SimpleAngles", "ReliefAngles", "SimpleEdge", "ReliefEdge"});
+    rules.insert("Box", {"Simple3x3Rand", "Simple3x3Sym" "Relief3x3Rand", "Relief3x3Sym", "LongOneFace", "SimpleAngles",
+                         "ReliefAngles", "SimpleEdge", "ReliefEdge"});
+
+
     rules.insert("Piston", {"HeadCyl-HeadIntersect+BodyCuboid+EndCyl-EndIntersect"});
 
     rules.insert("Engine", {"EngineAxis+GroupPistons+SeparatorPistons"});
-    rules.insert("EngineAxis", {"CylHeadEngine+CylMainAxe+CylExtEngine", "CubHeadEngine+CylMainAxe+CubExtEngine"});
-    rules.insert("GroupPistons", {"Aligned4All", "Aligned4Rand", "Alternated4All", "Alternated4Rand", "AlignedNRand", "AlternatedNRand", "AlignedNAll", "AlternatedNAll"});
-    rules.insert("SeparatorPistons", {"CylSeparators", /*"CubSeparators"*/});
 
+
+
+    rules.insert("EngineAxis", {"CylHeadEngine+CylMainAxe+CylExtEngine", "CubHeadEngine+CylMainAxe+CubExtEngine"});
+    rules.insert("GroupPistons", {"Aligned4All", "Aligned4Rand", "Alternated4All", "Alternated4Rand", "AlignedNRand",
+                                  "AlternatedNRand", "AlignedNAll", "AlternatedNAll"});
+    rules.insert("SeparatorPistons", {"CylSeparators"});
+
+
+    /*"CubSeparators"*/
     rules.insert("Hinge", {"HingeMiddleCyl+HingeWings"/*+HingeHolePattern"*/});
     rules.insert("HingeWings", {"AlignedSquared", "AlignedRounded", /*"PerpendicularSquared", "PerpendicularRounded"*/});
     //rules.insert("HingeHolePattern", {"Random4", "RandomN", "Angles", "3x3Grid"});

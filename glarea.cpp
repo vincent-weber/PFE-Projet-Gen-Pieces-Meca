@@ -259,7 +259,7 @@ void GLArea::paintGL()
     program_texture->release();
 
     //Axes
-    render_shape_color(vbo_axes, projectionMatrix, viewMatrix, 0, 6);
+//    render_shape_color(vbo_axes, projectionMatrix, viewMatrix, 0, 6);
 
     //Shapes de test
     for (unsigned i = 0 ; i < shapes.size() ; ++i) {
@@ -421,6 +421,9 @@ void GLArea::run_gen_nut(){
 
     mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
 
+//    Parser parser("cyl(2,4,20)[cen(0,0,0)rot(0,0,0)]");
+//    parser.reader();
+//    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
     prepareMechaParts();
 }
 
@@ -590,11 +593,19 @@ void GLArea::run_gen_box_angles(){
     box.computeSentence();
     Parser parser_box(box.sentence);
 
+
+
     qDebug() << "BOX SENTENCE : " << box.sentence;
 
     parser_box.reader();
     MechanicalPart base(parser_box.shapes, parser_box.ops);
     mecha_parts.push_back(base);
+    QVector<MechanicalPart> new_parts;
+
+    machinery = Machinery(base, new_parts);
+    qDebug() << "IS VALID : " << machinery.mesh.is_valid();
+    save_mesh_cgal(machinery.mesh, "engines.off");
+
     prepareMechaParts();
 }
 
@@ -616,5 +627,7 @@ void GLArea::run_gen_hinge() {
     parser_hinge.reader();
     MechanicalPart base(parser_hinge.shapes, parser_hinge.ops);
     mecha_parts.push_back(base);
+
+
     prepareMechaParts();
 }
