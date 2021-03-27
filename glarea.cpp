@@ -268,10 +268,10 @@ void GLArea::paintGL()
 
     //Rendu des pièces mécaniques
     for (unsigned i = 0 ; i < mecha_parts.size() ; ++i) {
-        render_shape_color(vbos_mecha_parts[i], projectionMatrix, viewMatrix, mecha_parts[i].nb_vertices_gl_faces, mecha_parts[i].nb_vertices_gl_lines);
+        //render_shape_color(vbos_mecha_parts[i], projectionMatrix, viewMatrix, mecha_parts[i].nb_vertices_gl_faces, mecha_parts[i].nb_vertices_gl_lines);
     }
 
-    //render_shape_color(vbo_machinery, projectionMatrix, viewMatrix, machinery.nb_vertices_gl_faces, machinery.nb_vertices_gl_lines);
+    render_shape_color(vbo_machinery, projectionMatrix, viewMatrix, machinery.nb_vertices_gl_faces, machinery.nb_vertices_gl_lines);
 
 }
 
@@ -397,7 +397,10 @@ void GLArea::run_gen_screw(){
     Parser parser(screw_gen.sentence);
     parser.reader();
 
-    mecha_parts.push_back(MechanicalPart(parser.shapes, parser.ops));
+    MechanicalPart mecha_screw(parser.shapes, parser.ops);
+
+    mecha_parts.push_back(mecha_screw);
+    save_mesh_cgal(mecha_screw.mesh, "screw.off");
 
     prepareMechaParts();
 }
@@ -432,7 +435,12 @@ void GLArea::run_gen_box(){
     vbos_mecha_parts.clear();
     Box box;
 
-    box.createParams();
+    box.base_sentence = "Simple3x3Rand";
+    box.sentence = box.base_sentence;
+    box.primitives_str = box.sentence.split(QRegExp("\\-|\\+|\\*"));
+    box.generateParams("Simple3x3Rand");
+
+    //box.createParams();
     box.set_anchor_points();
     for (int k = 0 ; k < box.primitives_str.size() ; ++k) {
         box.generateRules(box.primitives_str.at(k));
@@ -521,6 +529,7 @@ void GLArea::run_gen_box(){
         new_objects.clear();
     }
 
+    save_mesh_cgal(machinery.mesh, "box.off");
     //prepareMechaParts();
     prepareMachinery();
 }
@@ -545,6 +554,9 @@ void GLArea::run_gen_engines() {
     mecha_parts.push_back(base);
     QVector<MechanicalPart> new_parts;
 
+    unsigned nb_total_primitives = 0;
+    double total_time = 0;
+
     QVector<AnchorPoint*> chosen_anchor_points = box.choose_anchor_points();
     for (int i = 0 ; i < chosen_anchor_points.size() ; ++i) {
         AnchorPoint* chosen_anchor_point = chosen_anchor_points[i];
@@ -564,14 +576,37 @@ void GLArea::run_gen_engines() {
         engine->computeSentence();
         Parser parser(engine->sentence);
         parser.reader();
+
+        auto start = std::chrono::high_resolution_clock::now();
         MechanicalPart new_part(parser.shapes, parser.ops);
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed_seconds = end-start;
+
+        qDebug() << "NB FACES MECHA PART : " << new_part.mesh.num_faces();
+        qDebug() << "NB EDGES MECHA PART : " << new_part.mesh.num_edges();
+        qDebug() << "NB VERTICES MECHA PART : " << new_part.mesh.num_vertices();
+
+        qDebug() << "NB PRIMITIVES : " << parser.shapes.size();
+        qDebug() << "TEMPS PRIS : " << elapsed_seconds.count();
+        nb_total_primitives += parser.shapes.size();
+        total_time += elapsed_seconds.count();
+
         mecha_parts.push_back(new_part);
         new_parts.push_back(new_part);
     }
 
+    qDebug() << "NB TOTAL PRIMITIVES : " << nb_total_primitives;
+    qDebug() << "TEMPS TOTAL PRIS : " << total_time;
+
+    auto start = std::chrono::high_resolution_clock::now();
     machinery = Machinery(base, new_parts);
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
+
+    qDebug() << "TEMPS PRIS MACHINERY : " << elapsed_seconds.count();
+
     qDebug() << "IS VALID : " << machinery.mesh.is_valid();
-    save_mesh_cgal(machinery.mesh, "output.off");
+    save_mesh_cgal(machinery.mesh, "engines.off");
     //prepareMechaParts();
 
     prepareMachinery();
@@ -614,8 +649,11 @@ void GLArea::run_gen_hinge() {
     vbos_mecha_parts.clear();
 
     Hinge hinge;
+    hinge.direction = QVector3D(0,0,1);
     hinge.createParams();
-    hinge.set_center();
+    hinge.set_dir_wings();
+    hinge.set_anchor_points();
+
     for (int i = 0 ; i < hinge.primitives_str.size() ; ++i) {
         hinge.set_rotation(hinge.primitives_str[i]);
         hinge.generateRules(hinge.primitives_str[i]);
@@ -628,6 +666,34 @@ void GLArea::run_gen_hinge() {
     MechanicalPart base(parser_hinge.shapes, parser_hinge.ops);
     mecha_parts.push_back(base);
 
-
+    save_mesh_cgal(base.mesh, "hinge.off");
     prepareMechaParts();
+}
+
+void GLArea::run_gen_planks() {
+    mecha_parts.clear();
+    vbos_mecha_parts.clear();
+    QVector<MechanicalPart> new_parts;
+
+    Planks planks;
+    planks.createParams();
+    planks.set_center();
+    planks.set_anchor_points();
+    for (int i = 0 ; i < planks.primitives_str.size() ; ++i) {
+        planks.set_rotation(planks.primitives_str[i]);
+        planks.generateRules(planks.primitives_str[i]);
+    }
+    planks.computeSentence();
+    qDebug() << "PLANKS SENTENCE : " << planks.sentence;
+    /*Parser parser_planks(planks.sentence);
+    parser_planks.reader();
+    MechanicalPart base(parser_planks.shapes, parser_planks.ops);*/
+    MechanicalPart base = planks.get_base();
+    machinery = Machinery(base, planks.get_parts());
+    /*mecha_parts.push_back(base);
+    new_parts.push_back(base);*/
+    qDebug() << "IS VALID : " << machinery.mesh.is_valid();
+    save_mesh_cgal(machinery.mesh, "planks.off");
+    //prepareMechaParts();
+    prepareMachinery();
 }

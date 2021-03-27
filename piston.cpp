@@ -17,7 +17,6 @@ void Piston::generateParams(QString part){
     }
     else if(part == "HeadIntersect"){
         head_inter_width = computeParameter(head_inter_width, rd, head_height/2 * 0.33f, head_height/2 * 0.75f);
-//        qDebug() << "TESTS" << head_inter_width << head_height;
     }
     else if(part == "BodyCuboid"){
         body_height = computeParameter(body_height, rd, head_height, head_height*2);
@@ -75,7 +74,6 @@ void Piston::set_rotation(QString part){
 }
 
 void Piston::set_center(){
-    QVector3D vector(endCyl_width, endCyl_width, endCyl_width);
     QVector3D offset = -anchor_point_prev_lvl->direction*0.001;
     center = QVector3D(anchor_point_prev_lvl->coords + offset);
 }

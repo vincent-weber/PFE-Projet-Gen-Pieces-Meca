@@ -12,6 +12,7 @@
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+#include <chrono>
 
 #include "cylinder.h"
 #include "sphere.h"
@@ -28,6 +29,7 @@
 #include "engine.h"
 #include "piston.h"
 #include "hinge.h"
+#include "planks.h"
 
 class GLArea : public QOpenGLWidget,
                protected QOpenGLFunctions
@@ -46,6 +48,7 @@ protected slots:
     void run_gen_engines();
     void run_gen_box_angles();
     void run_gen_hinge();
+    void run_gen_planks();
 
 protected:
     void initializeGL() override;

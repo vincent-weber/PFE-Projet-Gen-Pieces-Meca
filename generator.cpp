@@ -5,35 +5,29 @@ QHash<QString, QVector<QString>> Generator::base_rules;
 
 void Generator::initRules() {
 
-    rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub",
-                           "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
-
-
+    rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub", "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
     rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
     rules.insert("Pipe", {"ClassicCyl"});
 
-    rules.insert("Box", {"Simple3x3Rand", "Simple3x3Sym" "Relief3x3Rand", "Relief3x3Sym", "LongOneFace", "SimpleAngles",
-                         "ReliefAngles", "SimpleEdge", "ReliefEdge"});
-
-
+    rules.insert("Box", {"Simple3x3Rand", "Simple3x3Sym" "Relief3x3Rand", "Relief3x3Sym", "LongOneFace"});
     rules.insert("Piston", {"HeadCyl-HeadIntersect+BodyCuboid+EndCyl-EndIntersect"});
 
     rules.insert("Engine", {"EngineAxis+GroupPistons+SeparatorPistons"});
-
-
-
     rules.insert("EngineAxis", {"CylHeadEngine+CylMainAxe+CylExtEngine", "CubHeadEngine+CylMainAxe+CubExtEngine"});
-    rules.insert("GroupPistons", {"Aligned4All", "Aligned4Rand", "Alternated4All", "Alternated4Rand", "AlignedNRand",
-                                  "AlternatedNRand", "AlignedNAll", "AlternatedNAll"});
+    rules.insert("GroupPistons", {"Aligned4All", "Aligned4Rand", "Alternated4All", "Alternated4Rand", "AlignedNRand", "AlternatedNRand", "AlignedNAll", "AlternatedNAll"});
+    //rules.insert("GroupPistons", {"AlternatedNRand"});
     rules.insert("SeparatorPistons", {"CylSeparators"});
 
-
-    /*"CubSeparators"*/
-    rules.insert("Hinge", {"HingeMiddleCyl+HingeWings"/*+HingeHolePattern"*/});
+    rules.insert("Hinge", {"HingeMiddleCyl+HingeWings-HingeHolePattern"});
     rules.insert("HingeWings", {"AlignedSquared", "AlignedRounded", /*"PerpendicularSquared", "PerpendicularRounded"*/});
-    //rules.insert("HingeHolePattern", {"Random4", "RandomN", "Angles", "3x3Grid"});
+    rules.insert("HingeHolePattern", {"Random4Max"/*, "RandomN", "Angles", "3x3Grid"*/});
 
-    //cyl+cub/cyl+cub/cyl-cyl-cyl-cyl...
+    //rules.insert("Planks", {"5PlanksFlatAllHinges", "5PlanksFlatRandHinges"});
+
+    rules.insert("Planks", {"PlanksLayout+HingesLayout"});
+    rules.insert("PlanksLayout", {"FlatLayout"/*, "PerpendicularLayout"*/});
+    rules.insert("HingesLayout", {/*"AllHinges", */"RandomHinges"});
+
     base_rules = rules;
 }
 
@@ -61,9 +55,7 @@ void Generator::createParams() {
     int nb_part_possibilities = rules.find(generator_name)->count();
     unsigned index = std::uniform_int_distribution<int>{0,nb_part_possibilities-1}(rd_gen);
     base_sentence = rules.find(generator_name)->at(index);
-    qDebug() << "BASE SENTENCE AVANT : " << base_sentence;
     base_sentence = recurs(base_sentence);
-    qDebug() << "BASE SENTENCE APRES : " << base_sentence;
     sentence = base_sentence;
     primitives_str = sentence.split(QRegExp("\\-|\\+|\\*"));
     for (int i = 0 ; i < primitives_str.size() ; ++i) {
@@ -91,6 +83,7 @@ int Generator::computeParameter(int param, std::random_device& rd, int min, int 
 
 void Generator::set_prev_anchor_point(AnchorPoint* anchor_point) {
     anchor_point_prev_lvl = anchor_point;
+    anchor_point->is_active = true;
     direction = anchor_point->direction;
 }
 
@@ -163,9 +156,7 @@ void Generator::createLeafRulesSingle(QString primitive_type, QString in, QVecto
     out += ")";
     out += "]";
 
-//    qDebug() << "RULES AVANT : " << rules[in];
     rules.insert(in, {out});
-//    qDebug() << "RULES APRES : " << rules[in];
 }
 
 void Generator::computeSentence() {

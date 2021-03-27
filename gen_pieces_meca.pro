@@ -32,6 +32,7 @@ SOURCES += main.cpp\
         parser.cpp \
         pipe.cpp \
         piston.cpp \
+        planks.cpp \
         primitive.cpp \
         princ.cpp \
         glarea.cpp \
@@ -56,6 +57,7 @@ HEADERS  += princ.h \
         parser.h \
         pipe.h \
         piston.h \
+        planks.h \
         primitive.h \
         screw.h \
         sphere.h \

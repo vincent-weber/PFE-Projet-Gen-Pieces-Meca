@@ -153,6 +153,7 @@ void Box::set_anchor_points() {
     else if (anch_type == BOX_ONE_FACE_ALIGNED) {
         QVector<AnchorPoint> anch_points;
         float nb_anch_points = box_length / 2.0f - 1;
+        //float nb_anch_points = 1;
         float offset = box_length / (nb_anch_points + 1);
         QVector3D coords (center[0] - box_length/2.0f + 2.0f, center[1], center[2] + box_width/2.0f);
         QVector3D direction_anch_p(0,0,1);
@@ -258,9 +259,6 @@ QVector<AnchorPoint*> Box::choose_anchor_points() {
                 res.push_back(&anchor_points[i][pattern[j]]);
             }
         }
-    }
-    else if (anch_type == BOX_GRID_4X4) {
-
     }
     else if (anch_type == BOX_GRID_3X3_RANDOM) {
         for (int i = 0 ; i < anchor_points.size() ; ++i) {

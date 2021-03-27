@@ -46,7 +46,7 @@ void Engine::generateParams(QString engine_part) {
         piston.createParams();
     }
     else if (engine_part == "AlignedNRand" || engine_part == "AlternatedNRand" || engine_part == "AlignedNAll" || engine_part == "AlternatedNAll") {
-        //*4 = 16 pistons max, *2 = 8 pistons max
+        //* 4 = 16 pistons max, *2 = 8 pistons max
         nb_pistons = (pipe_length / pipe_length_min) * 2;
         pistons_gap = pipe_length * (1.0f/((nb_pistons+1)+nb_pistons*2));
         if (engine_part == "AlignedNRand") {
@@ -61,6 +61,10 @@ void Engine::generateParams(QString engine_part) {
         else if (engine_part == "AlternatedNAll") {
             anch_type = ENGINE_ALTERNATED_ALL;
         }
+
+        piston.set_end_cyl_intersect_width(pipe_width * 0.998f);
+        piston.set_end_cyl_width((pipe_width*1.5f));
+        piston.createParams();
     }
 
     else if (engine_part == "CylSeparators" || engine_part == "CubSeparators") {
@@ -162,10 +166,6 @@ void Engine::generateRules(QString engine_part) {
         QVector<QVector<float>> params(nb_pistons*2+1, {pipe_width, pipe_piece_length+0.003f, precision});
         QVector<QVector3D> rots(nb_pistons*2+1, rotation);
         QVector<QVector3D> centers;
-
-        qDebug() << primitives;
-        qDebug() << op_bools;
-        qDebug() << rots;
 
         QVector3D center_cyl_head = center - direction * (pipe_length/2 + head_length/2);
         QVector3D center(center_cyl_head + direction * (head_length/2 + pistons_gap/2));
