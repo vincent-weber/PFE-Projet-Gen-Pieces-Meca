@@ -2,11 +2,11 @@
 
 Machinery::Machinery() {}
 
-Machinery::Machinery(MechanicalPart& part_lvl0, QVector<MechanicalPart> parts_lvl1)
+Machinery::Machinery(MechanicalPart& base_part, QVector<MechanicalPart> other_parts)
 {
-    mesh = part_lvl0.mesh;
-    for (int i = 0 ; i < parts_lvl1.size() ; ++i) {
-        bool res = compute_boolean_operation(&mesh, &parts_lvl1[i].mesh, &mesh, UNION);
+    mesh = base_part.mesh;
+    for (int i = 0 ; i < other_parts.size() ; ++i) {
+        bool res = compute_boolean_operation(&mesh, &other_parts[i].mesh, &mesh, UNION);
         if (res) {
             qDebug() << "Op Finale OK";
         }
