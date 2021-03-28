@@ -15,8 +15,6 @@ void Hinge::generateParams(QString hinge_part) {
         max_value = min_value;
     }
 
-    //rules.insert("HingeWings", {"AlignedSquared", "AlignedRounded", "PerpendicularSquared", "PerpendicularRounded"});
-
     if (hinge_part == "HingeMiddleCyl") {
         middle_cyl_length = computeParameter(middle_cyl_length, rd, min_value, max_value);
         middle_cyl_width = computeParameter(middle_cyl_width, rd, middle_cyl_length*0.1f, middle_cyl_length*0.2f);
@@ -36,7 +34,6 @@ void Hinge::generateParams(QString hinge_part) {
         }
     }
 
-    //rules.insert("HingeHolePattern", {"Random4Max", "RandomN", "Angles", "3x3Grid"});
     else if (hinge_part == "Random4Max" || hinge_part == "RandomN" || hinge_part == "Angles" || hinge_part == "3x3Grid") {
         float min_dim = min(wing_length, wing_width);
         hole_radius = computeParameter(hole_radius, rd, min_dim / 20, min_dim / 10);
@@ -205,8 +202,6 @@ void Hinge::generateRules(QString hinge_part) {
     else if (hinge_part == "AlignedRounded") {
         QVector3D center_cub_1(center[0] + (- middle_cyl_width - wing_length/2 + wing_length*0.005f) * dir_wings[0], center[1] + (- middle_cyl_width - wing_length/2 + wing_length*0.005f) * dir_wings[1], center[2] + (- middle_cyl_width - wing_length/2 + wing_length*0.005f) * dir_wings[2]);
         QVector3D center_cub_2(center[0] + (middle_cyl_width + wing_length/2 - wing_length*0.005f) * dir_wings[0], center[1] + (middle_cyl_width + wing_length/2 - wing_length*0.005f) * dir_wings[1], center[2] + (middle_cyl_width + wing_length/2 - wing_length*0.005f) * dir_wings[2]);
-        //QVector3D center_cyl_1(center[0] - middle_cyl_width * dir_wings[0], center[1] - middle_cyl_width * dir_wings[1], center[2] - middle_cyl_width * dir_wings[2]);
-        //QVector3D center_cyl_2(center[0] + middle_cyl_width * dir_wings[0], center[1] + middle_cyl_width * dir_wings[1], center[2] + middle_cyl_width * dir_wings[2]);
         QVector3D center_round_cyl = center;
 
         QVector<QString> primitives({"cub", "cyl", "cub", "cyl"});

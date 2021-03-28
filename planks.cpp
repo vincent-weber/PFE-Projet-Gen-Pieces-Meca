@@ -136,6 +136,8 @@ void Planks::generateRules(QString planks_part) {
             rule += hinge.sentence;
             hinge_string += hinge.sentence;
 
+            //pour attacher des vis sur les charnieres, pas fini
+
             /*QVector<AnchorPoint*> anch_points_hinge = hinge.choose_anchor_points();
             for (int j = 0 ; j < anch_points_hinge.size() ; ++j) {
                 AnchorPoint* anch_p = anch_points_hinge[j];

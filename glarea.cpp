@@ -26,32 +26,7 @@ GLArea::GLArea(QWidget *parent) :
     timer->start();
     elapsedTimer.start();
 
-//    QString test = "Sĥere+head-body*test";
-//    QStringList reg = test.split(QRegExp("\\+|\\-|\\*"));
-//    qDebug() << reg;
-
-
-//    shapes.push_back(new Sphere(5,10,20, V3(0,11.5,20), V3(PI/2, PI/2, 0)));
-//    shapes.push_back(new Cylinder(7,4,15, V3(0,10,20), V3(PI/2, PI/2, 0)));
-//    shapes.push_back(new Cylinder(5,4,20, V3(0,6.5,20), V3(PI/2, PI/2, 0)));
-
-//    shapes = parser.cyls_screw;
-
-//    std::vector<Shape3D*> cyls_screw;
-//    cyls_screw.push_back(new Sphere(5,10,20, V3(0,11.5,10), V3(PI/2, PI/2, 0)));
-//    cyls_screw.push_back(new Cuboid(2,4,3, V3(0,10,10), V3(PI/2, PI/2, 0)));
-//    cyls_screw.push_back(new Cylinder(5,4,20, V3(0,6.5,10), V3(PI/2, PI/2, 0)));
-
-//    std::vector<Bool_op> ops;
-//    ops.push_back(UNION);
-//    ops.push_back(UNION);
-
-//    screw = Screw(parser.cyls_screw, parser.ops);
-
     Generator::initRules();
-
-    //shapes.push_back(new Cuboid(5,5,10, V3(0, 0, 0), V3(0,0,0)));
-
 }
 
 GLArea::~GLArea()
@@ -500,7 +475,6 @@ void GLArea::run_gen_box(){
                     object->anch_type = NO_ANCHOR_POINTS;
                 }
                 object = new Engine();
-                //object = new Piston();
 
                 object->set_prev_anchor_point(chosen_anchor_point);
                 object->createParams();
@@ -511,12 +485,10 @@ void GLArea::run_gen_box(){
                 for (int k = 0 ; k < object->primitives_str.size() ; ++k) {
                     object->generateRules(object->primitives_str.at(k));
                 }
-                //object->set_anchor_points();
 
                 object->sentence = object->base_sentence;
-                qDebug() << "ENGINE SETNENCE : " << object->sentence;
                 object->computeSentence();
-                qDebug() << "ENGINE SETNENCE APRES : " << object->sentence;
+                qDebug() << "ENGINE SENTENCE APRES : " << object->sentence;
                 Parser parser(object->sentence);
                 parser.reader();
                 MechanicalPart new_part(parser.shapes, parser.ops);
@@ -610,7 +582,6 @@ void GLArea::run_gen_engines() {
 
     qDebug() << "TEMPS PRIS MACHINERY : " << elapsed_seconds.count();
 
-    qDebug() << "IS VALID : " << machinery.mesh.is_valid();
     save_mesh_cgal(machinery.mesh, "engines.off");
 
     render_use_machinery = true;
@@ -641,10 +612,10 @@ void GLArea::run_gen_box_angles(){
     QVector<MechanicalPart> new_parts;
 
     machinery = Machinery(base, new_parts);
-    qDebug() << "IS VALID : " << machinery.mesh.is_valid();
-    save_mesh_cgal(machinery.mesh, "engines.off");
+    save_mesh_cgal(machinery.mesh, "box_angles.off");
 
-    prepareMechaParts();
+    render_use_machinery = true;
+    prepareMachinery();
 }
 
 void GLArea::run_gen_hinge() {

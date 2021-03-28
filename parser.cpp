@@ -14,7 +14,6 @@ void Parser::reader(){
         //Recupere les informations du cylindre;
         if(sentence.at(i) == 'c' && sentence.at(i+1) == 'y'){
             QVector<QVector<float>> params = getGeo(&i);
-//            qDebug() << "Cylindre :" << params[0] << ", de centre" << params[1] << ", avec une rotation de" << params[2];
             Cylinder *cyl = new Cylinder(params[0][0], params[0][1], params[0][2],
                                 V3(params[1][0], params[1][1], params[1][2]),
                                 V3(params[2][0], params[2][1], params[2][2]));
@@ -23,7 +22,6 @@ void Parser::reader(){
 
         //Recupere les informations du cube
         if(sentence.at(i) == 'c' && sentence.at(i+1) == 'u'){
-//            qDebug() << "Cube ";
             QVector<QVector<float>> params = getGeo(&i);
             Cuboid *cub = new Cuboid(params[0][0], params[0][1], params[0][2],
                     V3(params[1][0], params[1][1], params[1][2]),
@@ -33,9 +31,7 @@ void Parser::reader(){
 
         //Recupere les informations d'une sphere
         if(sentence.at(i) == 's' && sentence.at(i+1) == 'p'){
-//            qDebug() << "Sphere";
             QVector<QVector<float>> params = getGeo(&i);
-//            qDebug() << "Sphere :" << params[0] << ", de centre" << params[1] << ", avec une rotation de" << params[2];
             Sphere *sph = new Sphere(params[0][0], params[0][1], params[0][2],
                     V3(params[1][0], params[1][1], params[1][2]),
                     V3(params[2][0], params[2][1], params[2][2]));
