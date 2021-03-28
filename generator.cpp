@@ -4,6 +4,7 @@ QHash<QString, QVector<QString>> Generator::rules;
 QHash<QString, QVector<QString>> Generator::base_rules;
 
 void Generator::initRules() {
+
     rules.insert("Screw", {"ScrewBodyCyl+ScrewHeadCyl", "ScrewBodyCyl+ScrewHeadCyl6", "ScrewBodyCyl+ScrewHeadCub", "ScrewBodyCyl+ScrewHeadCyl6+ScrewInterCyl6"});
     rules.insert("Nut", {"NutMainCyl-NutIntersectCyl"});
     rules.insert("Pipe", {"ClassicCyl"});

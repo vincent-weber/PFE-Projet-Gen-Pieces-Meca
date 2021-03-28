@@ -8,7 +8,6 @@ Nut::Nut()
 
 void Nut::generateParams(QString nut_part) {
     float max_value = get_max_possible_size();
-    qDebug() << "VALEUR MAX NUUUUUUT" << max_value;
 
     if (nut_part == "NutMainCyl") {
         main_cyl_radius = computeParameter(main_cyl_radius, rd, 1.0f, max_value);
@@ -47,6 +46,7 @@ void Nut::set_rotation(QString screw_part) {
 
 void Nut::set_anchor_points() {
     //Juste celui au centre de l'ecrou.
+    anchor_points.clear();
     QVector<AnchorPoint> anchor;
     QVector3D centerAnch(center[0] + anchor_point_prev_lvl->direction[0]*(main_cyl_length/2), center[1] + anchor_point_prev_lvl->direction[1]*(main_cyl_length/2), center[2] + anchor_point_prev_lvl->direction[2]*(main_cyl_length/2));
     AnchorPoint anch(centerAnch, direction, intersect_cyl_radius);
